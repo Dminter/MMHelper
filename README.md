@@ -11,6 +11,8 @@
 
 4、虽然使用root，但仅使用Android基本命令实现打开活动，全无公害，实不放心， 已开源。
 
+[最新版](https://github.com/Dminter/MMHelper/blob/master/docs/app-1.4.apk)
+
 ![](https://github.com/Dminter/MMHelper/blob/master/docs/img/g1.png)
 ![](https://github.com/Dminter/MMHelper/blob/master/docs/img/g2.png)
 ![](https://github.com/Dminter/MMHelper/blob/master/docs/img/g3.png)
