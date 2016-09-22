@@ -1,0 +1,143 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/container"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+>
+
+    <include layout="@layout/toolbar"/>
+
+
+
+    <include layout="@layout/setting_div"/>
+
+    <LinearLayout
+        android:id="@+id/llFz"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:gravity="center_vertical"
+        android:minHeight="40dp"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="分组"/>
+        <TextView
+            android:id="@+id/tvFz"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/material_amber_300"
+            android:textSize="14sp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <include layout="@layout/setting_div"/>
+
+    <LinearLayout
+        android:id="@+id/llInport"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="导入配置"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llOutport"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="导出配置"/>
+    </LinearLayout>
+
+    <include layout="@layout/setting_div"/>
+
+    <LinearLayout
+        android:id="@+id/llGuid"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="引导页"/>
+    </LinearLayout>
+
+    <include layout="@layout/setting_div"/>
+
+    <LinearLayout
+        android:id="@+id/llTanks"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="特别感谢"/>
+    </LinearLayout>
+
+    <include layout="@layout/setting_div"/>
+
+    <LinearLayout
+        android:id="@+id/llAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="开发者微信:xm0ff255"/>
+    </LinearLayout>
+
+
+    <include layout="@layout/setting_div"/>
+    <LinearLayout
+        android:id="@+id/llUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="4dp"
+        android:gravity="center_vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="新版本？"/>
+    </LinearLayout>
+
+
+    <include layout="@layout/setting_div"/>
+
+</LinearLayout>

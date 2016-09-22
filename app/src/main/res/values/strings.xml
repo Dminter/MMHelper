@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">快速打开活动</string>
+
+
+    <string name="show_window">显示悬浮窗</string>
+
+    <string name="is_running">%s 正在运行</string>
+    <string name="touch_to_open">点击添加.</string>
+    <string name="noti_action_pause">暂停</string>
+    <string name="noti_action_resume">恢复</string>
+    <string name="noti_action_add">添加</string>
+    <string name="noti_action_stop">停止</string>
+
+    <string name="dialog_enable_accessibility_msg">打开我的 \"辅助功能\" 后才能用哦.</string>
+    <string name="dialog_enable_accessibility_positive_btn">去设置</string>
+
+
+    <string name="tutorial_done">尽情体验</string>
+    <string name="tutorial_skip">跳过</string>
+
+
+    <string name="navigation_drawer_open">打开</string>
+    <string name="navigation_drawer_close">关闭</string>
+
+</resources>

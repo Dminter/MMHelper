@@ -1,0 +1,21 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:textColorPrimary">@color/material_light_white</item>
+        <item name="android:itemBackground">@color/material_light_white</item>
+        <item name="android:textColor">@color/material_light_black</item>
+        <item name="colorControlNormal">@color/material_light_white</item>
+        <item name="colorSwitchThumbNormal">@color/material_red_400</item>
+        <item name="android:colorForeground">@color/material_yellow_400</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="md_dark_theme">false</item>
+    </style>
+
+</resources>

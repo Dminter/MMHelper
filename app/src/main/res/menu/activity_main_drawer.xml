@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/action_add_wxtalk"
+        android:title="微信聊天"
+    />
+    <item
+        android:id="@+id/action_add_qqtalk"
+        android:title="QQ聊天"
+    />
+
+    <item
+        android:id="@+id/action_add_url"
+        android:title="书签"
+    />
+    <item
+        android:id="@+id/action_add_openactivity"
+        android:title="添加活动"
+    />
+
+    <item
+        android:id="@+id/action_toactivity"
+        android:title="设置"
+    />
+    <item
+        android:id="@+id/action_share"
+        android:title="分享"/>
+</menu>

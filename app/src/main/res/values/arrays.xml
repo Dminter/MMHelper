@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="wx_dl">
+        <item>weixin://dl/moments|朋友圈</item>
+        <item>weixin://dl/posts|我的相册</item>
+        <item>weixin://dl/favorites|我的收藏</item>
+        <item>weixin://dl/scan|二维码/条码</item>
+        <item>weixin://dl/myQRcode|二维码名片</item>
+        <item>weixin://dl/officialaccounts|公众号</item>
+        <item>weixin://dl/groups|群聊</item>
+        <item>weixin://dl/tags|标签</item>
+        <item>weixin://dl/recommendation|新的朋友</item>
+        <item>weixin://dl/card|卡包</item>
+        <item>weixin://dl/hidemoments|朋友圈黑名单</item>
+        <item>weixin://dl/blockmoments|不看他的照片</item>
+        <item>weixin://dl/blacklist|通讯录黑名单</item>
+        <item>weixin://dl/textsize|字体大小</item>
+        <item>weixin://dl/games|微信游戏</item>
+        <item>weixin://dl/stickers|表情商店</item>
+        <item>weixin://dl/stickersetting|我的表情</item>
+        <item>weixin://dl/shopping|京东购物</item>
+        <item>weixin://dl/settings|设置</item>
+        <item>weixin://dl/features|功能</item>
+        <item>weixin://dl/general|设置-通用</item>
+        <item>weixin://dl/chat|设置-聊天</item>
+        <item>weixin://dl/notifications|设置-新消息提醒</item>
+        <item>weixin://dl/profile|个人信息</item>
+        <item>weixin://dl/setname|更改名字</item>
+        <item>weixin://dl/myaddress|我的地址</item>
+        <item>weixin://dl/clear|清理微信存储空间</item>
+        <item>weixin://dl/help|帮助与反馈</item>
+        <item>weixin://dl/terms|使用条款和隐私政策</item>
+        <item>weixin://dl/feedback|意见反馈</item>
+        <item>weixin://dl/faq|系统通知</item>
+        <item>weixin://dl/protection|账号保护</item>
+        <item>weixin://dl/about|关于微信</item>
+        <item>weixin://dl/languages|多语言</item>
+        <item>weixin://dl/chathistory|聊天记录迁移</item>
+        <item>weixin://dl/bindqq|绑定QQ</item>
+        <item>weixin://dl/bindmobile|绑定手机</item>
+        <item>weixin://dl/bindemail|绑定邮箱</item>
+        <item>weixin://dl/securityassistant|通讯录同步助手</item>
+        <item>weixin://dl/broadcastmessage|群发助手</item>
+    </string-array>
+    <string-array name="zfb_dl">
+        <item>alipayqr://platformapi/startapp?saId=10000007|扫码</item>
+        <item>alipayqr://platformapi/startapp?saId=20000056|付款码</item>
+    </string-array>
+    <string-array name="init_cards">
+        <item>||</item>
+        <item>||</item>
+        <item>||</item>
+    </string-array>
+
+</resources>
