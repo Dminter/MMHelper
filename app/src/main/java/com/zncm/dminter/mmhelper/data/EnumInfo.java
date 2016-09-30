@@ -31,7 +31,7 @@ public class EnumInfo {
 
     public enum RefreshEnum {
 
-        FZ(1, "FZ");
+        FZ(1, "FZ"), APPS(2, "APPS"), ALL(3, "ALL"), LIKE(4, "LIKE"), APPSINIT(5, "APPSINIT");
         private int value;
         private String strName;
 
@@ -51,7 +51,7 @@ public class EnumInfo {
     }
 
     public enum homeTab {
-        APPS(0, "enable", "应用"),LIKE(1, "like", "收藏"), ALL(2, "all", "所有");
+        APPS(0, "enable", "应用"), LIKE(1, "like", "收藏"), ALL(2, "all", "所有");
         private String value;
         private int position;
         public String strName;
@@ -117,9 +117,10 @@ public class EnumInfo {
 
 
     }
+
     public enum appStatus {
 
-        ENABLE(1, "启用"), DISABLED(2,  "停用");
+        ENABLE(1, "启用"), DISABLED(2, "停用");
 
         private int value;
         public String strName;
@@ -139,9 +140,10 @@ public class EnumInfo {
 
 
     }
+
     public enum appType {
 
-        SYSTEM(1, "SYSTEM"), THREE(2,  "THREE");
+        SYSTEM(1, "SYSTEM"), THREE(2, "THREE");
 
         private int value;
         public String strName;

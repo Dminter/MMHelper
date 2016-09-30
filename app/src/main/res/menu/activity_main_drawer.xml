@@ -27,4 +27,7 @@
     <item
         android:id="@+id/action_share"
         android:title="分享"/>
+    <item
+        android:id="@+id/action_init"
+        android:title="启用/停用 初始化"/>
 </menu>

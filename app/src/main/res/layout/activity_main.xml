@@ -10,9 +10,33 @@
     tools:openDrawer="start">
 
 
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical">
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 android:id="@+id/container"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+
+        <LinearLayout
+
+            android:id="@+id/llContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:orientation="vertical">
+
+
+            <com.astuetz.PagerSlidingTabStrip
+                android:id="@+id/indicator"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+            />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+
         <FrameLayout
             android:id="@+id/toolbar_container"
             android:layout_width="match_parent"
@@ -33,29 +57,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </FrameLayout>
+    </FrameLayout>
 
-        <com.astuetz.PagerSlidingTabStrip
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/indicator"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            app:pstsDividerPadding="20dp"
-            app:pstsIndicatorColor="#FFF"
-            app:pstsIndicatorHeight="2dp"
-            app:pstsPaddingMiddle="true"
-            app:pstsShouldExpand="true"
-            app:pstsTabPaddingLeftRight="10dp"
-            app:pstsTabTextAllCaps="true"
-            android:background="@color/colorPrimary"
-        />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

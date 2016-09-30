@@ -17,7 +17,6 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".GuidViewActivity"/>
-        <activity android:name=".QTActivity"/>
         <activity
             android:name=".OpenInentActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
@@ -29,6 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
+                  android:launchMode="singleInstance"
         >
 
             <intent-filter>
@@ -66,11 +66,14 @@
         </service>
 
 
-       <!-- <receiver android:name=".NotificationActionReceiver">
+        <receiver android:name=".utils.MyInstalledReceiver" >
             <intent-filter>
-                <action android:name="com.willme.topactivity.ACTION_NOTIFICATION_RECEIVER"/>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
     </application>
 
 </manifest>

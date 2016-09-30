@@ -55,7 +55,7 @@
 //    Toolbar toolbar;
 //    private static HomeActivity instance;
 //    ColorGenerator generator;
-//    public ArrayList<FzInfo> pkInfos = new ArrayList<>();
+//    public ArrayList<FzInfo> fzInfos = new ArrayList<>();
 //    DrawerLayout drawer;
 //    CheckBox mWindowSwitch;
 //    Activity ctx;
@@ -76,16 +76,16 @@
 //                for (int i = 0; i < fzArr.length; i++) {
 //                    String tmp = fzArr[i];
 //                    if (Xutils.isNotEmptyOrNull(tmp)) {
-//                        pkInfos.add(new FzInfo(i + 1, tmp));
+//                        fzInfos.add(new FzInfo(i + 1, tmp));
 //                    }
 //                }
 //            }
-//            MyApplication.pkInfos.clear();
-//            MyApplication.pkInfos.addAll(pkInfos);
+//            MyApplication.fzInfos.clear();
+//            MyApplication.fzInfos.addAll(fzInfos);
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-//        count = pkInfos.size() + baseTab;
+//        count = fzInfos.size() + baseTab;
 //        generator = ColorGenerator.MATERIAL;
 //        mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
 //        setTitle("");
@@ -108,7 +108,7 @@
 //                if (position < baseTab) {
 //                    bundle.putString("packageName", EnumInfo.homeTab.getHomeTab(position).getValue());
 //                } else {
-//                    bundle.putString("packageName", pkInfos.get(position - baseTab).getId() + "");
+//                    bundle.putString("packageName", fzInfos.get(position - baseTab).getId() + "");
 //                }
 //                fragment.setArguments(bundle);
 //                return fragment;
@@ -125,7 +125,7 @@
 //                if (position < baseTab) {
 //                    title = EnumInfo.homeTab.getHomeTab(position).getStrName();
 //                } else {
-//                    title = pkInfos.get(position - baseTab).getName();
+//                    title = fzInfos.get(position - baseTab).getName();
 //                }
 //                return title;
 //            }
@@ -173,7 +173,7 @@
 //                            R.color.colorPrimary,
 //                            "");
 //                } else {
-//                    final String packageName = pkInfos.get(position - baseTab).getName();
+//                    final String packageName = fzInfos.get(position - baseTab).getName();
 //                    logo.setOnClickListener(new View.OnClickListener() {
 //                        @Override
 //                        public void onClick(View v) {

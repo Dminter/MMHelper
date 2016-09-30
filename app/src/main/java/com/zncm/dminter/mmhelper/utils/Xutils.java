@@ -18,6 +18,7 @@ import android.text.ClipboardManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.github.mrengineer13.snackbar.SnackBar;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
@@ -27,6 +28,7 @@ import com.zncm.dminter.mmhelper.R;
 import com.zncm.dminter.mmhelper.autocommand.AndroidCommand;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -224,6 +226,15 @@ public class Xutils {
     }
 
 
+    public static void initIndicatorTheme(PagerSlidingTabStrip indicator) {
+        Context ctx = MyApplication.getInstance().ctx;
+        indicator.setTextColor(ctx.getResources().getColor(R.color.material_light_white));
+        indicator.setIndicatorColor(ctx.getResources().getColor(R.color.material_light_white));
+        indicator.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
+        indicator.setUnderlineHeight(1);
+        indicator.setIndicatorHeight(4);
+    }
+
     public static ApplicationInfo getAppInfo(String pName) {
         ApplicationInfo info;
         try {
@@ -254,6 +265,18 @@ public class Xutils {
 
         }
         return null;
+    }
+
+    public static int getAppIconId(String packname) {
+        try {
+            PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
+            ApplicationInfo info = pm.getApplicationInfo(packname, 0);
+            return info.icon;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+
+        }
+        return R.mipmap.ic_launcher;
     }
 
     /*
@@ -334,6 +357,13 @@ public class Xutils {
             e.printStackTrace();
         }
 
+    }
+
+
+    public static byte[] bitmap2Bytes(Bitmap bm) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
     }
 
 

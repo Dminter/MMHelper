@@ -11,7 +11,7 @@
     <string name="noti_action_add">添加</string>
     <string name="noti_action_stop">停止</string>
 
-    <string name="dialog_enable_accessibility_msg">打开我的 \"辅助功能\" 后才能用哦.</string>
+    <string name="dialog_enable_accessibility_msg">打开设置-》无障碍-》快速打开活动</string>
     <string name="dialog_enable_accessibility_positive_btn">去设置</string>
 
 

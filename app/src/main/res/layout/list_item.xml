@@ -12,9 +12,8 @@
         android:layout_gravity="center"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        card_view:cardCornerRadius="4dp"
         android:foreground="@drawable/card_foreground"
-        card_view:cardUseCompatPadding="true">
+      >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

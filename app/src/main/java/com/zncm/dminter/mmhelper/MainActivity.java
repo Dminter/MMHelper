@@ -35,10 +35,11 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.FzInfo;
+import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.ft.MyFt;
-import com.zncm.dminter.mmhelper.utils.ColorGenerator;
+import com.zncm.dminter.mmhelper.utils.DataInitHelper;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -50,21 +51,19 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CompoundButton.OnCheckedChangeListener {
-    MyPagerAdapter adapter;
-    ViewPager mViewPager;
-    public boolean bShowSystem = false;
-    int baseTab = 3;
-    int count = baseTab;
-    Toolbar toolbar;
-    private static MainActivity instance;
-    ColorGenerator generator;
-    public ArrayList<FzInfo> pkInfos = new ArrayList<>();
-    DrawerLayout drawer;
-    CheckBox mWindowSwitch;
-    Activity ctx;
-    MaterialSearchView searchView;
-
-    String lastText = "";
+    private MyPagerAdapter adapter;
+    private ViewPager mViewPager;
+    private int baseTab = 3;
+    private int count = baseTab;
+    private Toolbar toolbar;
+    public ArrayList<FzInfo> fzInfos = new ArrayList<>();
+    private DrawerLayout drawer;
+    private CheckBox mWindowSwitch;
+    private MainActivity ctx;
+    private MaterialSearchView searchView;
+    private String lastText = "";
+    public ArrayList<MyFt> fragments = new ArrayList<>();
+    MaterialDialog progressDlg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +72,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ctx = this;
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-//            toolbar.setTitle("");
             toolbar.setTitleTextColor(getResources().getColor(R.color.material_light_white));
             setSupportActionBar(toolbar);
-//            toolbar.setNavigationIcon(R.drawable.md_nav_back);
         }
         try {
             String fzInfo = SPHelper.getFzInfo(this);
@@ -85,31 +82,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 for (int i = 0; i < fzArr.length; i++) {
                     String tmp = fzArr[i];
                     if (Xutils.isNotEmptyOrNull(tmp)) {
-                        pkInfos.add(new FzInfo(i + 1, tmp));
+                        fzInfos.add(new FzInfo(i + 1, tmp));
                     }
                 }
             }
-            MyApplication.pkInfos.clear();
-            MyApplication.pkInfos.addAll(pkInfos);
+            MyApplication.fzInfos.clear();
+            MyApplication.fzInfos.addAll(fzInfos);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        count = pkInfos.size() + baseTab;
-
+        count = fzInfos.size() + baseTab;
         mViewPager = (ViewPager) findViewById(R.id.pager);
         adapter = new MyPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
         mViewPager.setOffscreenPageLimit(3);
-        mViewPager.setCurrentItem(0);
+        mViewPager.setCurrentItem(1);
         PagerSlidingTabStrip indicator = (PagerSlidingTabStrip) findViewById(R.id.indicator);
+        Xutils.initIndicatorTheme(indicator);
         indicator.setViewPager(mViewPager);
-//        toolbar.setTitle(getString(R.string.app_name));
-//        toolbar.setNavigationIcon(null);
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        searchView.setHint("搜索 支持简拼 pyq 朋友圈");
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Xutils.debug("query:" + query);
                 if (searchInfo(query)) {
                     return true;
                 }
@@ -118,29 +113,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (lastText.length() > newText.length() && newText.length() > 0) {
-                    return true;
-                }
-                lastText = newText;
-                Xutils.debug("newText:" + newText);
-                if (searchInfo(newText)) {
-                    return true;
-                }
+//                if (lastText.length() > newText.length() && newText.length() > 0) {
+//                    return true;
+//                }
+//                lastText = newText;
+//                if (searchInfo(newText)) {
+//                    return true;
+//                }
                 return false;
             }
         });
-
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
-            }
-
-            @Override
-            public void onSearchViewClosed() {
-            }
-        });
-
-
         ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
         if (!Xutils.listNotNull(tmps)) {
             DbUtils.cardUpdate();
@@ -150,8 +132,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //引导页面
             startActivity(new Intent(this, GuidViewActivity.class));
         }
-        EventBus.getDefault().register(this);
 
+        ArrayList<PkInfo> pkInfos = DbUtils.getPkInfos(null);
+        if (!Xutils.listNotNull(pkInfos)) {
+            initApps();
+        }
+
+        EventBus.getDefault().register(this);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -162,12 +149,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mWindowSwitch = (CheckBox) headerView.findViewById(R.id.mWindowSwitch);
         ImageView ivLogo = (ImageView) headerView.findViewById(R.id.ivLogo);
         mWindowSwitch.setOnCheckedChangeListener(this);
-
-
-//        if (SPHelper.isShowWindow(ctx)) {
-//            startService(new Intent(this, WatchingService.class));
-//        }
-
         ivLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,8 +156,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void initApps() {
+
+        progressDlg = new MaterialDialog.Builder(this)
+                .title("数据初始化中...")
+                .show();
 
 
+        DataInitHelper.MyTask task = new DataInitHelper.MyTask();
+        task.execute();
     }
 
     private boolean searchInfo(String newText) {
@@ -184,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
         final ArrayList<CardInfo> tmps = DbUtils.getCardInfosByTitle(newText);
+        ArrayList<CardInfo> tmps2 = DbUtils.getPkInfosByTitle(newText);
+        tmps.addAll(tmps2);
         if (!Xutils.listNotNull(tmps)) {
             return true;
         }
@@ -193,13 +185,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             items.add(info.getTitle());
         }
         try {
-            Xutils.debug("tmps??" + tmps);
+            searchView.closeSearch();
             new MaterialDialog.Builder(ctx)
                     .items(items)
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
                         public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-//                                    Xutils.debug("text::" + which + " " + text.toString());
                             CardInfo cardInfo = tmps.get(which);
                             if (cardInfo != null) {
                                 MyFt.clickCard(ctx, cardInfo);
@@ -231,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (position < baseTab) {
                 title = EnumInfo.homeTab.getHomeTab(position).getStrName();
             } else {
-                title = pkInfos.get(position - baseTab).getName();
+                title = fzInfos.get(position - baseTab).getName();
             }
             return title;
         }
@@ -249,9 +240,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (position < baseTab) {
                 bundle.putString("packageName", EnumInfo.homeTab.getHomeTab(position).getValue());
             } else {
-                bundle.putString("packageName", pkInfos.get(position - baseTab).getId() + "");
+                bundle.putString("packageName", fzInfos.get(position - baseTab).getId() + "");
             }
             fragment.setArguments(bundle);
+            fragments.add(fragment);
             return fragment;
         }
 
@@ -284,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         if (MyApplication.getInstance().isOpenInent) {
-            backToDesk(this);
+//            backToDesk(this);
             MyApplication.getInstance().isOpenInent = false;
         }
 
@@ -305,10 +297,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onMessageEventAsync(RefreshEvent event) {
         int type = event.type;
         if (type == EnumInfo.RefreshEnum.FZ.getValue()) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
+            initActicity();
         }
+
+
+        if (fragments.size() == 0) {
+            initActicity();
+        }
+
+
+        if (type == EnumInfo.RefreshEnum.APPS.getValue() || type == EnumInfo.RefreshEnum.APPSINIT.getValue()) {
+            if (type == EnumInfo.RefreshEnum.APPSINIT.getValue()) {
+                if (progressDlg.isShowing()) {
+                    progressDlg.dismiss();
+                }
+            }
+            MyFt tmp = (MyFt) fragments.get(0);
+            tmp.onRefresh();
+        }
+        if (type == EnumInfo.RefreshEnum.LIKE.getValue()) {
+            MyFt tmp = (MyFt) fragments.get(1);
+            tmp.onRefresh();
+        }
+        if (type == EnumInfo.RefreshEnum.ALL.getValue()) {
+            MyFt tmp = (MyFt) fragments.get(2);
+            tmp.onRefresh();
+        }
+    }
+
+    private void initActicity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 
@@ -360,7 +380,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_share:
                 Xutils.sendTo(ctx, Constant.share_content);
                 break;
-
+            case R.id.action_init:
+                initApps();
+                break;
 
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -471,7 +493,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
         }
-        Xutils.debug("serviceEnabled::" + serviceEnabled);
         mWindowSwitch.setChecked(serviceEnabled);
         if (serviceEnabled) {
             startService(new Intent(this, WatchingService.class));
@@ -525,7 +546,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (buttonView.getId() == R.id.mWindowSwitch) {
-            Xutils.debug("isChecked===>" + isChecked);
             SPHelper.setIsShowWindow(this, isChecked);
             if (!isChecked) {
                 TasksWindow.dismiss(this);

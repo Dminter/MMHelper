@@ -43,7 +43,7 @@ public class CardInfo {
     @DatabaseField
     private String ex1;//appName
     @DatabaseField
-    private String ex2;
+    private String ex2;//pinyin
     @DatabaseField
     private String ex3;
     @DatabaseField

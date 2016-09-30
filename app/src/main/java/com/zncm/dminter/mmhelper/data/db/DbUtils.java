@@ -13,7 +13,11 @@ import com.zncm.dminter.mmhelper.MyApplication;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
+import com.zncm.dminter.mmhelper.data.RefreshEvent;
+import com.zncm.dminter.mmhelper.utils.PinyinConv;
 import com.zncm.dminter.mmhelper.utils.Xutils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -182,10 +186,13 @@ public class DbUtils {
                     PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
                     String appName = applicationInfo.loadLabel(pm).toString();
                     if (applicationInfo != null && Xutils.isNotEmptyOrNull(appName)) {
+                        String pinyin = PinyinConv.cn2py(appName);
+                        cardInfo.setEx2(pinyin);
                         cardInfo.setTitle(appName);
                     }
                 }
                 cardInfoDao.create(cardInfo);
+                EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.ALL.getValue()));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -202,8 +209,14 @@ public class DbUtils {
                 PkInfo tmp = getPkOne(pkInfo.getPackageName());
                 if (tmp != null) {
                     tmp.setStatus(pkInfo.getStatus());
+                    if (Xutils.isEmptyOrNull(tmp.getEx2())) {
+                        String pinyin = PinyinConv.cn2py(pkInfo.getName());
+                        tmp.setEx2(pinyin);
+                    }
                     pkDao.update(tmp);
                 } else {
+                    String pinyin = PinyinConv.cn2py(pkInfo.getName());
+                    pkInfo.setEx2(pinyin);
                     pkDao.create(pkInfo);
                 }
             }
@@ -231,6 +244,7 @@ public class DbUtils {
             e.printStackTrace();
         }
     }
+
     public static void deletePk(PkInfo pkInfo) {
         init();
         try {
@@ -246,6 +260,10 @@ public class DbUtils {
         init();
         try {
             if (cardInfo != null) {
+                if (Xutils.isNotEmptyOrNull(cardInfo.getTitle())) {
+                    String pinyin = PinyinConv.cn2py(cardInfo.getTitle());
+                    cardInfo.setEx2(pinyin);
+                }
                 cardInfoDao.update(cardInfo);
             }
         } catch (Exception e) {
@@ -362,7 +380,7 @@ public class DbUtils {
         ArrayList<CardInfo> datas = new ArrayList<CardInfo>();
         try {
             QueryBuilder<CardInfo, Integer> builder = cardInfoDao.queryBuilder();
-            builder.where().like("title", "%" + title + "%").or().like("ex1", "%" + title + "%").and().eq("status", EnumInfo.cStatus.NORMAL.getValue());
+            builder.where().like("title", "%" + title + "%").or().like("ex1", "%" + title + "%").or().like("ex2", "%" + title + "%").and().eq("status", EnumInfo.cStatus.NORMAL.getValue());
             builder.orderBy("time", false).limit(Constant.MAX_DB_QUERY);
             List<CardInfo> list = cardInfoDao.query(builder.prepare());
             if (Xutils.listNotNull(list)) {
@@ -373,6 +391,7 @@ public class DbUtils {
         }
         return datas;
     }
+
 
     public static ArrayList<PkInfo> getPkInfos(String packageName) {
         init();
@@ -393,12 +412,39 @@ public class DbUtils {
         return datas;
     }
 
+    public static ArrayList<CardInfo> getPkInfosByTitle(String title) {
+        init();
+        ArrayList<CardInfo> datas = new ArrayList<CardInfo>();
+        try {
+            QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
+            builder.where().like("name", "%" + title + "%").or().like("ex1", "%" + title + "%").or().like("ex2", "%" + title + "%");
+            builder.orderBy("name", true).limit(Constant.MAX_DB_QUERY);
+            List<PkInfo> list = pkDao.query(builder.prepare());
+            if (Xutils.listNotNull(list)) {
+//                datas.addAll(list);
+                for (PkInfo tmp : list
+                        ) {
+                    CardInfo info = new CardInfo();
+                    info.setTitle(tmp.getName());
+                    info.setPackageName(tmp.getPackageName());
+                    info.setImg(tmp.getIcon());
+                    info.setType(EnumInfo.cType.START_APP.getValue());
+                    info.setDisabled(tmp.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
+                    datas.add(info);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return datas;
+    }
+
     public static ArrayList<PkInfo> getPkInfos() {
         init();
         ArrayList<PkInfo> datas = new ArrayList<PkInfo>();
         try {
             QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
-            builder.orderBy("status", true).limit(Constant.MAX_DB_QUERY);
+            builder.orderBy("status", true).orderBy("ex2", true).limit(Constant.MAX_DB_QUERY);
             List<PkInfo> list = pkDao.query(builder.prepare());
             if (Xutils.listNotNull(list)) {
                 datas.addAll(list);

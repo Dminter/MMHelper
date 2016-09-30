@@ -1,6 +1,8 @@
 package com.zncm.dminter.mmhelper;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -18,14 +20,20 @@ import java.util.ArrayList;
  */
 
 public class OpenInentActivity extends Activity {
-
-    String pkName = "";
-    String className = "";
-    int cardId = -1;
+    private String pkName = "";
+    private String className = "";
+    private int cardId = -1;
+    Intent startIntent;
+    String packageName = "com.zncm.dminter.mmhelper";
+    String name = "com.zncm.dminter.mmhelper.OpenInentActivity";
+    public final static String INSTALL_SHORTCUT_ACTION = "com.android.launcher.action.INSTALL_SHORTCUT";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.ft_open);
+        startIntent = getIntent();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -47,7 +55,10 @@ public class OpenInentActivity extends Activity {
             MyApplication.getInstance().isOpenInent = true;
             finish();
         } else {
+
+
             final ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
+
             if (!Xutils.listNotNull(tmps)) {
                 return;
             }
@@ -66,17 +77,38 @@ public class OpenInentActivity extends Activity {
                             if (info == null) {
                                 return;
                             }
-                            MyFt.sendToDesk(OpenInentActivity.this, info);
                             dialog.dismiss();
-                            finish();
+                            onDone(info);
                         }
                     })
                     .show();
-
         }
 
     }
 
 
-
+    private void onDone(CardInfo info) {
+        Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
+        shortcutIntent.setClassName(packageName, name);
+        shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        final Intent intent = new Intent();
+        shortcutIntent.putExtra("cardId", info.getId());
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, info.getTitle());
+        try {
+            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                    Intent.ShortcutIconResource.fromContext(createPackageContext(info.getPackageName(), 0),
+                            Xutils.getAppIconId(info.getPackageName())));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (startIntent != null
+                && startIntent.getAction() == Intent.ACTION_CREATE_SHORTCUT) {
+            setResult(RESULT_OK, intent);
+        } else {
+            intent.setAction(INSTALL_SHORTCUT_ACTION);
+            sendBroadcast(intent);
+        }
+        finish();
+    }
 }

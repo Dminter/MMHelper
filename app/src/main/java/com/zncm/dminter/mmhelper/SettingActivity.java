@@ -29,12 +29,10 @@ import java.util.List;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener {
 
-    TextView tvFz;
-    LinearLayout llInport, llOutport, llGuid, llTanks, llAuthor, llFz, llUpdate;
-
-    String fzInfo;
-
-    boolean isFzUpdate = false;
+    private TextView tvFz;
+    private LinearLayout llInport, llOutport, llGuid, llTanks, llAuthor, llFz, llUpdate;
+    private String fzInfo;
+    private boolean isFzUpdate = false;
     private static SettingActivity instance;
 
     public static SettingActivity getInstance() {
@@ -64,7 +62,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         llGuid.setOnClickListener(this);
         fzInfo = SPHelper.getFzInfo(this);
         initFzView();
-
     }
 
     private void initFzView() {
@@ -80,7 +77,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     protected int getLayoutResource() {
         return R.layout.activity_setting;
     }
-
 
     @Override
     public void onClick(View view) {
@@ -109,7 +105,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                         Xutils.writeTxtFile(path, stringBuffer.toString());
                         Xutils.tLong("已导出到" + path);
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -178,8 +173,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                         })
                         .show();
                 break;
-
-
         }
     }
 

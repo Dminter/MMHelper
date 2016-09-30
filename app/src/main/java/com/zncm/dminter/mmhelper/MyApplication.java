@@ -11,7 +11,7 @@ public class MyApplication extends Application {
     public Context ctx;
     public static boolean isOpenInent = false;
     public static MyApplication instance;
-    public static ArrayList<FzInfo> pkInfos = new ArrayList<>();
+    public static ArrayList<FzInfo> fzInfos = new ArrayList<>();
     @Override
     public void onCreate() {
         super.onCreate();

@@ -27,7 +27,7 @@ public class PkInfo {
     @DatabaseField
     private String ex1;//appName
     @DatabaseField
-    private String ex2;
+    private String ex2;//pinyin -paixu
     @DatabaseField
     private String ex3;
     @DatabaseField
