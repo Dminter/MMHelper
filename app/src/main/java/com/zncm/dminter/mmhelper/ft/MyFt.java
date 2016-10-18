@@ -284,8 +284,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 }
             } else if (ret == AndroidCommand.noRoot) {
                 Xutils.tShort(Constant.no_root);
-            } else {
-//                progressDlg.dismiss();
             }
 
         }
@@ -328,15 +326,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
-            if (Xutils.listNotNull(cardInfos)) {
-//                for (CardInfo info : cardInfos) {
-//                    cards.add(cardChatUI(info));
-//                }
-//                mListView.getAdapter().clearAll();
-//                mListView.getAdapter().addAll(cards);
-
-            }
             cardAdapter.setItems(cardInfos);
         }
     }
@@ -367,7 +356,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 className.setText(info.getClassName());
             }
         }
-
         dialog = new MaterialDialog.Builder(ctx)
                 .title("配置活动")
                 .customView(view, false)
@@ -399,10 +387,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     private void longClick(final CardInfo info, final int position) {
         if (info != null) {
             if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
-//                if (info.isDisabled()) {
-//                    appInfo(info.getPackageName());
-//                    return;
-//                }
                 String title[] = new String[]{"停用", "应用信息", "删除"};
                 new MaterialDialog.Builder(getActivity())
                         .items(title)
