@@ -40,7 +40,6 @@ dependencies {
     }
     compile 'com.afollestad.material-dialogs:commons:0.9.1.0'
     compile 'com.github.kenumir:MaterialSettings:v.1.2.2'
-    compile files('libs/pinyin4j.jar')
     compile 'cn.tinkling.t9:t9search:1.1.0'
     compile 'com.github.czy1121:settingscompat:1.1.4'
 }

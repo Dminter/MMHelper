@@ -1,20 +1,14 @@
 package com.zncm.dminter.mmhelper;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -24,11 +18,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityManager;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -50,18 +40,15 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CompoundButton.OnCheckedChangeListener, ColorChooserDialog.ColorCallback {
+public class MainActivity extends AppCompatActivity implements ColorChooserDialog.ColorCallback {
     private MyPagerAdapter adapter;
     private ViewPager mViewPager;
     private int baseTab = 4;
     private int count = baseTab;
     private Toolbar toolbar;
     public ArrayList<FzInfo> fzInfos = new ArrayList<>();
-    private DrawerLayout drawer;
-    private CheckBox mWindowSwitch;
     private MainActivity ctx;
     public ArrayList<MyFt> fragments = new ArrayList<>();
     MaterialDialog progressDlg;
@@ -115,23 +102,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         EventBus.getDefault().register(this);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        mWindowSwitch = (CheckBox) headerView.findViewById(R.id.mWindowSwitch);
-        ImageView ivLogo = (ImageView) headerView.findViewById(R.id.ivLogo);
-        mWindowSwitch.setOnCheckedChangeListener(this);
-        ivLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Xutils.openUrl(Constant.update_url);
-            }
-        });
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
     private void initApps() {
@@ -220,15 +190,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        if (MyApplication.getInstance().isOpenInent) {
-//            backToDesk(this);
-            MyApplication.getInstance().isOpenInent = false;
-        }
-
-        if (SPHelper.isShowWindow(ctx)) {
-            resetUI();
-//            NotificationActionReceiver.cancelNotification(this);
-        }
+//        if (MyApplication.getInstance().isOpenInent) {
+////            backToDesk(this);
+//            MyApplication.getInstance().isOpenInent = false;
+//        }
+//
+//        if (SPHelper.isShowWindow(ctx)) {
+////            NotificationActionReceiver.cancelNotification(this);
+//        }
     }
 
 
@@ -277,62 +246,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-//            case R.id.action_enable:
-//                Intent intent = new Intent(ctx, QTActivity.class);
-//                intent.putExtra("homeTab", EnumInfo.homeTab.ENABLE.getPosition());
-//                startActivity(intent);
+//
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+////            case R.id.action_enable:
+////                Intent intent = new Intent(ctx, QTActivity.class);
+////                intent.putExtra("homeTab", EnumInfo.homeTab.ENABLE.getPosition());
+////                startActivity(intent);
+////                break;
+////
+////            case R.id.action_disabled:
+////                Intent intent2 = new Intent(ctx, QTActivity.class);
+////                intent2.putExtra("homeTab", EnumInfo.homeTab.DISABLED.getPosition());
+////                startActivity(intent2);
+////                break;
+//
+//            case R.id.action_add_wxtalk:
+//                talkUI(null, EnumInfo.cType.WX.getValue(), "微信-直接聊天", "朋友姓名", "朋友微信号");
+//
 //                break;
 //
-//            case R.id.action_disabled:
-//                Intent intent2 = new Intent(ctx, QTActivity.class);
-//                intent2.putExtra("homeTab", EnumInfo.homeTab.DISABLED.getPosition());
-//                startActivity(intent2);
+//            case R.id.action_add_url:
+//
+//                talkUI(null, EnumInfo.cType.URL.getValue(), "书签-直达网页or应用页面", "标题", "http://");
+//
 //                break;
-
-            case R.id.action_add_wxtalk:
-                talkUI(null, EnumInfo.cType.WX.getValue(), "微信-直接聊天", "朋友姓名", "朋友微信号");
-
-                break;
-
-            case R.id.action_add_url:
-
-                talkUI(null, EnumInfo.cType.URL.getValue(), "书签-直达网页or应用页面", "标题", "http://");
-
-                break;
-            case R.id.action_add_qqtalk:
-
-                talkUI(null, EnumInfo.cType.QQ.getValue(), "QQ-直接聊天", "好友姓名", "好友QQ号");
-
-                break;
-            case R.id.action_add_openactivity:
-                initActivity(null);
-                break;
-            case R.id.action_toactivity:
-                startActivity(new Intent(ctx, SettingActivity.class));
-                break;
-            case R.id.action_share:
-                Xutils.sendTo(ctx, Constant.share_content);
-                break;
-            case R.id.action_init:
-                initApps();
-                break;
-
-        }
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+//            case R.id.action_add_qqtalk:
+//
+//                talkUI(null, EnumInfo.cType.QQ.getValue(), "QQ-直接聊天", "好友姓名", "好友QQ号");
+//
+//                break;
+//            case R.id.action_add_openactivity:
+//                initActivity(null);
+//                break;
+//            case R.id.action_toactivity:
+//                startActivity(new Intent(ctx, SettingActivity.class));
+//                break;
+//            case R.id.action_share:
+//                Xutils.sendTo(ctx, Constant.share_content);
+//                break;
+//            case R.id.action_init:
+//                initApps();
+//                break;
+//
+//        }
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
 
     private void initActivity(final CardInfo info) {
@@ -426,27 +387,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void updateServiceStatus() {
-        boolean serviceEnabled = false;
-        AccessibilityManager accessibilityManager =
-                (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
-        List<AccessibilityServiceInfo> accessibilityServices =
-                accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
-        for (AccessibilityServiceInfo info : accessibilityServices) {
-            if (info.getId().equals(getPackageName() + "/.WatchingAccessibilityService")) {
-                serviceEnabled = true;
-                break;
-            }
-        }
-        mWindowSwitch.setChecked(serviceEnabled);
-        if (serviceEnabled) {
-            startService(new Intent(this, WatchingService.class));
-        }
-    }
-
-    private void resetUI() {
-        updateServiceStatus();
-    }
+//    private void updateServiceStatus() {
+//        boolean serviceEnabled = false;
+//        AccessibilityManager accessibilityManager =
+//                (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+//        List<AccessibilityServiceInfo> accessibilityServices =
+//                accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+//        for (AccessibilityServiceInfo info : accessibilityServices) {
+//            if (info.getId().equals(getPackageName() + "/.WatchingAccessibilityService")) {
+//                serviceEnabled = true;
+//                break;
+//            }
+//        }
+//        mWindowSwitch.setChecked(serviceEnabled);
+//        if (serviceEnabled) {
+//            startService(new Intent(this, WatchingService.class));
+//        }
+//    }
+//
+//    private void resetUI() {
+//        updateServiceStatus();
+//    }
 
 
     @Override
@@ -458,48 +419,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-        if (isChecked && buttonView == mWindowSwitch) {
-            if (WatchingAccessibilityService.getInstance() == null) {
-
-                new MaterialDialog.Builder(ctx)
-                        .title("开启无障碍")
-                        .content(R.string.dialog_enable_accessibility_msg)
-                        .positiveText("好")
-                        .negativeText("不")
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                Intent intent = new Intent();
-                                intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
-                                startActivity(intent);
-                            }
-                        })
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                resetUI();
-                            }
-                        })
-                        .canceledOnTouchOutside(false)
-                        .show();
-                SPHelper.setIsShowWindow(this, isChecked);
-                return;
-            }
-        }
-
-        if (buttonView.getId() == R.id.mWindowSwitch) {
-            SPHelper.setIsShowWindow(this, isChecked);
-            if (!isChecked) {
-                TasksWindow.dismiss(this);
-            } else {
-                TasksWindow.show(this, getPackageName() + "\n" + getClass().getName());
-            }
-        }
-
-    }
+//    @Override
+//    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//
+//        if (isChecked && buttonView == mWindowSwitch) {
+//            if (WatchingAccessibilityService.getInstance() == null) {
+//
+//                new MaterialDialog.Builder(ctx)
+//                        .title("开启无障碍")
+//                        .content(R.string.dialog_enable_accessibility_msg)
+//                        .positiveText("好")
+//                        .negativeText("不")
+//                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+//                            @Override
+//                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                                Intent intent = new Intent();
+//                                intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
+//                                startActivity(intent);
+//                            }
+//                        })
+//                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+//                            @Override
+//                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                                resetUI();
+//                            }
+//                        })
+//                        .canceledOnTouchOutside(false)
+//                        .show();
+//                SPHelper.setIsShowWindow(this, isChecked);
+//                return;
+//            }
+//        }
+//
+//        if (buttonView.getId() == R.id.mWindowSwitch) {
+//            SPHelper.setIsShowWindow(this, isChecked);
+//            if (!isChecked) {
+//                TasksWindow.dismiss(this);
+//            } else {
+//                TasksWindow.show(this, getPackageName() + "\n" + getClass().getName());
+//            }
+//        }
+//
+//    }
 
 
     @Override

@@ -2,6 +2,8 @@ package com.zncm.dminter.mmhelper;
 
 import android.content.Context;
 
+import com.zncm.dminter.mmhelper.utils.Xutils;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -15,8 +17,9 @@ public class CustomException implements Thread.UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, final Throwable throwable) {
         String errorMsg = getErrorInfo(throwable);
+        Xutils.debug("errorMsg==>" + errorMsg);
         SPHelper.setFcLog(ctx, errorMsg);
-        System.exit(0);
+//        System.exit(0);
     }
 
 

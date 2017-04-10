@@ -692,6 +692,46 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 //    }
 
 
+    //批量冻结冷冻室里面的APP
+    public static class BatStopTask
+            extends AsyncTask<Boolean, Void, Void> {
+        boolean isEnable = false;
+
+        protected Void doInBackground(Boolean... flag) {
+            isEnable = flag[0];
+
+            ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(1);
+
+
+            for (PkInfo info : pkInfos
+                    ) {
+                if (isEnable) {
+                    Xutils.exec("pm enable " + info.getPackageName());
+                } else {
+                    Xutils.exec("pm disable " + info.getPackageName());
+                }
+                info.setStatus(isEnable ? EnumInfo.appStatus.ENABLE.getValue() :
+                        EnumInfo.appStatus.DISABLED.getValue());
+                DbUtils.updatePkInfo(info);
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
+            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+            if (isEnable) {
+                Xutils.tShort("已全部解冻！");
+                return;
+            }
+            Xutils.tShort("已全部冷冻！");
+        }
+    }
+
+
+
+
     @Override
     public void onRefresh() {
         fillArray();

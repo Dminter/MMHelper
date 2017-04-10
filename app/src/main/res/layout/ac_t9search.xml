@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" />
+
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableLayout
+            android:id="@+id/keyboardTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:padding="0dp">
+
+
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="0dp">
+
+                <Button
+                    android:id="@+id/Button1"
+                    style="@style/btnT9"
+                    android:text="1" />
+
+                <Button
+                    android:id="@+id/Button2"
+                    style="@style/btnT9"
+                    android:text="Button" />
+
+                <Button
+                    android:id="@+id/Button3"
+                    style="@style/btnT9"
+                    android:text="Button" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="0dp">
+
+                <Button
+                    android:id="@+id/Button4"
+                    style="@style/btnT9"
+                    android:text="Button" />
+
+                <Button
+                    android:id="@+id/Button5"
+                    style="@style/btnT9"
+                    android:text="Button" />
+
+                <Button
+                    android:id="@+id/Button6"
+                    style="@style/btnT9"
+                    android:text="Button" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/Button7"
+                    style="@style/btnT9"
+                    android:text="Button" />
+
+                <Button
+                    android:id="@+id/Button8"
+                    style="@style/btnT9"
+                    android:text="Button" />
+
+                <Button
+                    android:id="@+id/Button9"
+                    style="@style/btnT9"
+                    android:text="Button" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/ButtonClr"
+                    style="@style/btnT9"
+                    android:text="清除" />
+
+                <Button
+                    android:id="@+id/ButtonLaunch"
+                    style="@style/btnT9"
+                    android:text="0" />
+
+                <Button
+                    android:id="@+id/ButtonBack"
+                    style="@style/btnT9"
+                    android:text="返回" />
+            </TableRow>
+        </TableLayout>
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/keyboardTable" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

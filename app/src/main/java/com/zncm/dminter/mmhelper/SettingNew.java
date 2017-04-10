@@ -3,23 +3,34 @@ package com.zncm.dminter.mmhelper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.kenumir.materialsettings.MaterialSettings;
 import com.kenumir.materialsettings.items.DividerItem;
 import com.kenumir.materialsettings.items.HeaderItem;
 import com.kenumir.materialsettings.items.TextItem;
 import com.kenumir.materialsettings.storage.StorageInterface;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
+import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
+import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jiaomx on 2017/4/10.
@@ -39,29 +50,155 @@ public class SettingNew extends MaterialSettings {
         this.fzInfo = SPHelper.getFzInfo(this);
         addItem(new HeaderItem(this).setTitle("创建快捷方式"));
         addItem(new TextItem(this.ctx, "").setTitle("全部冷冻").setOnclick(new TextItem.OnClickListener() {
-            public void onClick(TextItem paramAnonymousTextItem) {
+            public void onClick(TextItem textItem) {
                 shortCutAdd(SettingNew.this.ctx, Constant.SA_BATSTOP, "全部冷冻");
             }
         }));
         addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this.ctx, "").setTitle("T9搜索").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                shortCutAdd(SettingNew.this.ctx, Constant.SA_T9, "T9搜索");
+            }
+        }));
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this.ctx, "").setTitle("采集活动").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                shortCutAdd(SettingNew.this.ctx, Constant.SA_GET_ACTIVITY, "采集活动");
+
+            }
+        }));
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this.ctx, "").setTitle("收藏的活动").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                shortCutAdd(SettingNew.this.ctx, Constant.OPENINENT_LIKE, "收藏的活动", Constant.app_shortcut_openinentactivity);
+            }
+        }));
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this.ctx, "").setTitle("锁屏").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                shortCutAdd(SettingNew.this.ctx, Constant.SA_LOCK_SCREEN, "锁屏");
+            }
+        }));
+
+        addItem(new HeaderItem(this).setTitle("通用"));
+        addItem(new TextItem(this.ctx, "").setTitle("分组").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                final EditText editText = new EditText(SettingNew.this.ctx);
+                editText.setTextColor(getResources().getColor(R.color.colorPrimary));
+                new MaterialDialog.Builder(SettingNew.this.ctx).title("分组-英文逗号分隔").customView(editText, false).positiveText("好").negativeText("不").onAny(new MaterialDialog.SingleButtonCallback() {
+                    public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which) {
+                        if (which == DialogAction.POSITIVE) {
+                            String fz = editText.getText().toString();
+                            if (Xutils.isEmptyOrNull(fz)) {
+                                return;
+                            }
+                            if (!SettingNew.this.fzInfo.equals(fz)) {
+                                SPHelper.setFzInfo(ctx, fz);
+                                Xutils.tShort("分组修改成功！");
+                                isNeedUpdate = true;
+                            }
+                        }
+                    }
+                }).show();
+            }
+        }));
+
+        addItem(new TextItem(this.ctx, "").setTitle("系统应用->冷冻室【慎重】").setOnclick(new TextItem.OnClickListener() {
+                                                                                    public void onClick(TextItem textItem) {
+                                                                                        new MaterialDialog.Builder(ctx).title("系统应用->冷冻室【慎重】").content("注意：冻结系统应用可能会导致系统崩溃，无法开机，切忌盲目冻结，以免造成严重后果！！~")
+                                                                                                .positiveText("确定").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+
+
+                                                                                                                                                @Override
+                                                                                                                                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                                                                                                                    if (which == DialogAction.POSITIVE) {
+
+                                                                                                                                                        ArrayList<String> appNames = new ArrayList<String>();
+                                                                                                                                                        final ArrayList<String> pkNames = new ArrayList<String>();
+                                                                                                                                                        PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
+                                                                                                                                                        List<PackageInfo> packages = pm.getInstalledPackages(0);
+                                                                                                                                                        for (PackageInfo packageInfo : packages) {
+                                                                                                                                                            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+
+                                                                                                                                                            } else {
+                                                                                                                                                                appNames.add(packageInfo.applicationInfo.loadLabel(pm)
+                                                                                                                                                                        .toString());
+                                                                                                                                                                pkNames.add(packageInfo.packageName);
+                                                                                                                                                            }
+                                                                                                                                                        }
+
+
+                                                                                                                                                        new MaterialDialog.Builder(SettingNew.this.ctx).title("系统应用->冷冻室").items(appNames).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                                                                                                                                                            @Override
+                                                                                                                                                            public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+
+                                                                                                                                                                for (int i = 0; i < which.length; i++) {
+                                                                                                                                                                    String pkName = pkNames.get(i);
+                                                                                                                                                                    if (Xutils.isNotEmptyOrNull(pkName)) {
+                                                                                                                                                                        PkInfo pkInfo = DbUtils.getPkOne(pkName);
+                                                                                                                                                                        if (pkInfo != null) {
+                                                                                                                                                                            pkInfo.setExb2(1);
+                                                                                                                                                                            DbUtils.insertPkInfo(pkInfo);
+                                                                                                                                                                        } else {
+                                                                                                                                                                            String description = "";
+                                                                                                                                                                            Drawable drawable = null;
+                                                                                                                                                                            if (Xutils.isNotEmptyOrNull(pkName)) {
+                                                                                                                                                                                ApplicationInfo app = Xutils.getAppInfo(pkName);
+                                                                                                                                                                                if (app != null) {
+                                                                                                                                                                                    PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
+                                                                                                                                                                                    drawable = app.loadIcon(pm);
+                                                                                                                                                                                    description = app.loadLabel(pm).toString();
+                                                                                                                                                                                }
+                                                                                                                                                                            }
+                                                                                                                                                                            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                                                                                                                                                                            PkInfo tmp = new PkInfo(pkName, description, Xutils.bitmap2Bytes(bitmap), EnumInfo.appStatus.ENABLE.getValue(), EnumInfo.appType.THREE.getValue());
+                                                                                                                                                                            tmp.setExb2(1);
+                                                                                                                                                                            DbUtils.insertPkInfo(tmp);
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+
+
+                                                                                                                                                                }
+
+
+                                                                                                                                                                return true;
+                                                                                                                                                            }
+                                                                                                                                                        }).positiveText("确定").negativeText("取消").show();
+                                                                                                                                                    }
+
+                                                                                                                                                }
+                                                                                                                                            }
+
+                                                                                        ).show();
+                                                                                    }
+                                                                                }
+
+        ));
+
+
+
 
     }
 
 
-    public static void shortCutAdd(Context paramContext, String action, String name) {
+    public static void shortCutAdd(Context context, String action, String name) {
+
+        shortCutAdd(context, action, name, Constant.app_shortcut);
+    }
+
+    public static void shortCutAdd(Context context, String action, String name, String className) {
         Intent intent = new Intent("android.intent.action.MAIN");
-        intent.setClassName(Constant.app_pkg, Constant.app_shortcut);
+        intent.setClassName(Constant.app_pkg, className);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Intent send = new Intent();
         intent.putExtra("action", action);
         send.putExtra("android.intent.extra.shortcut.INTENT", intent);
         send.putExtra("android.intent.extra.shortcut.NAME", name);
         try {
-            send.putExtra("android.intent.extra.shortcut.ICON_RESOURCE", Intent.ShortcutIconResource.fromContext(paramContext.createPackageContext(Constant.app_pkg, 0), Xutils.getAppIconId(Constant.app_pkg)));
+            send.putExtra("android.intent.extra.shortcut.ICON_RESOURCE", Intent.ShortcutIconResource.fromContext(context.createPackageContext(Constant.app_pkg, 0), Xutils.getAppIconId(Constant.app_pkg)));
             send.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-            paramContext.sendBroadcast(send);
+            context.sendBroadcast(send);
             Xutils.tShort("已创建快捷方式" + name);
-            return;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

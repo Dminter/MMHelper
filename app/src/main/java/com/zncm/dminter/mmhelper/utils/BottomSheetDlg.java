@@ -27,7 +27,7 @@ public abstract class BottomSheetDlg {
 
     public BottomSheetDlg(Activity activity, List<Map<String, Object>> list, boolean isSys) {
 
-        final Dialog dialog = new Dialog(activity, R.style.BottomSheetDialog);
+        final Dialog dialog = new Dialog(activity, R.style.MaterialDialogSheet);
         View view = activity.getLayoutInflater().inflate(R.layout.bottom_gridview, null);
         GridView gridView = (GridView) view.findViewById(R.id.gridView);
         RelativeLayout popupWindow = (RelativeLayout) view.findViewById(R.id.popupWindow);

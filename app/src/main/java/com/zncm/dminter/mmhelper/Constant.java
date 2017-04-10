@@ -8,9 +8,24 @@ public class Constant {
     public static int MAX_DB_QUERY = 100;
     public static String DB_TAG_PRE_ = "DB_TAG_PRE_";
     public static String SA_BATSTOP = "SA_BATSTOP";
+    public static String SA_T9 = "SA_T9";
+    public static String SA_GET_ACTIVITY = "SA_GET_ACTIVITY";
+    public static String SA_LOCK_SCREEN = "SA_LOCK_SCREEN";
+    public static String OPENINENT_LIKE = "OPENINENT_LIKE";
+
+
+
+
+
+
+
+
+
+
     public static String author_wx = "xm0ff255";
     public static String app_pkg = "com.zncm.dminter.mmhelper";
-    public static String app_shortcut;
+    public static String app_shortcut = "com.zncm.dminter.mmhelper.ShortcutActionActivity";
+    public static String app_shortcut_openinentactivity = "com.zncm.dminter.mmhelper.OpenInentActivity";
     public static String no_root = "打开失败~请检查root权限！！";
     public static String add_shortcut = "已添加快捷方式到桌面！！";
     public static String update_url = "http://www.coolapk.com/apk/com.zncm.dminter.mmhelper";
