@@ -48,7 +48,11 @@ public class TasksWindow {
                 public void onClick(View view) {
                     final String pName = text.split("\\n")[0];
                     final String cName = text.split("\\n")[1];
-                    CardInfo card = new CardInfo(pName, cName, null);
+                    String title = pName;
+                    if ((Xutils.isNotEmptyOrNull(pName)) && (pName.contains("."))) {
+                        title = pName.substring(pName.lastIndexOf("."));
+                    }
+                    CardInfo card = new CardInfo(pName, cName, title);
                     DbUtils.insertCard(card);
                     Xutils.tShort("已添加~");
                 }

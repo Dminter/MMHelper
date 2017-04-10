@@ -129,8 +129,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             DbUtils.cardXm();
             List<String> list = Xutils.importTxt(this, R.raw.init_2016_08_09_13_36);
             DbUtils.importCardFromTxt(list, true);
-            //引导页面
-            startActivity(new Intent(this, GuidViewActivity.class));
         }
 
         ArrayList<PkInfo> pkInfos = DbUtils.getPkInfos(null);

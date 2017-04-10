@@ -110,7 +110,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 }
                 break;
             case R.id.llGuid:
-                startActivity(new Intent(SettingActivity.this, GuidViewActivity.class));
                 break;
             case R.id.llTanks:
                 thank();
