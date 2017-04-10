@@ -47,4 +47,13 @@
         <!-- Hint for edit text -->
         <item name="android:hint">@string/search_hint</item>
     </style>
+
+
+    <style name="BottomSheetDialog" parent="@style/Animation.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowEnterAnimation">@anim/design_bottom_sheet_slide_in</item>
+        <item name="android:windowExitAnimation">@anim/design_bottom_sheet_slide_out</item>
+    </style>
+
+
 </resources>

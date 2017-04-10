@@ -26,7 +26,6 @@ import android.widget.EditText;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.zncm.dminter.mmhelper.Constant;
-import com.zncm.dminter.mmhelper.MainActivity;
 import com.zncm.dminter.mmhelper.MyApplication;
 import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
@@ -50,7 +49,7 @@ import java.util.Map;
 
 public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private RecyclerView mListView;
-    private MainActivity ctx;
+    private Activity ctx;
     public ArrayList<CardInfo> cardInfos;
     private MaterialDialog dialog;
     private RecyclerView.LayoutManager layoutManager;
@@ -68,7 +67,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ctx = (MainActivity) getActivity();
+        ctx = getActivity();
         pkInfos = MyApplication.fzInfos;
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeLayout);
         swipeLayout.setOnRefreshListener(this);
@@ -298,10 +297,15 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         protected Void doInBackground(Void... params) {
             try {
                 if (Xutils.isNotEmptyOrNull(packageName)) {
-                    if (packageName.equals(EnumInfo.homeTab.APPS.getValue())) {
+                    if (packageName.equals(EnumInfo.homeTab.APPS.getValue()) || packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                         cardInfos = new ArrayList<>();
                         ArrayList<PkInfo> tmps = new ArrayList<>();
-                        tmps = DbUtils.getPkInfos();
+//                        tmps = DbUtils.getPkInfos();
+                        if (packageName.equals(EnumInfo.homeTab.APPS.getValue())) {
+                            tmps = DbUtils.getPkInfos();
+                        } else if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
+                            tmps = DbUtils.getPkInfosBatStop(1);
+                        }
                         for (PkInfo tmp : tmps
                                 ) {
                             CardInfo info = new CardInfo();
@@ -312,6 +316,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             info.setDisabled(tmp.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
                             cardInfos.add(info);
                         }
+
                     } else {
                         cardInfos = DbUtils.getCardInfos(packageName);
                     }

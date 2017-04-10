@@ -440,9 +440,10 @@ public class DbUtils {
         try {
             QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
             if (type != -1) {
-                builder.where().eq("exb2", type);
+                builder.where().eq("exb2", type).and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
+            } else {
+                builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
             }
-            builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
             builder.groupBy("packageName");
             builder.orderBy("exb3", true).orderBy("ex4", false).orderBy("ex2", true).limit(Constant.MAX_DB_QUERY);
             List<PkInfo> list = pkDao.query(builder.prepare());
