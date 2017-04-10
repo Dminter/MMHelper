@@ -360,6 +360,10 @@ public class DbUtils {
     }
 
     public static ArrayList<CardInfo> getCardInfos(String packageName) {
+        return getCardInfos(packageName, Constant.MAX_DB_QUERY);
+    }
+
+    public static ArrayList<CardInfo> getCardInfos(String packageName, int limit) {
         init();
         ArrayList<CardInfo> datas = new ArrayList<CardInfo>();
         try {
@@ -380,7 +384,7 @@ public class DbUtils {
             } else {
                 builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue());
             }
-            builder.orderBy("time", false).limit(Constant.MAX_DB_QUERY);
+            builder.orderBy("time", false).limit(limit);
 //            builder.orderBy("exi2", false).orderBy("packageName", false).orderBy("time", false).limit(Constant.MAX_DB_QUERY);
             List<CardInfo> list = cardInfoDao.query(builder.prepare());
             if (Xutils.listNotNull(list)) {

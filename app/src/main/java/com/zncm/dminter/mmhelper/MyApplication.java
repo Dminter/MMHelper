@@ -12,11 +12,14 @@ public class MyApplication extends Application {
     public static boolean isOpenInent = false;
     public static MyApplication instance;
     public static ArrayList<FzInfo> fzInfos = new ArrayList<>();
+    public static boolean isPay = false;
     @Override
     public void onCreate() {
         super.onCreate();
         this.ctx = this.getApplicationContext();
         instance = this;
+        Thread.setDefaultUncaughtExceptionHandler(new CustomException(this));
+        isPay = SettingNew.isPay(this.ctx);
     }
 
     public static MyApplication getInstance() {

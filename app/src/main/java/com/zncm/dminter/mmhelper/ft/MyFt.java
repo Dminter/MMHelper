@@ -238,7 +238,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         }
     }
 
-    private static void appNewStatus(CardInfo info) {
+    public static void appNewStatus(CardInfo info) {
         PkInfo pk = DbUtils.getPkOne(info.getPackageName());
         if (pk != null && pk.getStatus() == EnumInfo.appStatus.DISABLED.getValue()) {
             pk.setStatus(EnumInfo.appStatus.ENABLE.getValue());
@@ -248,7 +248,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     }
 
 
-    static class RunOpenActivity extends AsyncTask<Void, Integer, Integer> {
+    public static class RunOpenActivity extends AsyncTask<Void, Integer, Integer> {
         CardInfo info;
         int attempt;
 
@@ -422,7 +422,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
         //冻结，解冻
         Map<String, Object> map = new HashMap<>();
-        map.put("text", info.isDisabled() ? "冻结" : "解冻");
+        map.put("text", info.isDisabled() ? "解冻" : "冻结");
         map.put("key", "-1");
         list.add(map);
 

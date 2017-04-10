@@ -49,7 +49,9 @@ import java.util.Random;
  */
 
 public class Xutils {
-
+    public static String getTimeTodayYMD() {
+        return new SimpleDateFormat("yyyyMMdd").format(new Date());
+    }
     //获取应用主界面
     public static String getLaunchClassNameByPkName(Context context, String pkgName) {
         Intent intent = isExit(context, pkgName);

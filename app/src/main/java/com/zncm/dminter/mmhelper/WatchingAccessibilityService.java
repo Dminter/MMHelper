@@ -9,11 +9,16 @@ import android.view.accessibility.AccessibilityEvent;
 
 public class WatchingAccessibilityService extends AccessibilityService {
     private static WatchingAccessibilityService sInstance;
+    public String packageName;
+    public String className;
+
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if(SPHelper.isShowWindow(this)){
             TasksWindow.show(this, event.getPackageName() + "\n" + event.getClassName());
+            packageName = (String) event.getPackageName();
+            className = (String) event.getClassName();
         }
     }
 

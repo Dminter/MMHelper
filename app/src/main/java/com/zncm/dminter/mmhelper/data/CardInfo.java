@@ -83,6 +83,10 @@ public class CardInfo {
     }
 
 
+    public CardInfo(String packageName) {
+        this.packageName = packageName;
+
+    }
 
 
     public CardInfo(int type, String cmd, String title) {

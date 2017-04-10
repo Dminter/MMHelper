@@ -63,4 +63,92 @@ public class SPHelper {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("theme_color", theme_color).commit();
     }
 
+
+    public static int getGridColumns(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt("grid_columns", 5);
+    }
+
+    public static void setGridColumns(Context context, int grid_columns) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt("grid_columns", grid_columns).commit();
+    }
+
+
+    public static int getBallUp(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt("ball_up", 0);
+    }
+
+    public static void setBallUp(Context context, int ball_up) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt("ball_up", ball_up).commit();
+    }
+
+    public static int getBallLeft(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt("ball_left", 0);
+    }
+
+    public static void setBallLeft(Context context, int ball_left) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt("ball_left", ball_left).commit();
+    }
+
+    public static int getBallDown(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt("ball_down", 0);
+    }
+
+    public static void setBallDown(Context context, int ball_down) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt("ball_down", ball_down).commit();
+    }
+
+    public static int getBallRight(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt("ball_right", 0);
+    }
+
+    public static void setBallRight(Context context, int ball_right) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt("ball_right", ball_right).commit();
+    }
+
+
+    public static String getFcLog(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString("fc_log", "");
+    }
+
+    public static void setFcLog(Context context, String fc_log) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString("ball_right", fc_log).commit();
+    }
+
+    public static String getPayOrderCheck(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString("pay_order_check", "");
+    }
+
+    public static void setPayOrderCheck(Context context, String pay_order_check) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString("pay_order_check", pay_order_check).commit();
+    }
+
+    public static String getPayOrder(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString("pay_order", "");
+    }
+
+    public static void setPayOrder(Context context, String pay_order) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString("pay_order", pay_order).commit();
+    }
+
+
+
+
+
+
 }
