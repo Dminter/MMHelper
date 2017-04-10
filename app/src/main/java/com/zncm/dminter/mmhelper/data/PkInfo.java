@@ -51,7 +51,7 @@ public class PkInfo {
     @DatabaseField
     private int exb1;
     @DatabaseField
-    private int exb2;
+    private int exb2;//1冷冻室，0不在冷冻室
     @DatabaseField
     private int exb3;
     @DatabaseField

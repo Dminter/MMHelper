@@ -116,6 +116,26 @@ public class DbUtils {
     }
 
 
+    public static ArrayList<CardInfo> getCardInfosByPackageName(String packageName) {
+        init();
+        ArrayList<CardInfo> cardInfos = new ArrayList();
+        try {
+            QueryBuilder builder = cardInfoDao.queryBuilder();
+            if (Xutils.isNotEmptyOrNull(packageName)) {
+                builder.where().eq("status", Integer.valueOf(EnumInfo.cStatus.NORMAL.getValue())).and().eq("exi1", "1").and().eq("packageName", packageName);
+                builder.orderBy("exi2", false);
+            }
+            builder.orderBy("time", false).limit(Constant.MAX_DB_QUERY);
+            List all = cardInfoDao.query(builder.prepare());
+            if (!Xutils.listNotNull(all)) {
+                cardInfos.addAll(all);
+            }
+        } catch (Exception localException) {
+            localException.printStackTrace();
+        }
+        return cardInfos;
+    }
+
     public static CardInfo getCardInfoByClassName(String cName) {
         if (Xutils.isEmptyOrNull(cName)) {
             return null;
@@ -402,6 +422,29 @@ public class DbUtils {
                 builder.where().eq("packageName", packageName);
             }
             builder.orderBy("name", true).limit(Constant.MAX_DB_QUERY);
+            List<PkInfo> list = pkDao.query(builder.prepare());
+            if (Xutils.listNotNull(list)) {
+                datas.addAll(list);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return datas;
+    }
+
+
+    //冷冻室里面的APP
+    public static ArrayList<PkInfo> getPkInfosBatStop(int type) {
+        init();
+        ArrayList<PkInfo> datas = new ArrayList<PkInfo>();
+        try {
+            QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
+            if (type != -1) {
+                builder.where().eq("exb2", type);
+            }
+            builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
+            builder.groupBy("packageName");
+            builder.orderBy("exb3", true).orderBy("ex4", false).orderBy("ex2", true).limit(Constant.MAX_DB_QUERY);
             List<PkInfo> list = pkDao.query(builder.prepare());
             if (Xutils.listNotNull(list)) {
                 datas.addAll(list);

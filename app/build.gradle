@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 23
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.zncm.dminter.mmhelper2"
         minSdkVersion 14
@@ -38,4 +38,5 @@ dependencies {
     dependencies {
         compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     }
+    compile 'com.afollestad.material-dialogs:commons:0.9.1.0'
 }

@@ -5,6 +5,9 @@
     <color name="colorAccent">#D500F9</color>
 
 
+    <color name="bg_color">#ffffff</color>
+
+
     <color name="material_red_50">#FFEBEE</color>
     <color name="material_red_100">#FFCDD2</color>
     <color name="material_red_200">#EF9A9A</color>

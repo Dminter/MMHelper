@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,7 +25,6 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MainActivity;
 import com.zncm.dminter.mmhelper.MyApplication;
@@ -41,11 +39,14 @@ import com.zncm.dminter.mmhelper.data.FzInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
+import com.zncm.dminter.mmhelper.utils.BottomSheetDlg;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private RecyclerView mListView;
@@ -161,6 +162,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         CardInfo info = cardInfos.get(position);
                         if (isLongClick) {
                             longClick(info, position);
+
                         } else {
                             if (info.getType() == EnumInfo.cType.START_APP.getValue() && info.isDisabled()) {
                                 info.setDisabled(false);
@@ -188,10 +190,12 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         }
     }
 
-    private void appInfo(String packageName) {
+
+    //app信息界面
+    public static void appInfo(Activity activity, String packageName) {
         Uri packageURI = Uri.parse("package:" + packageName);
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
-        startActivity(intent);
+        activity.startActivity(intent);
     }
 
     public static void sendToDesk(Activity ctx, CardInfo info) {
@@ -385,153 +389,302 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
 
     private void longClick(final CardInfo info, final int position) {
-        if (info != null) {
-            if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
-                String title[] = new String[]{"停用", "应用信息", "删除"};
-                new MaterialDialog.Builder(getActivity())
-                        .items(title)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                switch (which) {
-                                    case 0:
-                                        Xutils.exec(Constant.common_pm_d_p + info.getPackageName());
-                                        info.setDisabled(true);
-                                        cardInfos.set(position, info);
-                                        mListView.getAdapter().notifyDataSetChanged();
-                                        PkInfo pk = DbUtils.getPkOne(info.getPackageName());
-                                        if (pk != null && pk.getStatus() == EnumInfo.appStatus.ENABLE.getValue()) {
-                                            pk.setStatus(EnumInfo.appStatus.DISABLED.getValue());
-                                            DbUtils.updatePkInfo(pk);
-                                        }
-                                        break;
-                                    case 1:
-                                        appInfo(info.getPackageName());
-                                        break;
-                                    case 2:
-                                        pk = DbUtils.getPkOne(info.getPackageName());
-                                        if (pk != null) {
-                                            DbUtils.deletePk(pk);
-                                        }
-                                        cardInfos.remove(position);
-                                        mListView.getAdapter().notifyDataSetChanged();
-                                        break;
-                                }
-                            }
-                        })
-                        .show();
-
-
-                return;
-            }
-            final boolean like = info.getExi1() == 1;
-            final int index = info.getExi2();
-            String title[] = new String[]{like ? "取消收藏" : "收藏", "修改", "删除", index > 0 ? "取消置顶" : "置顶", "添加到桌面", "分组"};
-
-            try {
-                new MaterialDialog.Builder(getActivity())
-                        .items(title)
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-//                                Toast.makeText(Activity.this, which + ": " + text + ", ID = " + view.getId(), Toast.LENGTH_SHORT).show();
-                                switch (which) {
-                                    case 0:
-                                        if (like) {
-                                            info.setExi1(0);
-                                        } else {
-                                            info.setExi1(1);
-
-                                            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
-
-                                        }
-                                        DbUtils.updateCard(info);
-
-                                        break;
-                                    case 1:
-                                        if (info.getType() == EnumInfo.cType.WX.getValue() || info.getType() == EnumInfo.cType.QQ.getValue() || info.getType() == EnumInfo.cType.URL.getValue()) {
-                                            if (ctx instanceof MainActivity) {
-                                                MainActivity tmp = (MainActivity) ctx;
-                                                tmp.talkUI(info, 0, "修改", "", "");
-                                            }
-                                        } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
-                                            initActivity(info);
-                                        }
-                                        break;
-                                    case 2:
-//                                            final CardInfo info = cardInfos.get(position);
-                                        info.setStatus(EnumInfo.cStatus.DELETE.getValue());
-                                        DbUtils.updateCard(info);
-                                        cardInfos.remove(position);
-                                        new SnackBar.Builder(ctx)
-                                                .withOnClickListener(new SnackBar.OnMessageClickListener() {
-                                                    @Override
-                                                    public void onMessageClick(Parcelable token) {
-                                                        info.setStatus(EnumInfo.cStatus.NORMAL.getValue());
-                                                        DbUtils.updateCard(info);
-                                                        fillArray();
-                                                    }
-                                                })
-                                                .withMessage("移除这张活动卡!")
-                                                .withActionMessage("撤销")
-                                                .withStyle(SnackBar.Style.DEFAULT)
-                                                .withBackgroundColorId(R.color.material_purple_200)
-                                                .withDuration(SnackBar.LONG_SNACK)
-                                                .show();
-                                        break;
-                                    case 3:
-                                        if (index > 0) {
-                                            info.setExi2(0);
-                                        } else {
-                                            info.setExi2(DbUtils.getMaxIndex() + 1);
-                                        }
-                                        DbUtils.updateCard(info);
-                                        break;
-                                    case 4:
-                                        sendToDesk(ctx, info);
-                                        break;
-                                    case 5:
-
-
-                                        final ArrayList<String> fzStr = new ArrayList<String>();
-                                        if (!Xutils.listNotNull(pkInfos)) {
-                                            return;
-                                        }
-
-                                        for (FzInfo tmp : pkInfos
-                                                ) {
-                                            if (Xutils.isNotEmptyOrNull(tmp.getName())) {
-                                                fzStr.add(tmp.getName());
-                                            }
-
-                                        }
-
-                                        new MaterialDialog.Builder(ctx)
-                                                .items(fzStr)
-                                                .itemsCallback(new MaterialDialog.ListCallback() {
-                                                    @Override
-                                                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                                        info.setExi3(which + 1);
-                                                        DbUtils.updateCard(info);
-                                                        Xutils.snTip(ctx, "已添加☞" + fzStr.get(which));
-                                                    }
-                                                })
-                                                .show();
-                                        break;
-
-
-                                }
-
-                                fillArray();
-                            }
-                        })
-                        .show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+        if (info == null) {
+            return;
         }
+
+        if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
+            initAppBS(info, position);
+        }
+
+
     }
+
+    public void initAppBS(final CardInfo info, final int position) {
+
+        final ArrayList<Map<String, Object>> list = new ArrayList<>();
+        //应用相关的活动
+        final ArrayList<CardInfo> like = DbUtils.getCardInfosByPackageName(info.getPackageName());
+        if (Xutils.listNotNull(like)) {
+            for (CardInfo tmp : like
+                    ) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("text", tmp.getTitle());
+                map.put("key", tmp.getId());
+                list.add(map);
+            }
+        }
+
+        //冻结，解冻
+        Map<String, Object> map = new HashMap<>();
+        map.put("text", info.isDisabled() ? "冻结" : "解冻");
+        map.put("key", "-1");
+        list.add(map);
+
+        //移除、添加到冷冻室
+        final PkInfo pkInfo = DbUtils.getPkOne(info.getPackageName());
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("text", pkInfo.getExb2() == 1 ? "移除冷冻室" : "添加到冷冻室");
+        map2.put("key", "-2");
+        list.add(map2);
+        //应用信息
+        Map<String, Object> map3 = new HashMap<>();
+        map3.put("text", "应用信息");
+        map3.put("key", "-3");
+        list.add(map3);
+        //添加到桌面
+        Map<String, Object> map4 = new HashMap<>();
+        map4.put("text", "添加到桌面");
+        map4.put("key", "-4");
+        list.add(map4);
+        //收藏
+        Map<String, Object> map5 = new HashMap<>();
+        map5.put("text", "收藏");
+        map5.put("key", "-5");
+        list.add(map5);
+        //删除
+        Map<String, Object> map6 = new HashMap<>();
+        map6.put("text", "删除");
+        map6.put("key", "-6");
+        list.add(map6);
+        //删除
+        Map<String, Object> map7 = new HashMap<>();
+        map7.put("text", "shortcut");
+        map7.put("key", "-7");
+        list.add(map7);
+        new BottomSheetDlg(ctx, list, false) {
+            @Override
+            public void onGridItemClickListener(int position) {
+
+                if (Xutils.listNotNull(like) && position < like.size()) {
+
+                    CardInfo cardInfo = like.get(position);
+                    if (cardInfo != null) {
+                        clickCard(ctx, cardInfo);
+                    }
+
+                }
+
+                switch (position - like.size()) {
+
+                    case 0:
+                        if (info.isDisabled()) {
+                            info.setDisabled(false);
+//                            Xutils.exec("pm able " + info.getPackageName());
+                        } else {
+                            Xutils.exec("pm disable " + info.getPackageName());
+                            info.setDisabled(true);
+                        }
+                        MyFt.this.cardInfos.set(position, info);
+                        MyFt.this.mListView.getAdapter().notifyDataSetChanged();
+                        pkInfo.setStatus(!info.isDisabled() ? EnumInfo.appStatus.ENABLE.getValue() : EnumInfo.appStatus.DISABLED.getValue());
+                        DbUtils.updatePkInfo(pkInfo);
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
+                        break;
+                    case 1:
+                        if (pkInfo.getExb2() == 1) {
+                            pkInfo.setExb2(0);
+                        } else {
+                            pkInfo.setExb2(1);
+                        }
+                        DbUtils.updatePkInfo(pkInfo);
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
+                        break;
+                    case 2:
+                        appInfo(ctx, info.getPackageName());
+                        break;
+                    case 3:
+                        Xutils.sendToDesktop(ctx, info);
+                        break;
+                    case 4:
+
+                        String str = Xutils.getLaunchClassNameByPkName(MyFt.this.ctx, info.getPackageName());
+                        pkInfo.setStatus(EnumInfo.appStatus.ENABLE.getValue());
+                        DbUtils.updatePkInfo(pkInfo);
+                        CardInfo tmpCard = new CardInfo(info.getPackageName(), str, null);
+                        tmpCard.setExi4(999);
+                        tmpCard.setExi1(1);
+                        DbUtils.insertCard(tmpCard);
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
+                        Xutils.tShort("已收藏~");
+                        break;
+                    case 5:
+                        DbUtils.deletePk(pkInfo);
+                        Xutils.tShort("已删除~");
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
+                        break;
+
+                }
+
+
+            }
+
+            @Override
+            public void onGridItemLongClickListener(int position) {
+
+            }
+
+            @Override
+            public void onOutClickListener() {
+
+            }
+        };
+
+
+    }
+
+
+//    private void longClick(final CardInfo info, final int position) {
+//        if (info != null) {
+//            if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
+//                String title[] = new String[]{"停用", "应用信息", "删除"};
+//                new MaterialDialog.Builder(getActivity())
+//                        .items(title)
+//                        .itemsCallback(new MaterialDialog.ListCallback() {
+//                            @Override
+//                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+//                                switch (which) {
+//                                    case 0:
+//                                        Xutils.exec(Constant.common_pm_d_p + info.getPackageName());
+//                                        info.setDisabled(true);
+//                                        cardInfos.set(position, info);
+//                                        mListView.getAdapter().notifyDataSetChanged();
+//                                        PkInfo pk = DbUtils.getPkOne(info.getPackageName());
+//                                        if (pk != null && pk.getStatus() == EnumInfo.appStatus.ENABLE.getValue()) {
+//                                            pk.setStatus(EnumInfo.appStatus.DISABLED.getValue());
+//                                            DbUtils.updatePkInfo(pk);
+//                                        }
+//                                        break;
+//                                    case 1:
+//                                        appInfo(info.getPackageName());
+//                                        break;
+//                                    case 2:
+//                                        pk = DbUtils.getPkOne(info.getPackageName());
+//                                        if (pk != null) {
+//                                            DbUtils.deletePk(pk);
+//                                        }
+//                                        cardInfos.remove(position);
+//                                        mListView.getAdapter().notifyDataSetChanged();
+//                                        break;
+//                                }
+//                            }
+//                        })
+//                        .show();
+//
+//
+//                return;
+//            }
+//            final boolean like = info.getExi1() == 1;
+//            final int index = info.getExi2();
+//            String title[] = new String[]{like ? "取消收藏" : "收藏", "修改", "删除", index > 0 ? "取消置顶" : "置顶", "添加到桌面", "分组"};
+//
+//            try {
+//                new MaterialDialog.Builder(getActivity())
+//                        .items(title)
+//                        .itemsCallback(new MaterialDialog.ListCallback() {
+//                            @Override
+//                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+////                                Toast.makeText(Activity.this, which + ": " + text + ", ID = " + view.getId(), Toast.LENGTH_SHORT).show();
+//                                switch (which) {
+//                                    case 0:
+//                                        if (like) {
+//                                            info.setExi1(0);
+//                                        } else {
+//                                            info.setExi1(1);
+//
+//                                            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
+//
+//                                        }
+//                                        DbUtils.updateCard(info);
+//
+//                                        break;
+//                                    case 1:
+//                                        if (info.getType() == EnumInfo.cType.WX.getValue() || info.getType() == EnumInfo.cType.QQ.getValue() || info.getType() == EnumInfo.cType.URL.getValue()) {
+//                                            if (ctx instanceof MainActivity) {
+//                                                MainActivity tmp = (MainActivity) ctx;
+//                                                tmp.talkUI(info, 0, "修改", "", "");
+//                                            }
+//                                        } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
+//                                            initActivity(info);
+//                                        }
+//                                        break;
+//                                    case 2:
+////                                            final CardInfo info = cardInfos.get(position);
+//                                        info.setStatus(EnumInfo.cStatus.DELETE.getValue());
+//                                        DbUtils.updateCard(info);
+//                                        cardInfos.remove(position);
+//                                        new SnackBar.Builder(ctx)
+//                                                .withOnClickListener(new SnackBar.OnMessageClickListener() {
+//                                                    @Override
+//                                                    public void onMessageClick(Parcelable token) {
+//                                                        info.setStatus(EnumInfo.cStatus.NORMAL.getValue());
+//                                                        DbUtils.updateCard(info);
+//                                                        fillArray();
+//                                                    }
+//                                                })
+//                                                .withMessage("移除这张活动卡!")
+//                                                .withActionMessage("撤销")
+//                                                .withStyle(SnackBar.Style.DEFAULT)
+//                                                .withBackgroundColorId(R.color.material_purple_200)
+//                                                .withDuration(SnackBar.LONG_SNACK)
+//                                                .show();
+//                                        break;
+//                                    case 3:
+//                                        if (index > 0) {
+//                                            info.setExi2(0);
+//                                        } else {
+//                                            info.setExi2(DbUtils.getMaxIndex() + 1);
+//                                        }
+//                                        DbUtils.updateCard(info);
+//                                        break;
+//                                    case 4:
+//                                        sendToDesk(ctx, info);
+//                                        break;
+//                                    case 5:
+//
+//
+//                                        final ArrayList<String> fzStr = new ArrayList<String>();
+//                                        if (!Xutils.listNotNull(pkInfos)) {
+//                                            return;
+//                                        }
+//
+//                                        for (FzInfo tmp : pkInfos
+//                                                ) {
+//                                            if (Xutils.isNotEmptyOrNull(tmp.getName())) {
+//                                                fzStr.add(tmp.getName());
+//                                            }
+//
+//                                        }
+//
+//                                        new MaterialDialog.Builder(ctx)
+//                                                .items(fzStr)
+//                                                .itemsCallback(new MaterialDialog.ListCallback() {
+//                                                    @Override
+//                                                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+//                                                        info.setExi3(which + 1);
+//                                                        DbUtils.updateCard(info);
+//                                                        Xutils.snTip(ctx, "已添加☞" + fzStr.get(which));
+//                                                    }
+//                                                })
+//                                                .show();
+//                                        break;
+//
+//
+//                                }
+//
+//                                fillArray();
+//                            }
+//                        })
+//                        .show();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//    }
 
 
     @Override

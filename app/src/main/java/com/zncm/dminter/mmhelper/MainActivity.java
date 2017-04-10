@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
@@ -30,8 +32,9 @@ import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.astuetz.PagerSlidingTabStrip;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
+import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.FzInfo;
@@ -47,21 +50,19 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CompoundButton.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, CompoundButton.OnCheckedChangeListener, ColorChooserDialog.ColorCallback {
     private MyPagerAdapter adapter;
     private ViewPager mViewPager;
-    private int baseTab = 3;
+    private int baseTab = 4;
     private int count = baseTab;
     private Toolbar toolbar;
     public ArrayList<FzInfo> fzInfos = new ArrayList<>();
     private DrawerLayout drawer;
     private CheckBox mWindowSwitch;
     private MainActivity ctx;
-    private MaterialSearchView searchView;
-    private String lastText = "";
     public ArrayList<MyFt> fragments = new ArrayList<>();
     MaterialDialog progressDlg;
 
@@ -100,29 +101,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         PagerSlidingTabStrip indicator = (PagerSlidingTabStrip) findViewById(R.id.indicator);
         Xutils.initIndicatorTheme(indicator);
         indicator.setViewPager(mViewPager);
-        searchView = (MaterialSearchView) findViewById(R.id.search_view);
-        searchView.setHint("搜索 支持简拼 pyq 朋友圈");
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (searchInfo(query)) {
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-//                if (lastText.length() > newText.length() && newText.length() > 0) {
-//                    return true;
-//                }
-//                lastText = newText;
-//                if (searchInfo(newText)) {
-//                    return true;
-//                }
-                return false;
-            }
-        });
         ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
         if (!Xutils.listNotNull(tmps)) {
             DbUtils.cardUpdate();
@@ -167,40 +145,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         task.execute();
     }
 
-    private boolean searchInfo(String newText) {
-        if (Xutils.isEmptyOrNull(newText)) {
-            return true;
-        }
-        final ArrayList<CardInfo> tmps = DbUtils.getCardInfosByTitle(newText);
-        ArrayList<CardInfo> tmps2 = DbUtils.getPkInfosByTitle(newText);
-        tmps.addAll(tmps2);
-        if (!Xutils.listNotNull(tmps)) {
-            return true;
-        }
-        ArrayList<String> items = new ArrayList<String>();
-        for (CardInfo info : tmps
-                ) {
-            items.add(info.getTitle());
-        }
-        try {
-            searchView.closeSearch();
-            new MaterialDialog.Builder(ctx)
-                    .items(items)
-                    .itemsCallback(new MaterialDialog.ListCallback() {
-                        @Override
-                        public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                            CardInfo cardInfo = tmps.get(which);
-                            if (cardInfo != null) {
-                                MyFt.clickCard(ctx, cardInfo);
-                            }
+    @Override
+    public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
 
-                        }
-                    })
-                    .show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
 
@@ -557,12 +504,63 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(item);
+        menu.add("search").setIcon(Xutils.initIconWhite(Iconify.IconValue.md_search)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        SubMenu sub = menu.addSubMenu("");
+        sub.setIcon(Xutils.initIconWhite(Iconify.IconValue.md_more_vert));
+        sub.add(0, 1, 0, "设置");
+        if (SPHelper.isNightMode(this.ctx)) {
+            sub.add(0, 2, 0, "白天");
+        } else {
+            sub.add(0, 2, 0, "夜间");
+        }
+        sub.add(0, 4, 0, "主题配色");
+        sub.add(0, 3, 0, "打赏");
+        sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(menu);
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item == null || item.getTitle() == null) {
+            return false;
+        }
+
+        if (item.getTitle().equals("search")) {
+            startActivity(new Intent(this.ctx, T9SearchActivity.class));
+        }
+
+        switch (item.getItemId()) {
+            case 1:
+                startActivity(new Intent(ctx, SettingNew.class));
+                break;
+            case 2:
+                SPHelper.setIsNightMode(ctx, !SPHelper.isNightMode(ctx));
+                //切换模式，重启界面生效
+                finish();
+                startActivity(new Intent(ctx, MainActivity.class));
+                break;
+            case 3:
+                if (AlipayZeroSdk.hasInstalledAlipayClient(ctx)) {
+                    SPHelper.setIsPay(ctx, true);//是否已支付，但不作为Pro依据
+                    AlipayZeroSdk.startAlipayClient(this, "aex02461t5uptlcygocfsbc");
+                } else {
+                    Xutils.tShort("请先安装支付宝~");
+                }
+                break;
+            case 4:
+                new ColorChooserDialog.Builder(this, R.string.color_palette)
+                        .accentMode(false)
+                        .doneButton(R.string.md_done_label)
+                        .cancelButton(R.string.md_cancel_label)
+                        .backButton(R.string.md_back_label)
+                        .preselect(SPHelper.getThemeColor(ctx))
+                        .dynamicButtonColor(true)
+                        .show();
+                break;
+        }
+
+        return false;
+    }
 }
 

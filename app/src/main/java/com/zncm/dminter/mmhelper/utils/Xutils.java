@@ -24,8 +24,11 @@ import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MyApplication;
+import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
 import com.zncm.dminter.mmhelper.autocommand.AndroidCommand;
+import com.zncm.dminter.mmhelper.data.CardInfo;
+import com.zncm.dminter.mmhelper.data.EnumInfo;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -39,12 +42,40 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by dminter on 2016/7/19.
  */
 
 public class Xutils {
+
+    //获取应用主界面
+    public static String getLaunchClassNameByPkName(Context context, String pkgName) {
+        Intent intent = isExit(context, pkgName);
+        if (intent == null) {
+            exec("pm enable " + pkgName);
+            intent = isExit(context, pkgName);
+        }
+        return intent.getComponent().getClassName();
+    }
+
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
+    public static int dip2px(float dpValue) {
+        final float scale = MyApplication.getInstance().ctx.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     */
+    public static int px2dip(float pxValue) {
+        final float scale = MyApplication.getInstance().ctx.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+
     public static void openUrl(String url) {
         try {
             Uri uri = Uri.parse(url);
@@ -120,6 +151,54 @@ public class Xutils {
         return ret;
     }
 
+
+    public static void sendToDesktop(Activity activity, CardInfo cardInfo) {
+        sendToDesktop(activity, cardInfo, false);
+    }
+
+
+    public static void sendToDesktop(Activity activity, CardInfo cardInfo, boolean isShotcut) {
+
+        Drawable drawable = null;
+        if (cardInfo.getType() == EnumInfo.cType.URL.getValue()) {
+            drawable = activity.getResources().getDrawable(R.mipmap.ic_url);
+        } else if (cardInfo.getType() == EnumInfo.cType.CMD.getValue()) {
+            drawable = activity.getResources().getDrawable(R.mipmap.ic_shell);
+        } else if (cardInfo.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
+            drawable = activity.getResources().getDrawable(R.mipmap.ic_shortcut);
+        }
+        Intent intent;
+        BitmapDrawable bitmapDrawable;
+        intent = new Intent();
+        Intent shortIntent = new Intent(activity, OpenInentActivity.class);
+        shortIntent.setAction("android.intent.action.VIEW");
+        shortIntent.putExtra("android.intent.extra.UID", 0);
+        shortIntent.putExtra("pkName", cardInfo.getPackageName());
+        shortIntent.putExtra("className", cardInfo.getClassName());
+        shortIntent.putExtra("cardId", cardInfo.getId());
+        shortIntent.putExtra("isShotcut", isShotcut);
+        shortIntent.putExtra("random", new Random().nextLong());
+        intent.putExtra("android.intent.extra.shortcut.INTENT", shortIntent);
+        intent.putExtra("android.intent.extra.shortcut.NAME", makeShortcutIconTitle(cardInfo.getTitle()));
+        bitmapDrawable = (BitmapDrawable) drawable;
+        if (bitmapDrawable == null) {
+            try {
+                intent.putExtra("android.intent.extra.shortcut.ICON_RESOURCE", Intent.ShortcutIconResource.fromContext(activity.createPackageContext(cardInfo.getPackageName(), 0), getAppIconId(cardInfo.getPackageName())));
+            } catch (PackageManager.NameNotFoundException localNameNotFoundException) {
+                localNameNotFoundException.printStackTrace();
+            }
+        } else {
+            if (bitmapDrawable == null) {
+                bitmapDrawable = (BitmapDrawable) activity.getResources().getDrawable(R.mipmap.ic_launcher);
+            }
+            intent.putExtra("android.intent.extra.shortcut.ICON", bitmapDrawable.getBitmap());
+
+        }
+        intent.putExtra("duplicate", false);
+        intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        activity.sendBroadcast(intent);
+        tShort(Constant.add_shortcut);
+    }
 
     // 发送到桌面快捷方式
     public static void sendToDesktop(Activity ctx, Class<?> mClass, String title, Drawable drawable, String pkName, String className, int cardId) {

@@ -31,7 +31,7 @@ public class EnumInfo {
 
     public enum RefreshEnum {
 
-        FZ(1, "FZ"), APPS(2, "APPS"), ALL(3, "ALL"), LIKE(4, "LIKE"), APPSINIT(5, "APPSINIT");
+        BAT_STOP(-1, "BAT_STOP"), FZ(1, "FZ"), APPS(2, "APPS"), ALL(3, "ALL"), LIKE(4, "LIKE"), APPSINIT(5, "APPSINIT");
         private int value;
         private String strName;
 
@@ -50,8 +50,29 @@ public class EnumInfo {
 
     }
 
+    public enum pkStatus {
+
+        DELETE(-1, "DELETE"), NORMAL(0, "NORMAL");
+        private int value;
+        private String strName;
+
+        private pkStatus(int value, String strName) {
+            this.value = value;
+            this.strName = strName;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public String getStrName() {
+            return strName;
+        }
+
+    }
+
     public enum homeTab {
-        APPS(0, "enable", "应用"), LIKE(1, "like", "收藏"), ALL(2, "all", "所有");
+        BAT_STOP(0, "bat_stop", "冷冻室"), APPS(1, "enable", "应用"), LIKE(2, "like", "收藏"), ALL(3, "all", "所有");
         private String value;
         private int position;
         public String strName;
@@ -97,7 +118,7 @@ public class EnumInfo {
     public enum cType {
 
 
-        WX(1, "微信聊天"), TO_ACTIVITY(2, "TO_ACTIVITY"), JUST_TIPS(3, "JUST_TIPS"), START_APP(4, "START_APP"), QQ(5, "QQ聊天"), URL(6, "书签");
+        WX(1, "微信聊天"), TO_ACTIVITY(2, "TO_ACTIVITY"), JUST_TIPS(3, "JUST_TIPS"), START_APP(4, "START_APP"), QQ(5, "QQ聊天"), URL(6, "书签"), CMD(7, "CMD"), SHORT_CUT_SYS(8, "快捷方式");
 
         private int value;
         public String strName;
