@@ -19,6 +19,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -52,16 +53,28 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     private MainActivity ctx;
     public ArrayList<MyFt> fragments = new ArrayList<>();
     MaterialDialog progressDlg;
-
+    private LinearLayout topView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         ctx = this;
+        MyApplication.updateNightMode(SPHelper.isNightMode(ctx));
+        if (SPHelper.isHS(ctx)) {
+            setTheme(R.style.AppTheme_Translucent);
+        }
+
+
+        setContentView(R.layout.activity_main);
+
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             toolbar.setTitleTextColor(getResources().getColor(R.color.material_light_white));
+            if (MyApplication.isPay) {
+                toolbar.setTitle(getResources().getString(R.string.app_name) + "Pro");
+            }
             setSupportActionBar(toolbar);
+            Xutils.initBarTheme(ctx, toolbar);
         }
         try {
             String fzInfo = SPHelper.getFzInfo(this);
@@ -80,11 +93,18 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             e.printStackTrace();
         }
         count = fzInfos.size() + baseTab;
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        topView = (LinearLayout) findViewById(R.id.topView);
         adapter = new MyPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
-        mViewPager.setOffscreenPageLimit(3);
-        mViewPager.setCurrentItem(1);
+        mViewPager.setOffscreenPageLimit(count);
+        mViewPager.setCurrentItem(SPHelper.getCurTab(ctx));
+        
+        
+
+        
+        
+        
         PagerSlidingTabStrip indicator = (PagerSlidingTabStrip) findViewById(R.id.indicator);
         Xutils.initIndicatorTheme(indicator);
         indicator.setViewPager(mViewPager);
@@ -100,6 +120,21 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         if (!Xutils.listNotNull(pkInfos)) {
             initApps();
         }
+
+        if (SPHelper.isHS(ctx)) {
+            toolbar.setVisibility(View.GONE);
+            indicator.setVisibility(View.GONE);
+            mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Xutils.dip2px(300)));
+        }
+
+
+        topView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backToDesk(ctx);
+            }
+        });
+
 
         EventBus.getDefault().register(this);
     }
@@ -117,7 +152,8 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
     @Override
     public void onColorSelection(@NonNull ColorChooserDialog dialog, @ColorInt int selectedColor) {
-
+        SPHelper.setThemeColor(ctx, selectedColor);
+        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.FZ.getValue()));
     }
 
 
@@ -179,7 +215,13 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         return super.dispatchKeyEvent(event);
     }
 
-    public static void backToDesk(Activity activity) {
+    public void backToDesk(Activity activity) {
+
+        SPHelper.setCurTab(ctx, mViewPager.getCurrentItem());
+        if (SPHelper.isHS(ctx)) {
+            finish();
+            return;
+        }
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addCategory(Intent.CATEGORY_HOME);
@@ -240,9 +282,9 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     }
 
     private void initActicity() {
+        finish();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-        finish();
     }
 
 
@@ -343,48 +385,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     }
 
 
-    public void talkUI(final CardInfo info, final int type, String title, String hint1, String hint2) {
-        View wxView = LayoutInflater.from(ctx).inflate(
-                R.layout.view_card, null);
-        wxView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 400));
-        final EditText name = (EditText) wxView.findViewById(R.id.activityName);
-        final EditText wx = (EditText) wxView.findViewById(R.id.className);
-        ((EditText) wxView.findViewById(R.id.packageName)).setVisibility(View.GONE);
-        name.setHint(hint1);
-        wx.setHint(hint2);
-        if (info != null) {
-            if (Xutils.isNotEmptyOrNull(info.getTitle())) {
-                name.setText(info.getTitle());
-            }
-            if (Xutils.isNotEmptyOrNull(info.getCmd())) {
-                wx.setText(info.getCmd());
-            }
-        }
 
-        new MaterialDialog.Builder(ctx)
-                .title(title)
-                .customView(wxView, false)
-                .positiveText("好")
-                .negativeText("不")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        String wxName = name.getText().toString();
-                        String cmd = wx.getText().toString();
-                        if (info != null) {
-                            info.setTitle(wxName);
-                            info.setCmd(cmd);
-                            DbUtils.updateCard(info);
-                        } else {
-                            CardInfo card = new CardInfo(type, cmd, wxName);
-                            DbUtils.insertCard(card);
-                        }
-                        dialog.dismiss();
-//                        fillArray();
-                    }
-                })
-                .show();
-    }
 
 
 //    private void updateServiceStatus() {
@@ -469,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         SubMenu sub = menu.addSubMenu("");
         sub.setIcon(Xutils.initIconWhite(Iconify.IconValue.md_more_vert));
         sub.add(0, 1, 0, "设置");
-        if (SPHelper.isNightMode(this.ctx)) {
+        if (SPHelper.isNightMode(ctx)) {
             sub.add(0, 2, 0, "白天");
         } else {
             sub.add(0, 2, 0, "夜间");
@@ -488,7 +489,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         }
 
         if (item.getTitle().equals("search")) {
-            startActivity(new Intent(this.ctx, T9SearchActivity.class));
+            startActivity(new Intent(ctx, T9SearchActivity.class));
         }
 
         switch (item.getItemId()) {

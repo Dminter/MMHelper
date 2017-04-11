@@ -1,6 +1,8 @@
 package com.zncm.dminter.mmhelper.ft;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -11,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,14 +24,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
+import com.github.mrengineer13.snackbar.SnackBar;
+import com.software.shell.fab.ActionButton;
 import com.zncm.dminter.mmhelper.Constant;
+import com.zncm.dminter.mmhelper.MainActivity;
 import com.zncm.dminter.mmhelper.MyApplication;
 import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
+import com.zncm.dminter.mmhelper.SPHelper;
+import com.zncm.dminter.mmhelper.SettingNew;
+import com.zncm.dminter.mmhelper.WatchingAccessibilityService;
+import com.zncm.dminter.mmhelper.WatchingService;
 import com.zncm.dminter.mmhelper.adapter.CardAdapter;
 import com.zncm.dminter.mmhelper.adapter.MxItemClickListener;
 import com.zncm.dminter.mmhelper.autocommand.AndroidCommand;
@@ -39,12 +52,14 @@ import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.utils.BottomSheetDlg;
+import com.zncm.dminter.mmhelper.utils.ShellUtils;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -58,7 +73,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     public ArrayList<FzInfo> pkInfos = new ArrayList<>();
     private GetDate getDate;
     public CardAdapter cardAdapter;
-
+    public ActionButton actionButton;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ft_myft, container, false);
@@ -76,11 +91,12 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 getResources().getColor(R.color.material_purple_accent_400)
         );
         mListView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        actionButton = (ActionButton) view.findViewById(R.id.action_button);
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             packageName = bundle.getString("packageName");
         }
-        layoutManager = new GridLayoutManager(getActivity(), 4);
+        layoutManager = new GridLayoutManager(getActivity(), SPHelper.getGridColumns(this.ctx));
         mListView.setLayoutManager(layoutManager);
         cardAdapter = new CardAdapter(ctx) {
             @Override
@@ -90,31 +106,35 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 }
                 CardInfo info = cardInfos.get(position);
                 String title = info.getTitle();
-                int bgColor = info.getCard_color();
-                if (bgColor == 0) {
-                    bgColor = getResources().getColor(R.color.material_light_white);
-                }
+//                int bgColor = info.getCard_color();
+//                if (bgColor == 0) {
+//                    bgColor = getResources().getColor(R.color.material_light_white);
+//                }
+
+                int titleColor = getResources().getColor(R.color.material_light_black);
                 String pkgName = info.getPackageName();
                 Drawable drawable = null;
                 if (info.getType() == EnumInfo.cType.WX.getValue()) {
-                    bgColor = getResources().getColor(R.color.material_green_accent_100);
                 } else if (info.getType() == EnumInfo.cType.QQ.getValue()) {
-                    bgColor = getResources().getColor(R.color.material_deep_orange_100);
                 } else if (info.getType() == EnumInfo.cType.URL.getValue()) {
-                    bgColor = getResources().getColor(R.color.material_orange_100);
-                    drawable = getResources().getDrawable(R.mipmap.ic_bookmark_border_white_48dp);
+                    drawable = getResources().getDrawable(R.mipmap.ic_url);
                 } else if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
                     if (info.isDisabled()) {
-                        bgColor = getResources().getColor(R.color.material_grey_200);
+
+                        titleColor = getResources().getColor(R.color.material_amber_accent_700);
                     } else {
-                        bgColor = getResources().getColor(R.color.material_light_white);
+                        titleColor = getResources().getColor(R.color.material_grey_700);
                     }
+                } else if (info.getType() == EnumInfo.cType.CMD.getValue()) {
+                    drawable = getResources().getDrawable(R.mipmap.ic_shell);
+                } else if (info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
+                    drawable = getResources().getDrawable(R.mipmap.ic_shortcut);
                 }
-                int titleColor = getResources().getColor(R.color.material_light_black);
-                int index = info.getExi2();
-                if (index > 0) {
-                    titleColor = getResources().getColor(R.color.material_amber_accent_700);
-                }
+
+//                int index = info.getExi2();
+//                if (index > 0) {
+//                    titleColor = getResources().getColor(R.color.material_amber_accent_700);
+//                }
                 if (Xutils.isNotEmptyOrNull(title)) {
                     holder.title.setText(title);
                 }
@@ -146,9 +166,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 if (bitmap != null) {
                     holder.image.setImageBitmap(bitmap);
                 }
-                if (bgColor != 0) {
-                    holder.llBg.setBackgroundColor(bgColor);
-                }
+//                if (bgColor != 0) {
+//                    holder.llBg.setBackgroundColor(bgColor);
+//                }
                 if (titleColor != 0) {
                     holder.title.setTextColor(titleColor);
                 }
@@ -176,8 +196,233 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         };
         mListView.setAdapter(cardAdapter);
         fillArray();
+
+        actionButton.setButtonColor(SPHelper.getThemeColor(ctx));
+
+        if ((packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) || (packageName.equals(EnumInfo.homeTab.ALL.getValue()))) {
+            actionButton.show();
+            if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
+                actionButton.setImageResource(R.mipmap.ic_dj);
+            }
+        } else {
+            actionButton.hide();
+        }
+
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
+                    new MyFt.BatStopTask().execute(false);
+                } else if (packageName.equals(EnumInfo.homeTab.ALL.getValue())) {
+                    String[] items = {"采集活动", "添加活动", "微信聊天", "QQ聊天", "书签", "Shell", "快捷方式"};
+                    new MaterialDialog.Builder(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
+
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+
+
+                            switch (position) {
+                                case 0:
+                                    if (ctx instanceof MainActivity) {
+                                        SPHelper.setIsAcFloat(ctx, true);
+                                        MyFt.getActivityDlg(ctx);
+                                    }
+                                    break;
+                                case 1:
+                                    initActivity(null);
+                                    break;
+                                case 2:
+                                    talkUI(null, EnumInfo.cType.WX.getValue(), "微信-直接聊天", "朋友姓名", "朋友微信号");
+                                    break;
+                                case 3:
+                                    talkUI(null, EnumInfo.cType.QQ.getValue(), "QQ-直接聊天", "好友姓名", "好友QQ号");
+                                    break;
+                                case 4:
+                                    talkUI(null, EnumInfo.cType.URL.getValue(), "书签-直达网页or应用页面", "标题", "http://");
+                                    break;
+                                case 5:
+                                    talkUI(null, EnumInfo.cType.CMD.getValue(), "Shell命令", "Shell名称", "reboot");
+                                    break;
+                                case 6:
+                                    talkUI(null, EnumInfo.cType.SHORT_CUT_SYS.getValue(), "快捷方式", "快捷方式名称", "#Intent;action=com.tencent.mm.action.BIZSHORTCUT...;end");
+                                    break;
+                            }
+
+
+                        }
+                    }).show();
+
+
+                }
+
+
+            }
+        });
+
+        actionButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
+                    ArrayList<String> items = new ArrayList();
+
+                    final ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(0);
+
+                    if (Xutils.listNotNull(pkInfos)) {
+
+                        for (PkInfo tmp : pkInfos
+                                ) {
+                            items.add(tmp.getName());
+                        }
+                    }
+                    new MaterialDialog.Builder(ctx).title("添加到冷冻室").items(items).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                            for (int i = 0; i < which.length; i++) {
+                                PkInfo pkInfo = (PkInfo) pkInfos.get(which[i]);
+                                if (pkInfo != null) {
+                                    pkInfo.setExb2(1);
+                                    DbUtils.updatePkInfo(pkInfo);
+                                }
+                            }
+                            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
+                            return true;
+                        }
+                    }).positiveText("确定").negativeText("取消").neutralText("彻底冻结").onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                            if (which == DialogAction.NEUTRAL) {
+
+                                Xutils.tShort("正在彻底冻结...");
+                                ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(1);
+                                if (Xutils.listNotNull(pkInfos)) {
+                                    for (PkInfo tmp : pkInfos
+                                            ) {
+                                        if (!tmp.getPackageName().equals(Constant.app_pkg)) {
+                                            tmp.setStatus(EnumInfo.appStatus.ENABLE.getValue());
+                                            DbUtils.updatePkInfo(tmp);
+                                        }
+                                    }
+                                }
+                                new BatStopTask().execute(false);
+                            }
+                        }
+                    }).show();
+
+                }
+                return true;
+            }
+        });
+
+        if (SPHelper.isHS(ctx)) {
+            actionButton.show();
+            actionButton.setImageResource(R.mipmap.ic_setting);
+            actionButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View paramAnonymousView) {
+                    startActivity(new Intent(ctx, SettingNew.class));
+                }
+            });
+            actionButton.setOnLongClickListener(null);
+        }
+
     }
 
+    public void talkUI(final CardInfo info, final int type, String title, String hint1, String hint2) {
+        View wxView = LayoutInflater.from(ctx).inflate(
+                R.layout.view_card, null);
+        wxView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 400));
+        final EditText name = (EditText) wxView.findViewById(R.id.activityName);
+        final EditText wx = (EditText) wxView.findViewById(R.id.className);
+        ((EditText) wxView.findViewById(R.id.packageName)).setVisibility(View.GONE);
+        name.setHint(hint1);
+        wx.setHint(hint2);
+        if (info != null) {
+            if (Xutils.isNotEmptyOrNull(info.getTitle())) {
+                name.setText(info.getTitle());
+            }
+            if (Xutils.isNotEmptyOrNull(info.getCmd())) {
+                wx.setText(info.getCmd());
+            }
+        }
+
+        new MaterialDialog.Builder(ctx)
+                .title(title)
+                .customView(wxView, false)
+                .positiveText("好")
+                .negativeText("不")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        String wxName = name.getText().toString();
+                        String cmd = wx.getText().toString();
+                        if (info != null) {
+                            info.setTitle(wxName);
+                            info.setCmd(cmd);
+                            DbUtils.updateCard(info);
+                        } else {
+                            CardInfo card = new CardInfo(type, cmd, wxName);
+                            DbUtils.insertCard(card);
+                        }
+                        dialog.dismiss();
+//                        fillArray();
+                    }
+                })
+                .show();
+    }
+
+    private static void getActivityDlg(final Context ctx) {
+        if (WatchingAccessibilityService.getInstance() == null) {
+            if (ctx instanceof MainActivity) {
+                final MainActivity mCtx = (MainActivity) ctx;
+                new MaterialDialog.Builder(ctx)
+                        .title("开启无障碍")
+                        .content(R.string.dialog_enable_accessibility_msg)
+                        .positiveText("好")
+                        .negativeText("不")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                Intent intent = new Intent();
+                                intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                mCtx.startActivity(intent);
+                            }
+                        })
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                updateServiceStatus(mCtx);
+                            }
+                        })
+                        .canceledOnTouchOutside(false)
+                        .show();
+                SPHelper.setIsShowWindow(ctx, true);
+            }
+        } else {
+            ctx.startService(new Intent(ctx, WatchingService.class));
+        }
+
+    }
+
+
+    public static void updateServiceStatus(Activity activity) {
+        boolean serviceEnabled = false;
+        AccessibilityManager accessibilityManager =
+                (AccessibilityManager) activity.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        List<AccessibilityServiceInfo> accessibilityServices =
+                accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
+        for (AccessibilityServiceInfo info : accessibilityServices) {
+            if (info.getId().equals(activity.getPackageName() + "/.WatchingAccessibilityService")) {
+                serviceEnabled = true;
+                break;
+            }
+        }
+        if (serviceEnabled) {
+            activity.startService(new Intent(activity, WatchingService.class));
+        }
+    }
     private Bitmap bytes2Bimap(byte[] b) {
         if (b == null) {
             return null;
@@ -209,7 +454,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         Xutils.snTip(ctx, Constant.add_shortcut);
     }
 
-    public static void clickCard(Activity activity, CardInfo info) {
+    public static void clickCard(final Activity activity, CardInfo info) {
         if (info == null) {
             return;
         }
@@ -232,6 +477,60 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         } else if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
             appNewStatus(info);
             Xutils.startAppByPackageName(activity, info.getPackageName(), Constant.attempt);
+        } else if (info.getType() == EnumInfo.cType.CMD.getValue()) {
+            String cmd = info.getCmd();
+            final ShellUtils.CommandResult result = ShellUtils.execCommand(cmd, true);
+            if (result != null) {
+                if (Xutils.isNotEmptyOrNull(result.successMsg)) {
+                    MaterialDialog dialog = new MaterialDialog.Builder(activity).title(cmd).content(result.successMsg).positiveText("知").neutralText("复制").onAny(new MaterialDialog.SingleButtonCallback() {
+
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            if (which == DialogAction.NEUTRAL) {
+                                Xutils.copyText(activity, result.successMsg);
+                                Xutils.tShort("已复制");
+                            }
+                        }
+                    }).build();
+                    if ((activity instanceof OpenInentActivity)) {
+                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                    }
+                    dialog.show();
+                }
+
+            }
+
+
+        } else if (info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
+            String cmd = info.getCmd();
+            try {
+                activity.startActivity(Intent.parseUri(cmd, 0));
+            } catch (Exception e) {
+                String pkgName = info.getPackageName();
+                if (Xutils.isNotEmptyOrNull(cmd)) {
+                    if (cmd.contains("component")) {
+                        pkgName = cmd.substring(1 + (cmd.indexOf("component") + "component".length()), cmd.length());
+                    } else if (cmd.contains("package")) {
+                        pkgName = cmd.substring(1 + (cmd.indexOf("package") + "package".length()), cmd.length());
+                        if (pkgName.contains(";")) {
+                            pkgName = pkgName.substring(0, pkgName.indexOf(";"));
+                        }
+                    }
+                    if (Xutils.isNotEmptyOrNull(pkgName)) {
+                        info.setPackageName(pkgName);
+                        DbUtils.updateCard(info);
+                        Xutils.exec("pm enable " + pkgName);
+                        appNewStatus(info);
+                        try {
+                            activity.startActivity(Intent.parseUri(cmd, 0));
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+
+                    }
+                }
+                e.printStackTrace();
+            }
         }
         if (ret == AndroidCommand.noRoot) {
             Xutils.snTip(activity, Constant.no_root);
@@ -401,6 +700,213 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
             initAppBS(info, position);
         }
+        if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
+            initAppCard(info, position);
+        }
+
+
+    }
+
+    private void initAppCard(final CardInfo info, int position) {
+
+        final ArrayList<Map<String, Object>> list = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        final boolean like = info.getExi1() == 1;
+        final int index = info.getExi2();
+        map.put("text", like ? "取消收藏" : "收藏");
+        map.put("key", "-1");
+        list.add(map);
+        final PkInfo pkInfo = DbUtils.getPkOne(info.getPackageName());
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("text", "修改");
+        map2.put("key", "-2");
+        list.add(map2);
+        Map<String, Object> map3 = new HashMap<>();
+        map3.put("text", "删除");
+        map3.put("key", "-3");
+        list.add(map3);
+        Map<String, Object> map4 = new HashMap<>();
+        map4.put("text", "置顶");
+        map4.put("key", "-4");
+        list.add(map4);
+        Map<String, Object> map5 = new HashMap<>();
+        map5.put("text", "添加到桌面");
+        map5.put("key", "-5");
+        list.add(map5);
+        Map<String, Object> map6 = new HashMap<>();
+        map6.put("text", "分组");
+        map6.put("key", "-6");
+        list.add(map6);
+        Map<String, Object> map7 = new HashMap<>();
+        map7.put("text", "批量删除");
+        map7.put("key", "-7");
+        list.add(map7);
+        new BottomSheetDlg(ctx, list, false) {
+            @Override
+            public void onGridItemClickListener(int position) {
+                final CardInfo info = cardInfos.get(position);
+                switch (position) {
+
+                    case 0:
+                        if (like) {
+                            info.setExi1(0);
+                        } else {
+                            info.setExi1(1);
+                        }
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
+                        DbUtils.updateCard(info);
+                        break;
+                    case 1:
+                        if (info.getType() == EnumInfo.cType.WX.getValue() || info.getType() == EnumInfo.cType.QQ.getValue() || info.getType() == EnumInfo.cType.URL.getValue() || info.getType() == EnumInfo.cType.CMD.getValue() || info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
+                            talkUI(info, 0, "修改", "", "");
+
+                        } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
+                            initActivity(info);
+                        }
+
+                        break;
+                    case 2:
+
+                        info.setStatus(EnumInfo.cStatus.DELETE.getValue());
+                        DbUtils.updateCard(info);
+                        cardInfos.remove(position);
+                        new SnackBar.Builder(ctx)
+                                .withOnClickListener(new SnackBar.OnMessageClickListener() {
+                                    @Override
+                                    public void onMessageClick(Parcelable token) {
+                                        info.setStatus(EnumInfo.cStatus.NORMAL.getValue());
+                                        DbUtils.updateCard(info);
+                                        fillArray();
+                                    }
+                                })
+                                .withMessage("移除这张活动卡!")
+                                .withActionMessage("撤销")
+                                .withStyle(SnackBar.Style.DEFAULT)
+                                .withBackgroundColorId(R.color.material_purple_200)
+                                .withDuration(SnackBar.LONG_SNACK)
+                                .show();
+                        ;
+                        break;
+                    case 3:
+                        if (index > 0) {
+                            info.setExi2(0);
+                        } else {
+                            info.setExi2(DbUtils.getMaxIndex() + 1);
+                        }
+                        DbUtils.updateCard(info);
+                        break;
+                    case 4:
+                        sendToDesk(ctx, info);
+                        break;
+                    case 5:
+                        final ArrayList<String> fzStr = new ArrayList<String>();
+                        if (!Xutils.listNotNull(pkInfos)) {
+                            return;
+                        }
+                        for (FzInfo tmp : pkInfos
+                                ) {
+                            if (Xutils.isNotEmptyOrNull(tmp.getName())) {
+                                fzStr.add(tmp.getName());
+                            }
+
+                        }
+                        new MaterialDialog.Builder(ctx)
+                                .items(fzStr)
+                                .itemsCallback(new MaterialDialog.ListCallback() {
+                                    @Override
+                                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                        info.setStatus(EnumInfo.cStatus.NORMAL.getValue());
+                                        DbUtils.updateCard(info);
+                                    }
+                                })
+                                .show();
+                        break;
+                    case 6:
+
+
+                        ArrayList<String> items = new ArrayList();
+
+                        final ArrayList<CardInfo> cardInfos = MyFt.this.cardInfos;
+
+                        if (Xutils.listNotNull(cardInfos)) {
+
+                            for (CardInfo tmp : cardInfos
+                                    ) {
+                                items.add(tmp.getTitle());
+                            }
+                        }
+                        new MaterialDialog.Builder(ctx).title("批量删除活动").items(items).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, final Integer[] which, CharSequence[] text) {
+                                final StringBuffer names = new StringBuffer();
+                                for (int i = 0; i < which.length; i++) {
+                                    CardInfo cardInfo = (CardInfo) cardInfos.get(which[i]);
+                                    if (cardInfo != null) {
+//                                        cardInfo.setExb2(1);
+//                                        DbUtils.updatePkInfo(cardInfo);
+                                        names.append(cardInfo.getTitle()).append("，");
+                                    }
+                                }
+
+                                new MaterialDialog.Builder(ctx).title("确定删除").title(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+                                    public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which2) {
+                                        if (which2 == DialogAction.POSITIVE) {
+                                            for (int i = 0; i < which.length; i++) {
+                                                CardInfo cardInfo = (CardInfo) cardInfos.get(which[i]);
+                                                if (cardInfo != null) {
+                                                    info.setStatus(EnumInfo.cStatus.DELETE.getValue());
+                                                    DbUtils.updateCard(cardInfo);
+                                                }
+                                            }
+                                            fillArray();
+                                        }
+                                    }
+                                }).show();
+
+                                return true;
+                            }
+                        }).positiveText("确定").negativeText("取消").onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                if (which == DialogAction.NEUTRAL) {
+
+                                    Xutils.tShort("正在彻底冻结...");
+                                    ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(1);
+                                    if (Xutils.listNotNull(pkInfos)) {
+                                        for (PkInfo tmp : pkInfos
+                                                ) {
+                                            if (!tmp.getPackageName().equals(Constant.app_pkg)) {
+                                                tmp.setStatus(EnumInfo.appStatus.ENABLE.getValue());
+                                                DbUtils.updatePkInfo(tmp);
+                                            }
+                                        }
+                                    }
+                                    new BatStopTask().execute(false);
+                                }
+                            }
+                        }).show();
+
+                        break;
+
+                }
+
+
+            }
+
+            @Override
+            public void onGridItemLongClickListener(int position) {
+
+            }
+
+            @Override
+            public void onOutClickListener() {
+
+            }
+        }
+
+        ;
 
 
     }
@@ -480,8 +986,8 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             Xutils.exec("pm disable " + info.getPackageName());
                             info.setDisabled(true);
                         }
-                        MyFt.this.cardInfos.set(position, info);
-                        MyFt.this.mListView.getAdapter().notifyDataSetChanged();
+                        cardInfos.set(position, info);
+                        mListView.getAdapter().notifyDataSetChanged();
                         pkInfo.setStatus(!info.isDisabled() ? EnumInfo.appStatus.ENABLE.getValue() : EnumInfo.appStatus.DISABLED.getValue());
                         DbUtils.updatePkInfo(pkInfo);
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
@@ -505,7 +1011,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         break;
                     case 4:
 
-                        String str = Xutils.getLaunchClassNameByPkName(MyFt.this.ctx, info.getPackageName());
+                        String str = Xutils.getLaunchClassNameByPkName(ctx, info.getPackageName());
                         pkInfo.setStatus(EnumInfo.appStatus.ENABLE.getValue());
                         DbUtils.updatePkInfo(pkInfo);
                         CardInfo tmpCard = new CardInfo(info.getPackageName(), str, null);

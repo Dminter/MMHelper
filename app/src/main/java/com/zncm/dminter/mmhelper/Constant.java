@@ -23,7 +23,7 @@ public class Constant {
 
 
     public static String author_wx = "xm0ff255";
-    public static String app_pkg = "com.zncm.dminter.mmhelper";
+    public static String app_pkg = "com.zncm.dminter.mmhelper2";
     public static String app_shortcut = "com.zncm.dminter.mmhelper.ShortcutActionActivity";
     public static String app_shortcut_openinentactivity = "com.zncm.dminter.mmhelper.OpenInentActivity";
     public static String no_root = "打开失败~请检查root权限！！";

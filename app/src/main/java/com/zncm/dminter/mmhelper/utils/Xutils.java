@@ -330,12 +330,13 @@ public class Xutils {
 
 
     public static void initIndicatorTheme(PagerSlidingTabStrip indicator) {
-        Context ctx = MyApplication.getInstance().ctx;
-        indicator.setTextColor(ctx.getResources().getColor(R.color.material_light_white));
-        indicator.setIndicatorColor(ctx.getResources().getColor(R.color.material_light_white));
-        indicator.setBackgroundColor(ctx.getResources().getColor(R.color.colorPrimary));
-        indicator.setUnderlineHeight(1);
-        indicator.setIndicatorHeight(4);
+        Context context = MyApplication.getInstance().ctx;
+        indicator.setIndicatorColor(context.getResources().getColor(R.color.material_light_white));
+        indicator.setBackgroundColor(SPHelper.getThemeColor(context));
+        indicator.setDividerColor(SPHelper.getThemeColor(context));
+        indicator.setTextColor(context.getResources().getColor(R.color.material_light_white));
+        indicator.setUnderlineHeight(dip2px(2.0F));
+        indicator.setIndicatorHeight(dip2px(2.0F));
     }
 
     public static ApplicationInfo getAppInfo(String pName) {

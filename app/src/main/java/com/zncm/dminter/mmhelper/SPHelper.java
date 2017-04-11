@@ -18,6 +18,16 @@ public class SPHelper {
         sp.edit().putBoolean("is_show_window", isShow).commit();
     }
 
+    public static boolean isAcFloat(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("ac_float", true);
+    }
+
+    public static void setIsAcFloat(Context context, boolean ac_float) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean("ac_float", ac_float).commit();
+    }
+
     public static boolean isHS(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean("is_hs", true);
@@ -132,6 +142,16 @@ public class SPHelper {
     public static void setBallUp(Context context, int ball_up) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putInt("ball_up", ball_up).commit();
+    }
+
+    public static int getCurTab(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt("cur_tab", 1);
+    }
+
+    public static void setCurTab(Context context, int cur_tab) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt("cur_tab", cur_tab).commit();
     }
 
     public static int getBallLeft(Context context) {

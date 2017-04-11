@@ -10,7 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zncm.dminter.mmhelper.R;
+import com.zncm.dminter.mmhelper.SPHelper;
 import com.zncm.dminter.mmhelper.data.CardInfo;
+import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import java.util.List;
 
@@ -18,6 +20,8 @@ public abstract class CardAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private List<CardInfo> items;
     private Activity ctx;
+
+    private int gridColumns = 0;
     public CardAdapter(Activity ctx) {
         this.ctx = ctx;
     }
@@ -68,6 +72,10 @@ public abstract class CardAdapter extends RecyclerView.Adapter<RecyclerView.View
                     .findViewById(R.id.title);
             view.setOnClickListener(this);
             view.setOnLongClickListener(this);
+            gridColumns = SPHelper.getGridColumns(ctx);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(Xutils.dip2px(280 / gridColumns), Xutils.dip2px(280 / gridColumns));
+            this.image.setLayoutParams(layoutParams);
+            this.title.setTextSize(60 / gridColumns);
         }
 
         public void setClickListener(MxItemClickListener itemClickListener) {

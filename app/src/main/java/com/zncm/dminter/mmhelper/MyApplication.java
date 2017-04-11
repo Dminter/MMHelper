@@ -2,6 +2,7 @@ package com.zncm.dminter.mmhelper;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.FzInfo;
@@ -18,6 +19,13 @@ public class MyApplication extends Application {
     public static ArrayList<CardInfo> t9List = new ArrayList();
 
 
+    public static void updateNightMode(boolean paramBoolean) {
+        if (paramBoolean) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            return;
+        }
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    }
     @Override
     public void onCreate() {
         super.onCreate();

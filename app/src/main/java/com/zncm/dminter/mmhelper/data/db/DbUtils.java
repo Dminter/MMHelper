@@ -408,8 +408,16 @@ public class DbUtils {
 //            builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue());
             if (Xutils.isNotEmptyOrNull(packageName)) {
                 if (packageName.equals(EnumInfo.homeTab.LIKE.getValue())) {
-                    builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue()).and().eq("exi1", 1);
+//                    builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue()).and().eq("exi1", 1);
+//                    builder.orderBy("exi2", false);
+
+                    builder.where().eq("status", Integer.valueOf(EnumInfo.cStatus.NORMAL.getValue())).and().eq("exi1", 1);
+
                     builder.orderBy("exi2", false);
+                    builder.orderBy("exi4", true);
+                    builder.orderBy("time", false).limit(limit);
+
+
                 } else if (packageName.equals(EnumInfo.homeTab.ALL.getValue())) {
                     builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue());
                 } else {

@@ -1,48 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:card_view="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:foreground="@drawable/card_foreground"
-    >
+        card_view:cardCornerRadius="0.0dip">
+
 
         <LinearLayout
             android:id="@+id/llBg"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="4dp"
-          >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/image"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:padding="2dp"
+                android:layout_width="48.0dip"
+                android:layout_height="48.0dip"
+                android:padding="5.0dip"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/ic_launcher"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:maxLines="3"
-                android:padding="2dp"
-                android:singleLine="true"
-                android:text=""
-                android:textSize="12sp"
-            />
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/ivDisable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_dj"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:maxLines="1"
+                    android:padding="2.0dip"
+                    android:singleLine="true"
+                    android:text="支付宝"
+                    android:textSize="12.0sp"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
         </LinearLayout>
+
     </android.support.v7.widget.CardView>
 
 </LinearLayout>

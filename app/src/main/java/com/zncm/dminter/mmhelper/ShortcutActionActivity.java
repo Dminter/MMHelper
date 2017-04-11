@@ -31,7 +31,7 @@ public class ShortcutActionActivity extends Activity {
             if (Xutils.isNotEmptyOrNull(action)) {
                 if (action.equals(Constant.SA_BATSTOP)) {
                     MyFt.BatStopTask batStopTask = new MyFt.BatStopTask();
-                    batStopTask.execute();
+                    batStopTask.execute(false);
                 } else if (action.equals(Constant.SA_T9)) {
                     startActivity(new Intent(ctx, T9SearchActivity.class));
                 } else if (action.equals(Constant.SA_GET_ACTIVITY)) {

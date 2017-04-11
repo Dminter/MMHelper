@@ -11,6 +11,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -23,6 +25,7 @@ import com.kenumir.materialsettings.items.DividerItem;
 import com.kenumir.materialsettings.items.HeaderItem;
 import com.kenumir.materialsettings.items.TextItem;
 import com.kenumir.materialsettings.storage.StorageInterface;
+import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
@@ -53,48 +56,48 @@ public class SettingNew extends MaterialSettings {
         addItem(new HeaderItem(this).setTitle("创建快捷方式"));
         addItem(new TextItem(this.ctx, "").setTitle("全部冷冻").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
-                shortCutAdd(SettingNew.this.ctx, Constant.SA_BATSTOP, "全部冷冻");
+                shortCutAdd(ctx, Constant.SA_BATSTOP, "全部冷冻");
             }
         }));
         addItem(new DividerItem(this.ctx));
         addItem(new TextItem(this.ctx, "").setTitle("T9搜索").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
-                shortCutAdd(SettingNew.this.ctx, Constant.SA_T9, "T9搜索");
+                shortCutAdd(ctx, Constant.SA_T9, "T9搜索");
             }
         }));
         addItem(new DividerItem(this.ctx));
         addItem(new TextItem(this.ctx, "").setTitle("采集活动").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
-                shortCutAdd(SettingNew.this.ctx, Constant.SA_GET_ACTIVITY, "采集活动");
+                shortCutAdd(ctx, Constant.SA_GET_ACTIVITY, "采集活动");
 
             }
         }));
         addItem(new DividerItem(this.ctx));
         addItem(new TextItem(this.ctx, "").setTitle("收藏的活动").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
-                shortCutAdd(SettingNew.this.ctx, Constant.OPENINENT_LIKE, "收藏的活动", Constant.app_shortcut_openinentactivity);
+                shortCutAdd(ctx, Constant.OPENINENT_LIKE, "收藏的活动", Constant.app_shortcut_openinentactivity);
             }
         }));
         addItem(new DividerItem(this.ctx));
         addItem(new TextItem(this.ctx, "").setTitle("锁屏").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
-                shortCutAdd(SettingNew.this.ctx, Constant.SA_LOCK_SCREEN, "锁屏");
+                shortCutAdd(ctx, Constant.SA_LOCK_SCREEN, "锁屏");
             }
         }));
 
         addItem(new HeaderItem(this).setTitle("通用"));
         addItem(new TextItem(this.ctx, "").setTitle("分组").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
-                final EditText editText = new EditText(SettingNew.this.ctx);
+                final EditText editText = new EditText(ctx);
                 editText.setTextColor(getResources().getColor(R.color.colorPrimary));
-                new MaterialDialog.Builder(SettingNew.this.ctx).title("分组-英文逗号分隔").customView(editText, false).positiveText("好").negativeText("不").onAny(new MaterialDialog.SingleButtonCallback() {
+                new MaterialDialog.Builder(ctx).title("分组-英文逗号分隔").customView(editText, false).positiveText("好").negativeText("不").onAny(new MaterialDialog.SingleButtonCallback() {
                     public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which) {
                         if (which == DialogAction.POSITIVE) {
                             String fz = editText.getText().toString();
                             if (Xutils.isEmptyOrNull(fz)) {
                                 return;
                             }
-                            if (!SettingNew.this.fzInfo.equals(fz)) {
+                            if (!fzInfo.equals(fz)) {
                                 SPHelper.setFzInfo(ctx, fz);
                                 Xutils.tShort("分组修改成功！");
                                 isNeedUpdate = true;
@@ -130,7 +133,7 @@ public class SettingNew extends MaterialSettings {
                                                                                                                                                         }
 
 
-                                                                                                                                                        new MaterialDialog.Builder(SettingNew.this.ctx).title("系统应用->冷冻室").items(appNames).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                                                                                                                                                        new MaterialDialog.Builder(ctx).title("系统应用->冷冻室").items(appNames).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                                                                                                                                                             @Override
                                                                                                                                                             public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
 
@@ -178,20 +181,76 @@ public class SettingNew extends MaterialSettings {
         ));
 
 
+        addItem(new DividerItem(this.ctx));
+        addItem(new CheckboxItem(this, "").setTitle("主界面半屏风格").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                SPHelper.setIsHS(ctx, b);
+            }
+        }).setDefaultValue(SPHelper.isHS(this.ctx)));
+
+
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this, "").setTitle("抽屉网格大小-列数").setSubtitle(SPHelper.getGridColumns(this.ctx) + "").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(final TextItem textItem) {
+                ArrayList<String> items = new ArrayList();
+                int i = 0;
+                for (int j = 2; j <= 12; j++) {
+                    if (SPHelper.getGridColumns(ctx) == j) {
+                        i = j - 2;
+                    }
+                    items.add(j + "");
+                }
+                new MaterialDialog.Builder(ctx).title("抽屉网格大小-列数").items(items).theme(Theme.LIGHT).itemsCallbackSingleChoice(i, new MaterialDialog.ListCallbackSingleChoice() {
+
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                        try {
+                            SPHelper.setGridColumns(ctx, Integer.parseInt(text.toString()));
+                            textItem.updateSubTitle(text.toString());
+                            isNeedUpdate = true;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return false;
+                    }
+                }).positiveText("确定").negativeText("取消").onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                    }
+                }).show();
+
+            }
+        }));
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
         addItem(new HeaderItem(this).setTitle("T9搜索"));
         addItem(new TextItem(this.ctx, "").setTitle("搜索范围").setSubtitle(EnumInfo.typeT9.getTypeT9(SPHelper.getTypeT9(ctx)).getStrName()).setOnclick(new TextItem.OnClickListener() {
             public void onClick(final TextItem textItem) {
                 try {
-                    int typeT9 = SPHelper.getTypeT9(SettingNew.this.ctx);
+                    int typeT9 = SPHelper.getTypeT9(ctx);
                     String[] items = new String[]{EnumInfo.typeT9.APP.getStrName(), EnumInfo.typeT9.ACTIVITY.getStrName(), EnumInfo.typeT9.APP_ACTIVITY.getStrName()};
                     if (typeT9 < items.length + 1) {
                         items[typeT9 - 1] = items[typeT9 - 1] + "   ✔";
                     }
-                    new MaterialDialog.Builder(SettingNew.this.ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
+                    new MaterialDialog.Builder(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
 
                         @Override
                         public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                            SPHelper.setTypeT9(SettingNew.this.ctx, position + 1);
+                            SPHelper.setTypeT9(ctx, position + 1);
                             MyApplication.t9List = new ArrayList();
                             textItem.updateSubTitle(EnumInfo.typeT9.getTypeT9(position + 1).getStrName());
                         }
@@ -207,7 +266,7 @@ public class SettingNew extends MaterialSettings {
 
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
-                SPHelper.setT9Auto(SettingNew.this.ctx, b);
+                SPHelper.setT9Auto(ctx, b);
             }
         }).setDefaultValue(SPHelper.isT9Auto(this.ctx)));
         addItem(new DividerItem(this.ctx));
@@ -215,7 +274,7 @@ public class SettingNew extends MaterialSettings {
 
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
-                SPHelper.setT9Clear(SettingNew.this.ctx, b);
+                SPHelper.setT9Clear(ctx, b);
             }
         }).setDefaultValue(SPHelper.isT9Clear(this.ctx)));
     }
@@ -277,19 +336,19 @@ public class SettingNew extends MaterialSettings {
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if (which == DialogAction.POSITIVE) {
 
-                    new MaterialDialog.Builder(SettingNew.this.ctx).title("支付宝购买，仅需5.0元！").content("购买后请获取订单号【点击支付宝订单详情-》创建时间-》长按复制订单号-》输入订单号-》完成购买】注：重装或换机需重新购买，价格为0.01元").positiveText("购买").negativeText("取消").neutralText("输入订单号").onAny(new MaterialDialog.SingleButtonCallback() {
+                    new MaterialDialog.Builder(ctx).title("支付宝购买，仅需5.0元！").content("购买后请获取订单号【点击支付宝订单详情-》创建时间-》长按复制订单号-》输入订单号-》完成购买】注：重装或换机需重新购买，价格为0.01元").positiveText("购买").negativeText("取消").neutralText("输入订单号").onAny(new MaterialDialog.SingleButtonCallback() {
 
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
                             if (which == DialogAction.NEUTRAL) {
 
-                                final EditText editText = new EditText(SettingNew.this.ctx);
+                                final EditText editText = new EditText(ctx);
                                 editText.setTextColor(getResources().getColor(R.color.colorPrimary));
-                                new MaterialDialog.Builder(SettingNew.this.ctx).title("输入订单号").customView(editText, false).positiveText("好").negativeText("不").neutralText("打开支付宝").onAny(new MaterialDialog.SingleButtonCallback() {
+                                new MaterialDialog.Builder(ctx).title("输入订单号").customView(editText, false).positiveText("好").negativeText("不").neutralText("打开支付宝").onAny(new MaterialDialog.SingleButtonCallback() {
                                     public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which) {
                                         if (which == DialogAction.NEUTRAL) {
-                                            Xutils.startAppByPackageName(SettingNew.this.ctx, "com.eg.android.AlipayGphone", 3);
+                                            Xutils.startAppByPackageName(ctx, "com.eg.android.AlipayGphone", 3);
                                         } else if (which == DialogAction.POSITIVE) {
                                             String code = editText.getText().toString();
                                             if (Xutils.isEmptyOrNull(code)) {
@@ -300,11 +359,11 @@ public class SettingNew extends MaterialSettings {
                                             boolean flag = false;
                                             if (code.length() == 32) {
                                                 String payOrder = code.substring(0, 8);
-                                                SPHelper.setPayOrder(SettingNew.this.ctx, payOrder);
-                                                String payOrderCheck = SPHelper.getPayOrderCheck(SettingNew.this.ctx);
+                                                SPHelper.setPayOrder(ctx, payOrder);
+                                                String payOrderCheck = SPHelper.getPayOrderCheck(ctx);
                                                 if (!payOrderCheck.contains(Xutils.getTimeTodayYMD())) {
                                                     String payCheck = payOrderCheck + "," + Xutils.getTimeTodayYMD();
-                                                    SPHelper.setPayOrderCheck(SettingNew.this.ctx, payCheck);
+                                                    SPHelper.setPayOrderCheck(ctx, payCheck);
                                                 }
                                                 flag = isPay(ctx);
                                             }
@@ -314,7 +373,7 @@ public class SettingNew extends MaterialSettings {
                                             }
                                             MyApplication.isPay = flag;
                                             System.exit(0);
-                                            Intent intent = new Intent(SettingNew.this.ctx, MainActivity.class);
+                                            Intent intent = new Intent(ctx, MainActivity.class);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             startActivity(intent);
                                         }
@@ -323,7 +382,7 @@ public class SettingNew extends MaterialSettings {
 
 
                             } else if (which == DialogAction.POSITIVE) {
-                                Xutils.startAppByPackageName(SettingNew.this.ctx, "com.eg.android.AlipayGphone", 3);
+                                Xutils.startAppByPackageName(ctx, "com.eg.android.AlipayGphone", 3);
                             }
 
                         }
@@ -339,7 +398,24 @@ public class SettingNew extends MaterialSettings {
 
     }
 
+    public boolean onCreateOptionsMenu(Menu paramMenu) {
+        paramMenu.add("back").setIcon(Xutils.initIconWhite(Iconify.IconValue.md_arrow_back)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        return super.onCreateOptionsMenu(paramMenu);
+    }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item == null || item.getTitle() == null) {
+            return false;
+        }
+
+        if (item.getTitle().equals("back")) {
+            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.FZ.getValue()));
+            finish();
+        }
+
+        return true;
+    }
     @Override
     public StorageInterface initStorageInterface() {
         return null;
