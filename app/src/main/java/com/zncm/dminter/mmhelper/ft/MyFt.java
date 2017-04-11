@@ -57,7 +57,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     private SwipeRefreshLayout swipeLayout;
     public ArrayList<FzInfo> pkInfos = new ArrayList<>();
     private GetDate getDate;
-    private CardAdapter cardAdapter;
+    public CardAdapter cardAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

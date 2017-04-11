@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.zncm.dminter.mmhelper.data.EnumInfo;
+
 public class SPHelper {
 
     public static boolean isShowWindow(Context context) {
@@ -14,6 +16,16 @@ public class SPHelper {
     public static void setIsShowWindow(Context context, boolean isShow) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean("is_show_window", isShow).commit();
+    }
+
+    public static boolean isHS(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("is_hs", true);
+    }
+
+    public static void setIsHS(Context context, boolean is_hs) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean("is_hs", is_hs).commit();
     }
 
 
@@ -52,6 +64,34 @@ public class SPHelper {
         return sp.getBoolean("is_pay", false);
     }
 
+
+    public static void setIsT9(Context context, boolean is_t9) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("is_t9", is_t9).commit();
+    }
+
+    public static boolean isT9(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("is_t9", false);
+    }
+
+    public static void setT9Auto(Context context, boolean t9_auto) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("t9_auto", true).commit();
+    }
+
+    public static boolean isT9Auto(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("t9_auto", false);
+    }
+
+    public static void setT9Clear(Context context, boolean t9_clear) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("t9_clear", true).commit();
+    }
+
+    public static boolean isT9Clear(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("t9_clear", false);
+    }
+
     //主题配色
 
     public static int getThemeColor(Context context) {
@@ -61,6 +101,15 @@ public class SPHelper {
 
     public static void setThemeColor(Context context, int theme_color) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("theme_color", theme_color).commit();
+    }
+
+    public static int getTypeT9(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt("type_t9", EnumInfo.typeT9.APP.getValue());
+    }
+
+
+    public static void setTypeT9(Context context, int type_t9) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putInt("type_t9", type_t9).commit();
     }
 
 

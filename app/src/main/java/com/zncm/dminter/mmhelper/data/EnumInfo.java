@@ -5,7 +5,56 @@ package com.zncm.dminter.mmhelper.data;
  */
 
 public class EnumInfo {
+    public enum typeShortcut {
+        //三方+少，三方+多，全部+少，全部+多
+        THREE_MORE(1, "THREE_MORE"), THREE_LESS(2, "THREE_LESS"), ALL_MORE(3, "ALL_MORE"), ALL_LESS(4, "ALL_LESS");
+        private int value;
+        public String strName;
 
+        private typeShortcut(int value, String strName) {
+            this.value = value;
+            this.strName = strName;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public String getStrName() {
+            return strName;
+        }
+
+
+    }
+
+    public enum typeT9 {
+
+        APP(1, "应用"), ACTIVITY(2, "活动"), APP_ACTIVITY(3, "应用+活动");
+        private int value;
+        public String strName;
+
+        private typeT9(int value, String strName) {
+            this.value = value;
+            this.strName = strName;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public String getStrName() {
+            return strName;
+        }
+
+        public static typeT9 getTypeT9(int value) {
+            for (typeT9 tab : typeT9.values()) {
+                if (tab.value == value) {
+                    return tab;
+                }
+            }
+            return APP;
+        }
+    }
     public enum cStatus {
 
 

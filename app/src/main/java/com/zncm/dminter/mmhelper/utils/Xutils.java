@@ -14,8 +14,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -26,9 +29,11 @@ import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MyApplication;
 import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
+import com.zncm.dminter.mmhelper.SPHelper;
 import com.zncm.dminter.mmhelper.autocommand.AndroidCommand;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
+import com.zncm.dminter.mmhelper.utils.statusbar.StatusBarCompat;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -49,6 +54,23 @@ import java.util.Random;
  */
 
 public class Xutils {
+    public static void initBarTheme(Activity activity, Toolbar toolbar)
+    {
+        toolbar.setBackgroundColor(SPHelper.getThemeColor(activity));
+        if (!SPHelper.isHS(activity)) {
+            StatusBarCompat.setStatusBarColor(activity, SPHelper.getThemeColor(activity));
+        }
+    }
+
+    public static void autoKeyBoardShow(EditText editText) {
+        ((InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(editText, 0);
+    }
+
+    public static void hideKeyBoard(EditText editText) {
+        ((InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    }
+
+
     public static String getTimeTodayYMD() {
         return new SimpleDateFormat("yyyyMMdd").format(new Date());
     }

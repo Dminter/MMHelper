@@ -136,6 +136,43 @@ public class DbUtils {
         return cardInfos;
     }
 
+
+    public static ArrayList<CardInfo> getPkInfosToCard() {
+        init();
+        ArrayList<CardInfo> cardInfos = new ArrayList();
+        try {
+            QueryBuilder builder = pkDao.queryBuilder();
+            builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
+            builder.groupBy("packageName");
+            builder.orderBy("name", true).limit(Constant.MAX_DB_QUERY);
+            List<PkInfo> pkInfos = pkDao.query(builder.prepare());
+            if (Xutils.listNotNull(pkInfos)) {
+                for (PkInfo tmp : pkInfos
+                        ) {
+                    CardInfo info = new CardInfo();
+                    info.setTitle(tmp.getName());
+                    info.setPackageName(tmp.getPackageName());
+                    info.setImg(tmp.getIcon());
+                    info.setEx3(tmp.getEx3());
+                    info.setType(EnumInfo.cType.START_APP.getValue());
+                    info.setDisabled(tmp.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
+                    cardInfos.add(info);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cardInfos;
+    }
+
+
+
+
+
+
+
+
+
     public static CardInfo getCardInfoByClassName(String cName) {
         if (Xutils.isEmptyOrNull(cName)) {
             return null;

@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.zncm.dminter.mmhelper.utils.Xutils;
+
 /**
  * Created by dminter on 2016/7/26.
  */
@@ -17,6 +19,7 @@ public abstract class BaseActivity extends MySwipeBackActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ctx = this;
         if (getLayoutResource() != -1) {
             setContentView(getLayoutResource());
         }
@@ -25,9 +28,9 @@ public abstract class BaseActivity extends MySwipeBackActivity {
             toolbar.setTitle("");
             toolbar.setTitleTextColor(getResources().getColor(R.color.material_light_white));
             setSupportActionBar(toolbar);
-            toolbar.setNavigationIcon(R.drawable.md_nav_back);
+            toolbar.setNavigationIcon(null);
+            Xutils.initBarTheme(this, toolbar);
         }
-        ctx = this;
     }
 
     @Override

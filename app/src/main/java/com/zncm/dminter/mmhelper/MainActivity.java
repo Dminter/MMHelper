@@ -521,7 +521,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                 break;
         }
 
-        return false;
+        return true;
     }
 }
 

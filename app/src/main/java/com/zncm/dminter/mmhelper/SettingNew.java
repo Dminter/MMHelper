@@ -11,12 +11,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.kenumir.materialsettings.MaterialSettings;
+import com.kenumir.materialsettings.items.CheckboxItem;
 import com.kenumir.materialsettings.items.DividerItem;
 import com.kenumir.materialsettings.items.HeaderItem;
 import com.kenumir.materialsettings.items.TextItem;
@@ -176,8 +178,46 @@ public class SettingNew extends MaterialSettings {
         ));
 
 
+        addItem(new HeaderItem(this).setTitle("T9搜索"));
+        addItem(new TextItem(this.ctx, "").setTitle("搜索范围").setSubtitle(EnumInfo.typeT9.getTypeT9(SPHelper.getTypeT9(ctx)).getStrName()).setOnclick(new TextItem.OnClickListener() {
+            public void onClick(final TextItem textItem) {
+                try {
+                    int typeT9 = SPHelper.getTypeT9(SettingNew.this.ctx);
+                    String[] items = new String[]{EnumInfo.typeT9.APP.getStrName(), EnumInfo.typeT9.ACTIVITY.getStrName(), EnumInfo.typeT9.APP_ACTIVITY.getStrName()};
+                    if (typeT9 < items.length + 1) {
+                        items[typeT9 - 1] = items[typeT9 - 1] + "   ✔";
+                    }
+                    new MaterialDialog.Builder(SettingNew.this.ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
 
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                            SPHelper.setTypeT9(SettingNew.this.ctx, position + 1);
+                            MyApplication.t9List = new ArrayList();
+                            textItem.updateSubTitle(EnumInfo.typeT9.getTypeT9(position + 1).getStrName());
+                        }
+                    }).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
 
+        addItem(new DividerItem(this.ctx));
+        addItem(new CheckboxItem(this, "").setTitle("匹配结果仅一项自动打开").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                SPHelper.setT9Auto(SettingNew.this.ctx, b);
+            }
+        }).setDefaultValue(SPHelper.isT9Auto(this.ctx)));
+        addItem(new DividerItem(this.ctx));
+        addItem(new CheckboxItem(this, "").setTitle("每次打开重置搜索条件").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                SPHelper.setT9Clear(SettingNew.this.ctx, b);
+            }
+        }).setDefaultValue(SPHelper.isT9Clear(this.ctx)));
     }
 
 
