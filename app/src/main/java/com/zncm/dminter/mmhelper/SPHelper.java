@@ -18,6 +18,16 @@ public class SPHelper {
         sp.edit().putBoolean("is_show_window", isShow).commit();
     }
 
+    public static boolean isFloatBall(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("float_ball", true);
+    }
+
+    public static void setIsFloatBall(Context context, boolean float_ball) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean("float_ball", float_ball).commit();
+    }
+
     public static boolean isAcFloat(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean("ac_float", true);

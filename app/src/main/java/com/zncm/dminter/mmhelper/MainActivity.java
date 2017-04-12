@@ -32,6 +32,7 @@ import com.zncm.dminter.mmhelper.data.FzInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
+import com.zncm.dminter.mmhelper.floatball.FloatBallService;
 import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.DataInitHelper;
 import com.zncm.dminter.mmhelper.utils.Xutils;
@@ -135,7 +136,9 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             }
         });
 
-
+        if ((SPHelper.isFloatBall(this.ctx)) && (MyApplication.isPay)) {
+            startService(new Intent(this, FloatBallService.class));
+        }
         EventBus.getDefault().register(this);
     }
 

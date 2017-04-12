@@ -370,9 +370,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 .show();
     }
 
-    private static void getActivityDlg(final Context ctx) {
+    public static void getActivityDlg(final Context ctx) {
         if (WatchingAccessibilityService.getInstance() == null) {
-            if (ctx instanceof MainActivity) {
+            if (ctx instanceof Activity) {
                 final MainActivity mCtx = (MainActivity) ctx;
                 new MaterialDialog.Builder(ctx)
                         .title("开启无障碍")
@@ -399,9 +399,11 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 SPHelper.setIsShowWindow(ctx, true);
             }
         } else {
-            ctx.startService(new Intent(ctx, WatchingService.class));
+            Intent intent = new Intent();
+            intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ctx.startActivity(intent);
         }
-
     }
 
 

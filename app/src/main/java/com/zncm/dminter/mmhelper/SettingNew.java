@@ -31,6 +31,8 @@ import com.zncm.dminter.mmhelper.data.MyPackageInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
+import com.zncm.dminter.mmhelper.floatball.FloatBallService;
+import com.zncm.dminter.mmhelper.floatball.FloatWindowManager;
 import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
@@ -54,41 +56,41 @@ public class SettingNew extends MaterialSettings {
         super.onCreate(savedInstanceState);
         ctx = this;
         Xutils.verifyStoragePermissions(this);
-        this.fzInfo = SPHelper.getFzInfo(this);
+        fzInfo = SPHelper.getFzInfo(this);
         addItem(new HeaderItem(this).setTitle("创建快捷方式"));
-        addItem(new TextItem(this.ctx, "").setTitle("全部冷冻").setOnclick(new TextItem.OnClickListener() {
+        addItem(new TextItem(ctx, "").setTitle("全部冷冻").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 shortCutAdd(ctx, Constant.SA_BATSTOP, "全部冷冻");
             }
         }));
-        addItem(new DividerItem(this.ctx));
-        addItem(new TextItem(this.ctx, "").setTitle("T9搜索").setOnclick(new TextItem.OnClickListener() {
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(ctx, "").setTitle("T9搜索").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 shortCutAdd(ctx, Constant.SA_T9, "T9搜索");
             }
         }));
-        addItem(new DividerItem(this.ctx));
-        addItem(new TextItem(this.ctx, "").setTitle("采集活动").setOnclick(new TextItem.OnClickListener() {
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(ctx, "").setTitle("采集活动").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 shortCutAdd(ctx, Constant.SA_GET_ACTIVITY, "采集活动");
 
             }
         }));
-        addItem(new DividerItem(this.ctx));
-        addItem(new TextItem(this.ctx, "").setTitle("收藏的活动").setOnclick(new TextItem.OnClickListener() {
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(ctx, "").setTitle("收藏的活动").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 shortCutAdd(ctx, Constant.OPENINENT_LIKE, "收藏的活动", Constant.app_shortcut_openinentactivity);
             }
         }));
-        addItem(new DividerItem(this.ctx));
-        addItem(new TextItem(this.ctx, "").setTitle("锁屏").setOnclick(new TextItem.OnClickListener() {
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(ctx, "").setTitle("锁屏").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 shortCutAdd(ctx, Constant.SA_LOCK_SCREEN, "锁屏");
             }
         }));
 
         addItem(new HeaderItem(this).setTitle("通用"));
-        addItem(new TextItem(this.ctx, "").setTitle("分组").setOnclick(new TextItem.OnClickListener() {
+        addItem(new TextItem(ctx, "").setTitle("分组").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 final EditText editText = new EditText(ctx);
                 editText.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -110,7 +112,7 @@ public class SettingNew extends MaterialSettings {
             }
         }));
 
-        addItem(new TextItem(this.ctx, "").setTitle("系统应用->冷冻室【慎重】").setOnclick(new TextItem.OnClickListener() {
+        addItem(new TextItem(ctx, "").setTitle("系统应用->冷冻室【慎重】").setOnclick(new TextItem.OnClickListener() {
                                                                                     public void onClick(TextItem textItem) {
                                                                                         new MaterialDialog.Builder(ctx).title("系统应用->冷冻室【慎重】").content("注意：冻结系统应用可能会导致系统崩溃，无法开机，切忌盲目冻结，以免造成严重后果！！~")
                                                                                                 .positiveText("确定").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
@@ -183,18 +185,18 @@ public class SettingNew extends MaterialSettings {
         ));
 
 
-        addItem(new DividerItem(this.ctx));
+        addItem(new DividerItem(ctx));
         addItem(new CheckboxItem(this, "").setTitle("主界面半屏风格").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
                 SPHelper.setIsHS(ctx, b);
             }
-        }).setDefaultValue(SPHelper.isHS(this.ctx)));
+        }).setDefaultValue(SPHelper.isHS(ctx)));
 
 
-        addItem(new DividerItem(this.ctx));
-        addItem(new TextItem(this, "").setTitle("抽屉网格大小-列数").setSubtitle(SPHelper.getGridColumns(this.ctx) + "").setOnclick(new TextItem.OnClickListener() {
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(this, "").setTitle("抽屉网格大小-列数").setSubtitle(SPHelper.getGridColumns(ctx) + "").setOnclick(new TextItem.OnClickListener() {
             public void onClick(final TextItem textItem) {
                 ArrayList<String> items = new ArrayList();
                 int i = 0;
@@ -238,7 +240,7 @@ public class SettingNew extends MaterialSettings {
 
             }
         }));
-        addItem(new DividerItem(this.ctx));
+        addItem(new DividerItem(ctx));
         addItem(new TextItem(this, "").setTitle("批量添加活动").setOnclick(new TextItem.OnClickListener() {
             @Override
             public void onClick(TextItem textItem) {
@@ -248,7 +250,7 @@ public class SettingNew extends MaterialSettings {
                 startActivity(new Intent(ctx, ActivityShortcut.class));
             }
         }));
-        addItem(new DividerItem(this.ctx));
+        addItem(new DividerItem(ctx));
         addItem(new TextItem(this, "").setTitle("批量添加Shell").setOnclick(new TextItem.OnClickListener() {
             @Override
             public void onClick(TextItem textItem) {
@@ -260,14 +262,23 @@ public class SettingNew extends MaterialSettings {
 
             }
         }));
-        addItem(new DividerItem(this.ctx));
-        addItem(new TextItem(this, "").setTitle("悬浮球").setSubtitle("点击【返回】，上【最近任务】，左【收藏的活动】，下【桌面】，右【采集活动】，长按【截屏、拖动位置】").setOnclick(new TextItem.OnClickListener() {
+        addItem(new DividerItem(ctx));
+        addItem(new CheckboxItem(this, "").setTitle("悬浮球").setSubtitle("点击【返回】，上【最近任务】，左【收藏的活动】，下【桌面】，右【采集活动】，长按【截屏、拖动位置】").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
             @Override
-            public void onClick(TextItem textItem) {
-
-
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                if (checkNotPro()) {
+                    return;
+                }
+                SPHelper.setIsFloatBall(ctx, b);
+                Intent localIntent = new Intent(ctx, FloatBallService.class);
+                if (b) {
+                    startService(localIntent);
+                } else {
+                    stopService(localIntent);
+                    FloatWindowManager.removeBallView(ctx);
+                }
             }
-        }));
+        }).setDefaultValue(SPHelper.isFloatBall(ctx)));
         
         
         
@@ -277,7 +288,7 @@ public class SettingNew extends MaterialSettings {
         
 
         addItem(new HeaderItem(this).setTitle("T9搜索"));
-        addItem(new TextItem(this.ctx, "").setTitle("搜索范围").setSubtitle(EnumInfo.typeT9.getTypeT9(SPHelper.getTypeT9(ctx)).getStrName()).setOnclick(new TextItem.OnClickListener() {
+        addItem(new TextItem(ctx, "").setTitle("搜索范围").setSubtitle(EnumInfo.typeT9.getTypeT9(SPHelper.getTypeT9(ctx)).getStrName()).setOnclick(new TextItem.OnClickListener() {
             public void onClick(final TextItem textItem) {
                 try {
                     int typeT9 = SPHelper.getTypeT9(ctx);
@@ -300,22 +311,22 @@ public class SettingNew extends MaterialSettings {
             }
         }));
 
-        addItem(new DividerItem(this.ctx));
+        addItem(new DividerItem(ctx));
         addItem(new CheckboxItem(this, "").setTitle("匹配结果仅一项自动打开").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
                 SPHelper.setT9Auto(ctx, b);
             }
-        }).setDefaultValue(SPHelper.isT9Auto(this.ctx)));
-        addItem(new DividerItem(this.ctx));
+        }).setDefaultValue(SPHelper.isT9Auto(ctx)));
+        addItem(new DividerItem(ctx));
         addItem(new CheckboxItem(this, "").setTitle("每次打开重置搜索条件").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
                 SPHelper.setT9Clear(ctx, b);
             }
-        }).setDefaultValue(SPHelper.isT9Clear(this.ctx)));
+        }).setDefaultValue(SPHelper.isT9Clear(ctx)));
 
 
         addItem(new HeaderItem(this).setTitle("其他"));
@@ -356,7 +367,7 @@ public class SettingNew extends MaterialSettings {
 
     private void backDo() {
         finish();
-        if (this.isNeedUpdate) {
+        if (isNeedUpdate) {
             EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.FZ.getValue()));
         }
     }
@@ -381,7 +392,7 @@ public class SettingNew extends MaterialSettings {
 
 
     private void goPro() {
-        new MaterialDialog.Builder(this.ctx).title("解锁Pro版，仅需5元！").content("Pro版更多彰显的是情怀~").positiveText("支付宝购买").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+        new MaterialDialog.Builder(ctx).title("解锁Pro版，仅需5元！").content("Pro版更多彰显的是情怀~").positiveText("支付宝购买").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
 
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
