@@ -347,7 +347,7 @@ public class Xutils {
             return info;
         } catch (PackageManager.NameNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+//            e.printStackTrace();
 
         }
         return null;

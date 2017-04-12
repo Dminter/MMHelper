@@ -19,12 +19,12 @@ public class MyApplication extends Application {
     public static ArrayList<CardInfo> t9List = new ArrayList();
 
 
-    public static void updateNightMode(boolean paramBoolean) {
-        if (paramBoolean) {
+    public static void updateNightMode(boolean isNightMode) {
+        if (isNightMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            return;
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
     @Override
     public void onCreate() {

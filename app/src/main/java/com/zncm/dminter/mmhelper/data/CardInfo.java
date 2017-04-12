@@ -93,10 +93,10 @@ public class CardInfo {
         this.cmd = cmd;
 
         if (EnumInfo.cType.WX.getValue() == type) {
-            this.packageName = PackageInfo.pk_wx;
-            this.className = PackageInfo.pk_wx_ChattingUI;
+            this.packageName = MyPackageInfo.pk_wx;
+            this.className = MyPackageInfo.pk_wx_ChattingUI;
         } else if (EnumInfo.cType.QQ.getValue() == type) {
-            this.packageName = PackageInfo.pk_qq;
+            this.packageName = MyPackageInfo.pk_qq;
             this.className = "";
         } else if (EnumInfo.cType.URL.getValue() == type) {
             this.packageName = "";

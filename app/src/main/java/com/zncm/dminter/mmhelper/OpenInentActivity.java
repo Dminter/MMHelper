@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -27,7 +28,7 @@ import java.util.Map;
  * Created by dminter on 2016/7/26.
  */
 
-public class OpenInentActivity extends Activity {
+public class OpenInentActivity extends AppCompatActivity {
     private String pkName = "";
     private String className = "";
     private int cardId = -1;
@@ -41,31 +42,39 @@ public class OpenInentActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ctx = this;
-        setContentView(R.layout.ft_open);
         startIntent = getIntent();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             pkName = bundle.getString("pkName");
             className = bundle.getString("className");
-            cardId = bundle.getInt("cardId", -1);
+            cardId = bundle.getInt("cardId", 0);
             isShotcut = bundle.getBoolean("isShotcut", false);
-            if (cardId != -1) {
-                CardInfo cardInfo = DbUtils.getCardInfoById(cardId);
-                if (cardInfo != null) {
-                    MyFt.clickCard(this, cardInfo);
+
+
+            if ((Xutils.isNotEmptyOrNull(pkName)) && (pkName.equals(Constant.OPENINENT_LIKE))) {
+                initLikes();
+            } else {
+                if (cardId != 0) {
+                    CardInfo cardInfo = DbUtils.getCardInfoById(cardId);
+                    if (cardInfo != null) {
+                        MyFt.clickCard(this, cardInfo);
+                        finish();
+                    }
+                } else if (isShotcut) {
+                    initAppBS(new CardInfo(pkName));
+                } else {
+                    Xutils.exec(Constant.common_pm_e_p + pkName);
+                    int ret = Xutils.cmdExe(Constant.common_am_pre + pkName + Constant.common_am_div + className);
+                    if (ret == -1) {
+                        Xutils.tShort("打开失败~~");
+                    }
                     finish();
                 }
-            } else if (isShotcut) {
-                initAppBS(new CardInfo(pkName));
-            } else {
-                Xutils.exec(Constant.common_pm_e_p + pkName);
-                int ret = Xutils.cmdExe(Constant.common_am_pre + pkName + Constant.common_am_div + className);
-                if (ret == -1) {
-                    Xutils.tShort("打开失败~~");
-                }
             }
+
+
             MyApplication.getInstance().isOpenInent = true;
-            finish();
+
         } else {
             final ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
             if (!Xutils.listNotNull(tmps)) {
@@ -96,13 +105,53 @@ public class OpenInentActivity extends Activity {
     }
 
 
+    private void initLikes() {
+
+        final ArrayList<Map<String, Object>> list = new ArrayList<>();
+        //应用相关的活动
+        final ArrayList<CardInfo> like = DbUtils.getCardInfos(EnumInfo.homeTab.LIKE.getValue());
+        if (Xutils.listNotNull(like)) {
+            for (CardInfo tmp : like
+                    ) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("text", tmp.getTitle());
+                map.put("key", tmp.getId());
+                list.add(map);
+            }
+        }
+        new BottomSheetDlg(ctx, list, false) {
+            @Override
+            public void onGridItemClickListener(int position) {
+                if (Xutils.listNotNull(like) && position < like.size()) {
+                    CardInfo cardInfo = like.get(position);
+                    if (cardInfo != null) {
+                        MyFt.clickCard(ctx, cardInfo);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onGridItemLongClickListener(int position) {
+
+            }
+
+            @Override
+            public void onOutClickListener() {
+                finish();
+            }
+        };
+
+    }
+
+
     public void initAppBS(final CardInfo info) {
 
         final ArrayList<Map<String, Object>> list = new ArrayList<>();
         //应用相关的活动
-        final ArrayList<CardInfo> like = DbUtils.getCardInfosByPackageName(info.getPackageName());
-        if (Xutils.listNotNull(like)) {
-            for (CardInfo tmp : like
+        final ArrayList<CardInfo> activitys = DbUtils.getCardInfosByPackageName(info.getPackageName());
+        if (Xutils.listNotNull(activitys)) {
+            for (CardInfo tmp : activitys
                     ) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("text", tmp.getTitle());
@@ -133,16 +182,16 @@ public class OpenInentActivity extends Activity {
             @Override
             public void onGridItemClickListener(int position) {
 
-                if (Xutils.listNotNull(like) && position < like.size()) {
+                if (Xutils.listNotNull(activitys) && position < activitys.size()) {
 
-                    CardInfo cardInfo = like.get(position);
+                    CardInfo cardInfo = activitys.get(position);
                     if (cardInfo != null) {
                         MyFt.clickCard(ctx, cardInfo);
                     }
 
                 }
 
-                switch (position - like.size()) {
+                switch (position - activitys.size()) {
 
                     case 0:
                         if (info.isDisabled()) {
@@ -163,8 +212,7 @@ public class OpenInentActivity extends Activity {
                         break;
                     case 2:
                         MyFt.appNewStatus(info);
-                        MyFt.RunOpenActivity runOpenActivity = new MyFt.RunOpenActivity(info, Constant.open_ac_attempt);
-                        runOpenActivity.execute();
+                        Xutils.startAppByPackageName(ctx, info.getPackageName(), Constant.attempt);
                         break;
 
                 }
@@ -179,7 +227,7 @@ public class OpenInentActivity extends Activity {
 
             @Override
             public void onOutClickListener() {
-
+                finish();
             }
         };
 

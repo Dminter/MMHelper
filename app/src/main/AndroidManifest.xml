@@ -22,7 +22,10 @@
 
         <activity
             android:name=".OpenInentActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:excludeFromRecents="true"
+            android:label="添加活动到桌面"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.Translucent"
         >
 
             <intent-filter>
@@ -57,7 +60,14 @@
             android:label="设置"
             android:theme="@style/MyMaterialSettings"
             android:launchMode="singleInstance" />
-
+        <activity
+            android:name="com.zncm.dminter.mmhelper.ShellBatActivity"
+            android:label="批量添加Shell"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name="com.zncm.dminter.mmhelper.ActivityShortcut"
+            android:label="批量添加活动"
+            android:launchMode="singleInstance" />
 
         <service
             android:name="com.zncm.dminter.mmhelper.WatchingService"

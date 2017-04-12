@@ -1,36 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="abc_action_bar_home_description">Navigate home</string>
+    <string name="abc_action_bar_home_description_format">%1$s, %2$s</string>
+    <string name="abc_action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
+    <string name="abc_action_bar_up_description">Navigate up</string>
+    <string name="abc_action_menu_overflow_description">More options</string>
+    <string name="abc_action_mode_done">Done</string>
+    <string name="abc_activity_chooser_view_see_all">See all</string>
+    <string name="abc_activitychooserview_choose_application">Choose an app</string>
+    <string name="abc_capital_off">OFF</string>
+    <string name="abc_capital_on">ON</string>
+    <string name="abc_search_hint">Search…</string>
+    <string name="abc_searchview_description_clear">Clear query</string>
+    <string name="abc_searchview_description_query">Search query</string>
+    <string name="abc_searchview_description_search">Search</string>
+    <string name="abc_searchview_description_submit">Submit query</string>
+    <string name="abc_searchview_description_voice">Voice search</string>
+    <string name="abc_shareactionprovider_share_with">Share with</string>
+    <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
+    <string name="abc_toolbar_collapse_description">Collapse</string>
+    <string name="search_menu_title">Search</string>
+    <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="a1">把任意Android应用的各个界面，类似网页书签，以活动的形式保存起来，以便需要时直达</string>
+    <string name="a10">"am start -n packageName/className pm disable packageName pm disable packageName " </string>
+    <string name="a11">长按左上角绿色字</string>
+    <string name="a12">呈现在你眼前的android界面，可能是activity，也可能是fragment，显然后者暂时是无法采集的，正如你看到类似知乎APP，左上角的绿字均未变</string>
+    <string name="a13">可通过采集APP某些活动已达到跳过APP广告，跳过密码界面【自知】，快捷新建日记，新建记账，直达支付宝账单，一键切换壁纸...</string>
+    <string name="a14">"在计算机科学中，Shell俗称壳（用来区别于核），是指“提供使用者使用界面”的软件（命令解析器）。它类似于DOS下的command和后来的cmd.exe。它接收用户命令，然后调用相应的应用程序。 更多参见 https://github.com/mzlogin/awesome-adb" </string>
+    <string name="a15">在冷冻室长按右下角冻结按钮即可批量添加冻结项</string>
+    <string name="a16">针对升级其他应用后，某些应用无法冻结的情况，彻底冻结可将它们重新冻结，原理是把冻结列表全部重新冻结，过程非常耗时，建议仅当出现冻结状态异常时才使用此项</string>
+    <string name="a2">ROOT环境，非ROOT还请卸载，本软件并无联网权限，所以并不会窃取您的任何隐私，请放心使用</string>
+    <string name="a3">活动即Activity，类似网页，在Android上可理解为程序窗口</string>
+    <string name="a4">应用-》+》采集活动，也可在设置里添加快捷方式到桌面。注：需开启辅助功能，小米用户需开启悬浮窗，打开后左上角有绿色包名，点击可采集</string>
+    <string name="a5">页面打开可能存在异常，类似网页的登录状态，应用页面间跳转也有参数传递，直接进入某页面，上下文信息丢失，应用就会异常</string>
+    <string name="a6">冷冻即Android系统对应用的停用操作</string>
+    <string name="a7">冷冻的应用不运行，不会收到烦人的通知 ，不占系统运行时内存，系统明显更流畅。劣势是再次启用比未冷冻慢，称之为冷启动</string>
+    <string name="a8">桌面长按应用icon弹出全新的shortcuts(快捷方式)，通知栏可添加5个快捷启动的活动</string>
+    <string name="a9">欢迎通过微信反馈给开发者</string>
+    <string name="abc_font_family_body_1_material">sans-serif</string>
+    <string name="abc_font_family_body_2_material">sans-serif-medium</string>
+    <string name="abc_font_family_button_material">sans-serif-medium</string>
+    <string name="abc_font_family_caption_material">sans-serif</string>
+    <string name="abc_font_family_display_1_material">sans-serif</string>
+    <string name="abc_font_family_display_2_material">sans-serif</string>
+    <string name="abc_font_family_display_3_material">sans-serif</string>
+    <string name="abc_font_family_display_4_material">sans-serif-light</string>
+    <string name="abc_font_family_headline_material">sans-serif</string>
+    <string name="abc_font_family_menu_material">sans-serif</string>
+    <string name="abc_font_family_subhead_material">sans-serif</string>
+    <string name="abc_font_family_title_material">sans-serif-medium</string>
     <string name="app_name">快速打开活动</string>
-
-
-    <string name="show_window">显示悬浮窗</string>
-
-    <string name="is_running">%s 正在运行</string>
-    <string name="touch_to_open">点击添加.</string>
-    <string name="noti_action_pause">暂停</string>
-    <string name="noti_action_resume">恢复</string>
-    <string name="noti_action_add">添加</string>
-    <string name="noti_action_stop">停止</string>
-
-    <string name="dialog_enable_accessibility_msg">打开设置-》无障碍-》快速打开活动</string>
-    <string name="dialog_enable_accessibility_positive_btn">去设置</string>
-
-
-    <string name="tutorial_done">尽情体验</string>
-    <string name="tutorial_skip">跳过</string>
-
-
-    <string name="navigation_drawer_open">打开</string>
-    <string name="navigation_drawer_close">关闭</string>
-
-
+    <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="bottom_sheet_behavior">android.support.design.widget.BottomSheetBehavior</string>
+    <string name="character_counter_pattern">%1$d / %2$d</string>
     <string name="color_palette">主题色</string>
     <string name="colors">主题色</string>
-    <dimen name="md_colorchooser_circlesize">56dp</dimen>
-    <dimen name="md_preference_content_inset">16dp</dimen>
-    <dimen name="md_simpleitem_height">62dp</dimen>
-    <dimen name="md_simplelist_icon">40dp</dimen>
-    <dimen name="md_simplelist_icon_margin">16dp</dimen>
-    <dimen name="md_simplelist_textsize">18sp</dimen>
+    <string name="dialog_enable_accessibility_msg">打开设置-》无障碍-》快速打开活动</string>
+    <string name="dialog_enable_accessibility_positive_btn">去设置</string>
+    <string name="h1">这个软件有什么用途</string>
+    <string name="h10">本APP实现原理</string>
+    <string name="h11">怎么关闭活动采集器</string>
+    <string name="h12">怎么有的活动采集了没跳转到正确页面【类似进入QQ空间】</string>
+    <string name="h13">高级用法</string>
+    <string name="h14">什么是shell</string>
+    <string name="h15">批量添加冻结项</string>
+    <string name="h16">彻底冻结-在冷冻室长按冻结按钮</string>
+    <string name="h2">工作环境</string>
+    <string name="h3">什么是活动</string>
+    <string name="h4">怎么采集活动</string>
+    <string name="h5">为什么有的活动打开会异常</string>
+    <string name="h6">什么是冷冻</string>
+    <string name="h7">冷冻的优劣</string>
+    <string name="h8">兼容N的新特性</string>
+    <string name="h9">有问题如何反馈</string>
+    <string name="is_running">%s 正在运行</string>
     <string name="md_back_label">返回</string>
     <string name="md_cancel_label">取消</string>
     <string name="md_choose_label">选择</string>
@@ -39,7 +82,27 @@
     <string name="md_error_label">错误</string>
     <string name="md_presets_label">常用</string>
     <string name="md_storage_perm_error">没有文件读取权限</string>
+    <string name="navigation_drawer_close">关闭</string>
+    <string name="navigation_drawer_open">打开</string>
     <string name="new_folder">新建文件夹</string>
-
-
+    <string name="noti_action_add">添加</string>
+    <string name="noti_action_pause">暂停</string>
+    <string name="noti_action_resume">恢复</string>
+    <string name="noti_action_stop">停止</string>
+    <string name="shortcut1">全部冷冻</string>
+    <string name="shortcut1_disabled">@string/shortcut1</string>
+    <string name="shortcut1_long">@string/shortcut1</string>
+    <string name="shortcut2">T9搜索</string>
+    <string name="shortcut2_disabled">@string/shortcut2</string>
+    <string name="shortcut2_long">@string/shortcut2</string>
+    <string name="shortcut3">采集活动</string>
+    <string name="shortcut3_disabled">@string/shortcut3</string>
+    <string name="shortcut3_long">@string/shortcut3</string>
+    <string name="shortcut4">收藏的活动</string>
+    <string name="shortcut4_disabled">@string/shortcut4</string>
+    <string name="shortcut4_long">@string/shortcut4</string>
+    <string name="show_window">显示悬浮窗</string>
+    <string name="touch_to_open">点击添加.</string>
+    <string name="tutorial_done">尽情体验</string>
+    <string name="tutorial_skip">跳过</string>
 </resources>

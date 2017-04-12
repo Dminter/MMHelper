@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     private LinearLayout topView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         ctx = this;
         MyApplication.updateNightMode(SPHelper.isNightMode(ctx));
+        super.onCreate(savedInstanceState);
         if (SPHelper.isHS(ctx)) {
             setTheme(R.style.AppTheme_Translucent);
         }
@@ -252,33 +252,62 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onMessageEventAsync(RefreshEvent event) {
         int type = event.type;
+
         if (type == EnumInfo.RefreshEnum.FZ.getValue()) {
             initActicity();
         }
-
-
-        if (fragments.size() == 0) {
-            initActicity();
-        }
-
-
-        if (type == EnumInfo.RefreshEnum.APPS.getValue() || type == EnumInfo.RefreshEnum.APPSINIT.getValue()) {
-            if (type == EnumInfo.RefreshEnum.APPSINIT.getValue()) {
-                if (progressDlg.isShowing()) {
-                    progressDlg.dismiss();
+        if (this.fragments.size() > 0) {
+            if (type == EnumInfo.RefreshEnum.APPS.getValue()) {
+                MyFt myFt = (MyFt) this.fragments.get(Integer.valueOf(EnumInfo.homeTab.APPS.getPosition()));
+                if (myFt != null) {
+                    myFt.onRefresh();
                 }
             }
-            MyFt tmp = (MyFt) fragments.get(0);
-            tmp.onRefresh();
+            if (type == EnumInfo.RefreshEnum.LIKE.getValue()) {
+                MyFt myFt = (MyFt) this.fragments.get(Integer.valueOf(EnumInfo.homeTab.LIKE.getPosition()));
+                if (myFt != null) {
+                    myFt.onRefresh();
+                }
+            }
+            if (type == EnumInfo.RefreshEnum.ALL.getValue()) {
+                MyFt myFt = (MyFt) this.fragments.get(Integer.valueOf(EnumInfo.homeTab.ALL.getPosition()));
+                if (myFt != null) {
+                    myFt.onRefresh();
+                }
+            }
+            if (type == EnumInfo.RefreshEnum.BAT_STOP.getValue()) {
+                MyFt myFt = (MyFt) this.fragments.get(Integer.valueOf(EnumInfo.homeTab.BAT_STOP.getPosition()));
+                if (myFt != null) {
+                    myFt.onRefresh();
+                }
+            }
         }
-        if (type == EnumInfo.RefreshEnum.LIKE.getValue()) {
-            MyFt tmp = (MyFt) fragments.get(1);
-            tmp.onRefresh();
-        }
-        if (type == EnumInfo.RefreshEnum.ALL.getValue()) {
-            MyFt tmp = (MyFt) fragments.get(2);
-            tmp.onRefresh();
-        }
+
+//        if (type == EnumInfo.RefreshEnum.FZ.getValue()) {
+//            initActicity();
+//        }
+//        if (fragments.size() == 0) {
+//            initActicity();
+//        }
+//
+//
+//        if (type == EnumInfo.RefreshEnum.APPS.getValue() || type == EnumInfo.RefreshEnum.APPSINIT.getValue()) {
+//            if (type == EnumInfo.RefreshEnum.APPSINIT.getValue()) {
+//                if (progressDlg.isShowing()) {
+//                    progressDlg.dismiss();
+//                }
+//            }
+//            MyFt tmp = (MyFt) fragments.get(0);
+//            tmp.onRefresh();
+//        }
+//        if (type == EnumInfo.RefreshEnum.LIKE.getValue()) {
+//            MyFt tmp = (MyFt) fragments.get(1);
+//            tmp.onRefresh();
+//        }
+//        if (type == EnumInfo.RefreshEnum.ALL.getValue()) {
+//            MyFt tmp = (MyFt) fragments.get(2);
+//            tmp.onRefresh();
+//        }
     }
 
     private void initActicity() {
@@ -503,12 +532,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                 startActivity(new Intent(ctx, MainActivity.class));
                 break;
             case 3:
-                if (AlipayZeroSdk.hasInstalledAlipayClient(ctx)) {
-                    SPHelper.setIsPay(ctx, true);//是否已支付，但不作为Pro依据
-                    AlipayZeroSdk.startAlipayClient(this, "aex02461t5uptlcygocfsbc");
-                } else {
-                    Xutils.tShort("请先安装支付宝~");
-                }
+                pay(ctx);
                 break;
             case 4:
                 new ColorChooserDialog.Builder(this, R.string.color_palette)
@@ -523,6 +547,15 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         }
 
         return true;
+    }
+
+    public static void pay(Activity ctx) {
+        if (AlipayZeroSdk.hasInstalledAlipayClient(ctx)) {
+            SPHelper.setIsPay(ctx, true);//是否已支付，但不作为Pro依据
+            AlipayZeroSdk.startAlipayClient(ctx, "aex02461t5uptlcygocfsbc");
+        } else {
+            Xutils.tShort("请先安装支付宝~");
+        }
     }
 }
 

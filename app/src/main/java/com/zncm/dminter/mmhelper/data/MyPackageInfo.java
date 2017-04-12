@@ -4,7 +4,7 @@ package com.zncm.dminter.mmhelper.data;
  * Created by dminter on 2016/7/22.
  */
 
-public class PackageInfo {
+public class MyPackageInfo {
 
 
     public static final String pk_wx = "com.tencent.mm";

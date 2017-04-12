@@ -58,9 +58,7 @@ public class SPHelper {
     //夜间模式-设置
     public static void setIsNightMode(Context context, boolean is_night_mode) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean("is_show_window", is_night_mode).commit();
-
-
+        sp.edit().putBoolean("is_night_mode", is_night_mode).commit();
     }
 
 

@@ -27,9 +27,11 @@ import com.kenumir.materialsettings.items.TextItem;
 import com.kenumir.materialsettings.storage.StorageInterface;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
+import com.zncm.dminter.mmhelper.data.MyPackageInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
+import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -225,10 +227,47 @@ public class SettingNew extends MaterialSettings {
 
             }
         }));
-        
-        
-        
-        
+
+
+        addItem(new HeaderItem(this).setTitle("Pro"));
+
+        addItem(new TextItem(this, "").setTitle("排序").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+
+
+            }
+        }));
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this, "").setTitle("批量添加活动").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+                if (checkNotPro()) {
+                    return;
+                }
+                startActivity(new Intent(ctx, ActivityShortcut.class));
+            }
+        }));
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this, "").setTitle("批量添加Shell").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+                if (checkNotPro()) {
+                    return;
+                }
+                startActivity(new Intent(ctx, ShellBatActivity.class));
+
+
+            }
+        }));
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this, "").setTitle("悬浮球").setSubtitle("点击【返回】，上【最近任务】，左【收藏的活动】，下【桌面】，右【采集活动】，长按【截屏、拖动位置】").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+
+
+            }
+        }));
         
         
         
@@ -277,6 +316,18 @@ public class SettingNew extends MaterialSettings {
                 SPHelper.setT9Clear(ctx, b);
             }
         }).setDefaultValue(SPHelper.isT9Clear(this.ctx)));
+
+
+        addItem(new HeaderItem(this).setTitle("其他"));
+        addItem(new TextItem(this, "").setTitle("全部解冻").setSubtitle("卸载本软件前请先解冻，若无法直接卸载，请先到设备管理器取消激活").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+
+                MyFt.BatStopTask batStopTask = new MyFt.BatStopTask();
+                batStopTask.execute(true);
+
+            }
+        }));
     }
 
 
@@ -348,7 +399,7 @@ public class SettingNew extends MaterialSettings {
                                 new MaterialDialog.Builder(ctx).title("输入订单号").customView(editText, false).positiveText("好").negativeText("不").neutralText("打开支付宝").onAny(new MaterialDialog.SingleButtonCallback() {
                                     public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which) {
                                         if (which == DialogAction.NEUTRAL) {
-                                            Xutils.startAppByPackageName(ctx, "com.eg.android.AlipayGphone", 3);
+                                            Xutils.startAppByPackageName(ctx, MyPackageInfo.pk_zfb, 3);
                                         } else if (which == DialogAction.POSITIVE) {
                                             String code = editText.getText().toString();
                                             if (Xutils.isEmptyOrNull(code)) {
@@ -382,11 +433,11 @@ public class SettingNew extends MaterialSettings {
 
 
                             } else if (which == DialogAction.POSITIVE) {
-                                Xutils.startAppByPackageName(ctx, "com.eg.android.AlipayGphone", 3);
+                                MainActivity.pay(ctx);
                             }
 
                         }
-                    });
+                    }).show();
 
 
                 }

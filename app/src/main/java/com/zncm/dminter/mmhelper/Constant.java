@@ -13,7 +13,7 @@ public class Constant {
     public static String SA_LOCK_SCREEN = "SA_LOCK_SCREEN";
     public static String OPENINENT_LIKE = "OPENINENT_LIKE";
 
-
+    public static final int sort_apps = 999;
 
 
 

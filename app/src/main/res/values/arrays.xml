@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="cmd_array">
+        <item>cat /data/misc/wifi/*.conf|WiFi 密码</item>
+        <item>reboot|重启手机</item>
+        <item>input keyevent 3|HOME 键</item>
+        <item>input keyevent 187|切换应用</item>
+        <item>input keyevent 26|电源键</item>
+        <item>input keyevent 223|熄灭屏幕</item>
+        <item>pm list packages -3|已安装的第三方app</item>
+        <item>am start -n com.tencent.mm/.ui.LauncherUI|微信</item>
+        <item>ifconfig|IP 地址</item>
+        <item>getprop ro.product.model|型号</item>
+        <item>dumpsys battery|电池状况</item>
+        <item>wm size|屏幕分辨率</item>
+        <item>wm density|屏幕密度</item>
+        <item>dumpsys window displays|显示屏参数</item>
+        <item>settings get secure android_id|android_id</item>
+        <item>getprop ro.build.version.release|Android 系统版本</item>
+        <item>cat /sys/class/net/wlan0/address|Mac 地址</item>
+        <item>cat /proc/cpuinfo|CPU 信息</item>
+        <item>cat /proc/meminfo|内存信息</item>
+        <item>cat /system/build.prop|更多硬件与系统属性</item>
+        <item>reboot recovery|重启到 Recovery 模式</item>
+        <item>reboot bootloader|重启到 Fastboot 模式</item>
+        <item>am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true|开启飞行模式</item>
+        <item>am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false|关闭飞行模式</item>
+        <item>svc data enable|打开数据连接</item>
+        <item>svc data disable|关闭数据连接</item>
+        <item>svc wifi enable|开启wifi连接</item>
+        <item>svc wifi disable|关闭wifi连接</item>
+        <item>df|磁盘空间占用</item>
+        <item>date|系统时间</item>
+        <item>netstat|查看网络状态</item>
+    </string-array>
+    <string-array name="init_cards">
+        <item>||</item>
+        <item>||</item>
+        <item>||</item>
+    </string-array>
     <string-array name="wx_dl">
         <item>weixin://dl/moments|朋友圈</item>
         <item>weixin://dl/posts|我的相册</item>
@@ -46,13 +84,4 @@
         <item>alipayqr://platformapi/startapp?saId=10000007|扫码</item>
         <item>alipayqr://platformapi/startapp?saId=20000056|付款码</item>
     </string-array>
-    <string-array name="init_cards">
-        <item>||</item>
-        <item>||</item>
-        <item>||</item>
-    </string-array>
-
-
-
-
 </resources>
