@@ -13,7 +13,7 @@ public class FloatWindowManager {
     private static WindowManager mWindowManager;
 
 
-    public static void addBallView(WatchingAccessibilityService context) {
+    public static void addBallView(FloatBallService context) {
         if (mBallView == null) {
             WindowManager windowManager = getWindowManager(context);
             int screenWidth = windowManager.getDefaultDisplay().getWidth();

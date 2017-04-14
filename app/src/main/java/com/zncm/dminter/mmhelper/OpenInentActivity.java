@@ -66,12 +66,20 @@ public class OpenInentActivity extends AppCompatActivity {
                 } else if (isShotcut) {
                     initAppBS(new CardInfo(pkName));
                 } else {
-                    Xutils.exec(Constant.common_pm_e_p + pkName);
-                    int ret = Xutils.cmdExe(Constant.common_am_pre + pkName + Constant.common_am_div + className);
-                    if (ret == -1) {
-                        Xutils.tShort("打开失败~~");
+
+                    if (Xutils.isNotEmptyOrNull(className)) {
+                        Xutils.exec(Constant.common_pm_e_p + pkName);
+                        int ret = Xutils.cmdExe(Constant.common_am_pre + pkName + Constant.common_am_div + className);
+                        if (ret == -1) {
+                            Xutils.tShort("打开失败~~");
+                        }
+                        finish();
+                    } else {
+                        MyFt.appNewStatus(new CardInfo(pkName));
+                        Xutils.startAppByPackageName(ctx, pkName, Constant.attempt);
+                        finish();
                     }
-                    finish();
+
                 }
             }
 
@@ -163,9 +171,12 @@ public class OpenInentActivity extends AppCompatActivity {
             }
         }
 
+
+        final PkInfo pkInfo = DbUtils.getPkOne(info.getPackageName());
+        final boolean isDisabled = pkInfo.getStatus() == EnumInfo.appStatus.DISABLED.getValue();
         //冻结，解冻
         Map<String, Object> map = new HashMap<>();
-        map.put("text", info.isDisabled() ? "解冻" : "冻结");
+        map.put("text", isDisabled ? "解冻" : "冻结");
         map.put("key", "-1");
         list.add(map);
 
@@ -197,15 +208,13 @@ public class OpenInentActivity extends AppCompatActivity {
                 switch (position - activitys.size()) {
 
                     case 0:
-                        if (info.isDisabled()) {
-                            info.setDisabled(false);
-//                            Xutils.exec("pm able " + info.getPackageName());
+                        if (isDisabled) {
+                            Xutils.exec("pm enable " + info.getPackageName());
                         } else {
                             Xutils.exec("pm disable " + info.getPackageName());
-                            info.setDisabled(true);
                         }
-                        PkInfo pkInfo = DbUtils.getPkOne(info.getPackageName());
-                        pkInfo.setStatus(!info.isDisabled() ? EnumInfo.appStatus.ENABLE.getValue() : EnumInfo.appStatus.DISABLED.getValue());
+                        info.setDisabled(isDisabled);
+                        pkInfo.setStatus(info.isDisabled() ? EnumInfo.appStatus.ENABLE.getValue() : EnumInfo.appStatus.DISABLED.getValue());
                         DbUtils.updatePkInfo(pkInfo);
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));

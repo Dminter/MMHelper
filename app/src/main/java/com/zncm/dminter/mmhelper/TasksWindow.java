@@ -64,7 +64,7 @@ public class TasksWindow {
                 @Override
                 public boolean onLongClick(View view) {
                     dismiss(context);
-                    SPHelper.setIsShowWindow(context, false);
+                    SPHelper.setIsAcFloat(context, false);
                     return true;
                 }
             });

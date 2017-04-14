@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import com.zncm.dminter.mmhelper.data.MyPackageInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
+import com.zncm.dminter.mmhelper.floatball.FloatBallService;
 import com.zncm.dminter.mmhelper.floatball.FloatWindowManager;
 import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.Xutils;
@@ -43,6 +45,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import ezy.assist.compat.SettingsCompat;
 
 /**
  * Created by jiaomx on 2017/4/10.
@@ -216,6 +220,9 @@ public class SettingNew extends MaterialSettings {
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
                 SPHelper.setIsAcFloat(ctx, b);
                 if (b) {
+                    if (!SettingsCompat.canDrawOverlays(ctx)) {
+                        startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                    }
                     MyFt.getActivityDlg(ctx);
                 } else {
                     TasksWindow.dismiss(ctx);
@@ -321,17 +328,9 @@ public class SettingNew extends MaterialSettings {
                 SPHelper.setIsFloatBall(ctx, b);
 //                Intent localIntent = new Intent(ctx, FloatBallService.class);
                 if (b) {
-                    WatchingAccessibilityService mService;
-                    if (WatchingAccessibilityService.getInstance() != null) {
-                        mService = WatchingAccessibilityService.getInstance();
-                    } else {
-                        MyFt.getActivityDlg(ctx);
-                        return;
-                    }
-                    FloatWindowManager.addBallView(mService);
-//                    FloatWindowManager.addBallView(ctx);
+                    ctx.startService(new Intent(ctx, FloatBallService.class));
                 } else {
-//                    stopService(localIntent);
+                    ctx.stopService(new Intent(ctx, FloatBallService.class));
                     FloatWindowManager.removeBallView(ctx);
                 }
             }

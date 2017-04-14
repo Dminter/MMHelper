@@ -58,6 +58,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ezy.assist.compat.SettingsCompat;
+
 public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private RecyclerView mListView;
     private Activity ctx;
@@ -219,6 +221,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                 case 0:
                                     if (ctx instanceof MainActivity) {
                                         SPHelper.setIsAcFloat(ctx, true);
+                                        if (!SettingsCompat.canDrawOverlays(ctx)) {
+                                            startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                                        }
                                         MyFt.getActivityDlg(ctx);
                                     }
                                     break;
@@ -281,11 +286,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
                             return true;
                         }
-                    }).positiveText("确定").negativeText("取消").neutralText("彻底冻结").onPositive(new MaterialDialog.SingleButtonCallback() {
+                    }).positiveText("确定").negativeText("取消").neutralText("彻底冻结").onAny(new MaterialDialog.SingleButtonCallback() {
 
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
                             if (which == DialogAction.NEUTRAL) {
                                 Xutils.debug("11111111111111");
                                 Xutils.tShort("正在彻底冻结...");
@@ -369,7 +373,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     public static void getActivityDlg(final Context ctx) {
         if (WatchingAccessibilityService.getInstance() == null) {
             if (ctx instanceof Activity) {
-                final MainActivity mCtx = (MainActivity) ctx;
+                final Activity mCtx = (Activity) ctx;
                 new MaterialDialog.Builder(ctx)
                         .title("开启无障碍")
                         .content(R.string.dialog_enable_accessibility_msg)
@@ -392,7 +396,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         })
                         .canceledOnTouchOutside(false)
                         .show();
-                SPHelper.setIsShowWindow(ctx, true);
             } else {
                 Intent intent = new Intent();
                 intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
@@ -456,13 +459,14 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         Xutils.tShort(Constant.add_shortcut);
     }
 
+
     public static void clickCard(final Context activity, CardInfo info) {
         if (info == null) {
             return;
         }
         int ret = 0;
         if (info.getType() == EnumInfo.cType.WX.getValue()) {
-            ret = Xutils.cmdExe(Constant.wx_am_pre + Constant.wx_ChattingUI + info.getCmd());
+            ret = Xutils.cmdWxUserExe(info.getCmd());
         } else if (info.getType() == EnumInfo.cType.URL.getValue()) {
             Xutils.openUrl(info.getCmd());
         } else if (info.getType() == EnumInfo.cType.QQ.getValue()) {
@@ -500,8 +504,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 }
 
             }
-
-
         } else if (info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
             String cmd = info.getCmd();
             try {
@@ -750,8 +752,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         } else {
                             info.setExi1(1);
                         }
-//                        cardInfos.set(position, info);
-//                        cardAdapter.notifyDataSetChanged();
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
                         DbUtils.updateCard(info);
                         break;
@@ -768,19 +768,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         DbUtils.updateCard(info);
                         cardInfos.remove(position);
                         cardAdapter.notifyDataSetChanged();
-//                        new SnackBar.Builder(ctx)
-//                                .withOnClickListener(new SnackBar.OnMessageClickListener() {
-//                                    @Override
-//                                    public void onMessageClick(Parcelable token) {
-//
-//                                    }
-//                                })
-//                                .withMessage("移除这张活动卡!")
-//                                .withActionMessage("撤销")
-//                                .withStyle(SnackBar.Style.DEFAULT)
-//                                .withBackgroundColorId(SPHelper.getThemeColor(ctx))
-//                                .withDuration(SnackBar.LONG_SNACK)
-//                                .show();
                         break;
                     case 3:
                         if (top) {
@@ -870,21 +857,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                                if (which == DialogAction.NEUTRAL) {
-
-                                    Xutils.tShort("正在彻底冻结...");
-                                    ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(1);
-                                    if (Xutils.listNotNull(pkInfos)) {
-                                        for (PkInfo tmp : pkInfos
-                                                ) {
-                                            if (!tmp.getPackageName().equals(Constant.app_pkg)) {
-                                                tmp.setStatus(EnumInfo.appStatus.ENABLE.getValue());
-                                                DbUtils.updatePkInfo(tmp);
-                                            }
-                                        }
-                                    }
-                                    new BatStopTask().execute(false);
-                                }
                             }
                         }).show();
 
@@ -926,14 +898,16 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             }
         }
 
+        final PkInfo pkInfo = DbUtils.getPkOne(info.getPackageName());
+        final boolean isDisabled = pkInfo.getStatus() == EnumInfo.appStatus.DISABLED.getValue();
+
         //冻结，解冻
         Map<String, Object> map = new HashMap<>();
-        map.put("text", info.isDisabled() ? "解冻" : "冻结");
+        map.put("text", isDisabled ? "解冻" : "冻结");
         map.put("key", "-1");
         list.add(map);
 
         //移除、添加到冷冻室
-        final PkInfo pkInfo = DbUtils.getPkOne(info.getPackageName());
         Map<String, Object> map2 = new HashMap<>();
         map2.put("text", pkInfo.getExb2() == 1 ? "移除冷冻室" : "添加到冷冻室");
         map2.put("key", "-2");
@@ -958,11 +932,14 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         map6.put("text", "删除");
         map6.put("key", "-6");
         list.add(map6);
-        //删除
         Map<String, Object> map7 = new HashMap<>();
         map7.put("text", "shortcut");
         map7.put("key", "-7");
         list.add(map7);
+        Map<String, Object> map8 = new HashMap<>();
+        map8.put("text", "卸载");
+        map8.put("key", "-8");
+        list.add(map8);
         new BottomSheetDlg(ctx, list, false) {
             @Override
             public void onGridItemClickListener(int position) {
@@ -979,16 +956,13 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 switch (position - like.size()) {
 
                     case 0:
-                        if (info.isDisabled()) {
-                            info.setDisabled(false);
-//                            Xutils.exec("pm able " + info.getPackageName());
+                        if (isDisabled) {
+                            Xutils.exec("pm enable " + info.getPackageName());
                         } else {
                             Xutils.exec("pm disable " + info.getPackageName());
-                            info.setDisabled(true);
                         }
-                        cardInfos.set(position, info);
-                        mListView.getAdapter().notifyDataSetChanged();
-                        pkInfo.setStatus(!info.isDisabled() ? EnumInfo.appStatus.ENABLE.getValue() : EnumInfo.appStatus.DISABLED.getValue());
+                        info.setDisabled(isDisabled);
+                        pkInfo.setStatus(info.isDisabled() ? EnumInfo.appStatus.ENABLE.getValue() : EnumInfo.appStatus.DISABLED.getValue());
                         DbUtils.updatePkInfo(pkInfo);
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
@@ -1029,6 +1003,11 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         break;
                     case 6:
                         Xutils.sendToDesktop(ctx, info, true);
+                        break;
+                    case 7:
+                        Xutils.unstallApp(ctx, info.getPackageName());
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
                         break;
 
 

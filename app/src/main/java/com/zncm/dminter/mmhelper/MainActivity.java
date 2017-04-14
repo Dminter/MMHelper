@@ -33,6 +33,7 @@ import com.zncm.dminter.mmhelper.data.FzInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
+import com.zncm.dminter.mmhelper.floatball.FloatBallService;
 import com.zncm.dminter.mmhelper.floatball.FloatBallView;
 import com.zncm.dminter.mmhelper.floatball.FloatWindowManager;
 import com.zncm.dminter.mmhelper.ft.MyFt;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     public ArrayList<FzInfo> fzInfos = new ArrayList<>();
     private MainActivity ctx;
     public ArrayList<MyFt> fragments = new ArrayList<>();
-    MaterialDialog progressDlg;
+    //    MaterialDialog progressDlg;
     private LinearLayout topView;
     ScreenListener screenListener;
     @Override
@@ -171,15 +172,17 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                 if (ballView != null && ballView.getVisibility() == View.GONE) {
                     ballView.setVisibility(View.VISIBLE);
                 } else {
-//                    ctx.startService(new Intent(ctx, FloatBallService.class));
-                    WatchingAccessibilityService mService = null;
-                    if (WatchingAccessibilityService.getInstance() != null) {
-                        mService = WatchingAccessibilityService.getInstance();
-                    } else {
-//                        MyFt.getActivityDlg(ctx);
-//                        return;
-                    }
-                    FloatWindowManager.addBallView(mService);
+                    ctx.startService(new Intent(ctx, FloatBallService.class));
+//                    WatchingAccessibilityService mService = null;
+//                    if (WatchingAccessibilityService.getInstance() != null) {
+//                        mService = WatchingAccessibilityService.getInstance();
+//                    } else {
+////                        MyFt.getActivityDlg(ctx);
+////                        return;
+//                    }
+//                    if (mService != null) {
+//                        FloatWindowManager.addBallView(mService);
+//                    }
                 }
             }
         } catch (Exception e) {
@@ -189,12 +192,9 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
 
     private void initApps() {
-
-        progressDlg = new MaterialDialog.Builder(this)
-                .title("数据初始化中...")
-                .show();
-
-
+//        progressDlg = new MaterialDialog.Builder(this)
+//                .title("数据初始化中...")
+//                .show();
         DataInitHelper.MyTask task = new DataInitHelper.MyTask();
         task.execute();
     }
@@ -281,15 +281,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     @Override
     protected void onResume() {
         super.onResume();
-//        if (MyApplication.getInstance().isOpenInent) {
-////            backToDesk(this);
-//            MyApplication.getInstance().isOpenInent = false;
-//        }
-//
-//        if (SPHelper.isShowWindow(ctx)) {
-////            NotificationActionReceiver.cancelNotification(this);
-//        }
-        if (SPHelper.isShowWindow(ctx)) {
+        if (SPHelper.isAcFloat(ctx)) {
             MyFt.updateServiceStatus(ctx);
         }
         initBallService(ctx);
@@ -467,84 +459,6 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                 .show();
     }
 
-
-
-
-
-//    private void updateServiceStatus() {
-//        boolean serviceEnabled = false;
-//        AccessibilityManager accessibilityManager =
-//                (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
-//        List<AccessibilityServiceInfo> accessibilityServices =
-//                accessibilityManager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC);
-//        for (AccessibilityServiceInfo info : accessibilityServices) {
-//            if (info.getId().equals(getPackageName() + "/.WatchingAccessibilityService")) {
-//                serviceEnabled = true;
-//                break;
-//            }
-//        }
-//        mWindowSwitch.setChecked(serviceEnabled);
-//        if (serviceEnabled) {
-//            startService(new Intent(this, WatchingService.class));
-//        }
-//    }
-//
-//    private void resetUI() {
-//        updateServiceStatus();
-//    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        if (SPHelper.isShowWindow(this) && WatchingAccessibilityService.getInstance() == null) {
-//            NotificationActionReceiver.showNotification(this, false);
-//        }
-    }
-
-
-//    @Override
-//    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//
-//        if (isChecked && buttonView == mWindowSwitch) {
-//            if (WatchingAccessibilityService.getInstance() == null) {
-//
-//                new MaterialDialog.Builder(ctx)
-//                        .title("开启无障碍")
-//                        .content(R.string.dialog_enable_accessibility_msg)
-//                        .positiveText("好")
-//                        .negativeText("不")
-//                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-//                            @Override
-//                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//                                Intent intent = new Intent();
-//                                intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
-//                                startActivity(intent);
-//                            }
-//                        })
-//                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-//                            @Override
-//                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//                                resetUI();
-//                            }
-//                        })
-//                        .canceledOnTouchOutside(false)
-//                        .show();
-//                SPHelper.setIsShowWindow(this, isChecked);
-//                return;
-//            }
-//        }
-//
-//        if (buttonView.getId() == R.id.mWindowSwitch) {
-//            SPHelper.setIsShowWindow(this, isChecked);
-//            if (!isChecked) {
-//                TasksWindow.dismiss(this);
-//            } else {
-//                TasksWindow.show(this, getPackageName() + "\n" + getClass().getName());
-//            }
-//        }
-//
-//    }
 
 
     @Override

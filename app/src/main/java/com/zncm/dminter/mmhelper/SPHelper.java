@@ -20,7 +20,7 @@ public class SPHelper {
 
     public static boolean isFloatBall(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean("float_ball", true);
+        return sp.getBoolean("float_ball", false);
     }
 
     public static void setIsFloatBall(Context context, boolean float_ball) {
@@ -40,7 +40,7 @@ public class SPHelper {
 
     public static boolean isHS(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean("is_hs", true);
+        return sp.getBoolean("is_hs", false);
     }
 
     public static void setIsHS(Context context, boolean is_hs) {

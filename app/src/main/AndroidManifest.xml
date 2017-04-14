@@ -70,6 +70,13 @@
             android:label="批量添加活动"
             android:launchMode="singleInstance" />
 
+
+        <activity
+            android:name="com.zncm.dminter.mmhelper.AboutAc"
+            android:launchMode="singleInstance"
+            android:theme="@style/MyMaterialSettings" />
+
+
         <service
             android:name="com.zncm.dminter.mmhelper.WatchingService"
             android:enabled="true"></service>

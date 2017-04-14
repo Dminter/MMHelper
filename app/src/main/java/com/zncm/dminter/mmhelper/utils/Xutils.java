@@ -146,6 +146,9 @@ public class Xutils {
 
     public static void openUrl(String url) {
         try {
+            if (isNotEmptyOrNull(url) && !url.startsWith("http")) {
+                url = "http://" + url;
+            }
             Uri uri = Uri.parse(url);
             Intent it = new Intent(Intent.ACTION_VIEW, uri);
             it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -328,6 +331,13 @@ public class Xutils {
 
     }
 
+    //卸载应用程序
+    public static void unstallApp(Context context, String pkgName) {
+        Intent uninstall_intent = new Intent();
+        uninstall_intent.setAction(Intent.ACTION_DELETE);
+        uninstall_intent.setData(Uri.parse("package:" + pkgName));
+        context.startActivity(uninstall_intent);
+    }
 
     public static Intent isExit(Context context, String pk_name) {
         if (isEmptyOrNull(pk_name)) {

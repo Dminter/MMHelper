@@ -4,12 +4,11 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId "com.zncm.dminter.mmhelper2"
+        applicationId "com.zncm.dminter.mmhelper"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 7
-        versionName "1.6"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode 28
+        versionName "2.2.0"
     }
     buildTypes {
         release {

@@ -2,7 +2,6 @@ package com.zncm.dminter.mmhelper;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,12 +28,21 @@ public class AboutAc extends MaterialSettings {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ctx = this;
+//        addItem(new TextItem(this.ctx, "").setTitle("使用手册").setOnclick(new TextItem.OnClickListener() {
+//            public void onClick(TextItem textItem) {
+//                startActivity(new Intent(AboutAc.this.ctx, HelpAc.class));
+//            }
+//        }));
+//        addItem(new DividerItem(this.ctx));
+
         addItem(new TextItem(this.ctx, "").setTitle("使用手册").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
-                startActivity(new Intent(AboutAc.this.ctx, HelpAc.class));
+                Xutils.openUrl(Constant.help_url);
             }
         }));
         addItem(new DividerItem(this.ctx));
+
+
         addItem(new TextItem(this.ctx, "").setTitle("酷安评分、讨论、更新").setSubtitle("当前版本：" + Xutils.getAppVersion(getPackageName())).setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem paramAnonymousTextItem) {
                 Xutils.openUrl(Constant.update_url);

@@ -50,7 +50,7 @@ public class FloatBallView extends LinearLayout {
 
     private int mStatusBarHeight;
 
-    //    private FloatBallService mBallService;
+        private FloatBallService mBallService;
     WatchingAccessibilityService mService;
     private int mCurrentMode;
 
@@ -76,7 +76,7 @@ public class FloatBallView extends LinearLayout {
     public FloatBallView(Context context) {
         super(context);
         this.ctx = context;
-        mService = (WatchingAccessibilityService) context;
+        mBallService = (FloatBallService) context;
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mWindowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         initView();
@@ -193,7 +193,7 @@ public class FloatBallView extends LinearLayout {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Xutils.tShort("已截屏~");
-            FloatWindowManager.addBallView(mService);
+            FloatWindowManager.addBallView(mBallService);
         }
     }
 

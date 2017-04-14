@@ -53,8 +53,7 @@ public class WatchingService extends Service {
 					+ rtis.get(0).topActivity.getClassName();
 			if (!act.equals(text)) {
 				text = act;
-				if(SPHelper.isShowWindow(WatchingService.this)){
-					
+				if (SPHelper.isAcFloat(WatchingService.this)) {
 					mHandler.post(new Runnable() {
 						@Override
 						public void run() {
