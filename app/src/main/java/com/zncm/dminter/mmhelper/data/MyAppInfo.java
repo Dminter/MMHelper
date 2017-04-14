@@ -1,8 +1,10 @@
 package com.zncm.dminter.mmhelper.data;
-
+/**
+ *APP信息实体
+ */
 public class MyAppInfo {
-    private String packageName;
-    private String className;
+    private String packageName;//包名
+    private String className;//类名
 
 
     public MyAppInfo() {

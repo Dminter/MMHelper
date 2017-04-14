@@ -2,11 +2,12 @@ package com.zncm.dminter.mmhelper.data;
 
 /**
  * Created by dminter on 2016/7/27.
+ * 分组
  */
 
 public class FzInfo {
-    private int id;
-    private String name;
+    private int id;//id
+    private String name;//名称
 
 
     public FzInfo() {

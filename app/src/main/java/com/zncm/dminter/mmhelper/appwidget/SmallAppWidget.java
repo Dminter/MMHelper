@@ -20,10 +20,13 @@ import com.zncm.dminter.mmhelper.utils.Xutils;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * 桌面小插件，直达收藏的活动
+ */
 public class SmallAppWidget extends AppWidgetProvider {
 
     public ArrayList<CardInfo> likeTop10 = new ArrayList();
-    ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
+    private ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
 
 
     @Override
@@ -60,6 +63,7 @@ public class SmallAppWidget extends AppWidgetProvider {
             cardInfo = likeTop10.get(position);
         }
         remoteViews.setTextViewText(textView, cardInfo.getTitle());
+        //根据包名统一颜色
         if (Xutils.isNotEmptyOrNull(cardInfo.getPackageName())) {
             remoteViews.setInt(textView, "setBackgroundColor", mColorGenerator.getColor(cardInfo.getPackageName()));
         } else {

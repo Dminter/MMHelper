@@ -6,11 +6,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 
 import com.zncm.dminter.mmhelper.floatball.ScreenOffAdminReceiver;
 import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.Xutils;
+
+import ezy.assist.compat.SettingsCompat;
 
 /**
  * Created by dminter on 2016/7/26.
@@ -31,19 +34,27 @@ public class ShortcutActionActivity extends Activity {
                 if (action.equals(Constant.SA_BATSTOP)) {
                     MyFt.BatStopTask batStopTask = new MyFt.BatStopTask();
                     batStopTask.execute(false);
+                    finish();
                 } else if (action.equals(Constant.SA_T9)) {
                     startActivity(new Intent(ctx, T9SearchActivity.class));
+                    finish();
                 } else if (action.equals(Constant.SA_GET_ACTIVITY)) {
                     SPHelper.setIsAcFloat(ctx, true);
+                    if (!SettingsCompat.canDrawOverlays(ctx)) {
+                        startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                    }
                     MyFt.getActivityDlg(ctx);
+                    finish();
                 } else if (action.equals(Constant.SA_LOCK_SCREEN)) {
                     lockScreen(ctx);
+                    finish();
+                } else if (action.equals(Constant.OPENINENT_LIKE)) {
+                    OpenInentActivity.initLikes(ctx);
                 }
             }
-            MyApplication.getInstance().isOpenInent = true;
-            finish();
+//            MyApplication.getInstance().isOpenInent = true;
+
         } else {
-            Xutils.tShort("已创建，全部冷冻、T9搜索、锁屏三个快捷方式~");
             SettingNew.shortCutAdd(ctx, Constant.SA_BATSTOP, "全部冷冻");
             SettingNew.shortCutAdd(ctx, Constant.SA_T9, "T9搜索");
             SettingNew.shortCutAdd(ctx, Constant.SA_LOCK_SCREEN, "锁屏");
@@ -52,13 +63,22 @@ public class ShortcutActionActivity extends Activity {
     }
 
 
-    public static void lockScreen(Context paramContext) {
-        DevicePolicyManager devicePolicy = (DevicePolicyManager) paramContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        if (devicePolicy.isAdminActive(new ComponentName(paramContext, ScreenOffAdminReceiver.class))) {
+    public static void lockScreen(Context context) {
+        try {
+            DevicePolicyManager devicePolicy = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+            if (devicePolicy.isAdminActive(new ComponentName(context, ScreenOffAdminReceiver.class))) {
             devicePolicy.lockNow();
             return;
+            } else {
+                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(context, ScreenOffAdminReceiver.class));
+                context.startActivity(intent);
+                Xutils.tLong("请在设备管理器授权~");
         }
-        Xutils.tLong("请在设备管理器授权~");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

@@ -5,31 +5,32 @@ import com.j256.ormlite.field.DatabaseField;
 
 /**
  * Created by dminter on 2016/7/27.
+ * 应用实体类
  */
 
 public class PkInfo {
     @DatabaseField(generatedId = true)
-    private int id;
+    private int id;//ID
     @DatabaseField
-    private String packageName;
+    private String packageName;//包名
     @DatabaseField
-    private String className;
+    private String className;//类名
     @DatabaseField
-    private String name;
+    private String name;//名称
     @DatabaseField(dataType = DataType.BYTE_ARRAY)
-    private byte[] icon;
+    private byte[] icon;//图标
     @DatabaseField
-    private int status = EnumInfo.appStatus.ENABLE.getValue();
+    private int status = EnumInfo.appStatus.ENABLE.getValue();//停用，启用
 
     @DatabaseField
-    private int type = EnumInfo.appType.THREE.getValue();
+    private int type = EnumInfo.appType.THREE.getValue();//是否第三方
 
     @DatabaseField
-    private String ex1;//appName
+    private String ex1;//appName -暂未使用
     @DatabaseField
     private String ex2;//pinyin -paixu
     @DatabaseField
-    private String ex3;
+    private String ex3;//拼音字段
     @DatabaseField
     private String ex4;
     @DatabaseField
@@ -53,7 +54,7 @@ public class PkInfo {
     @DatabaseField
     private int exb2;//1冷冻室，0不在冷冻室
     @DatabaseField
-    private int exb3;
+    private int exb3;//应用排序
     @DatabaseField
     private int exb4;
     @DatabaseField
@@ -255,4 +256,6 @@ public class PkInfo {
     public void setExb5(int exb5) {
         this.exb5 = exb5;
     }
+
+
 }

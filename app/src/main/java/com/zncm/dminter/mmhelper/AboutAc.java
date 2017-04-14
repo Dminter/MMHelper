@@ -57,7 +57,7 @@ public class AboutAc extends MaterialSettings {
         }));
 
         addItem(new DividerItem(this.ctx));
-        addItem(new TextItem(this.ctx, "").setTitle("BY Dminter").setOnclick(new TextItem.OnClickListener() {
+        addItem(new TextItem(this.ctx, "").setTitle("by Dminter").setSubtitle("微信：" + Constant.author_wx).setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 Xutils.cmdWxUserExe(Constant.author_wx);
                 DbUtils.cardXm();
@@ -67,6 +67,12 @@ public class AboutAc extends MaterialSettings {
         addItem(new TextItem(this.ctx, "").setTitle("特别感谢").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 thank();
+            }
+        }));
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this.ctx, "").setTitle("已开源").setSubtitle(Constant.github_url).setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                Xutils.openUrl(Constant.github_url);
             }
         }));
 

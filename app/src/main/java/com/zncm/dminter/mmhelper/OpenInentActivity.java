@@ -52,7 +52,7 @@ public class OpenInentActivity extends AppCompatActivity {
 
 
             if ((Xutils.isNotEmptyOrNull(pkName)) && (pkName.equals(Constant.OPENINENT_LIKE))) {
-                initLikes();
+                initLikes(ctx);
             } else if ((Xutils.isNotEmptyOrNull(pkName)) && (pkName.equals(Constant.OPENINENT_BALL))) {
                 MainActivity.initBallService(ctx);
                 finish();
@@ -84,10 +84,10 @@ public class OpenInentActivity extends AppCompatActivity {
             }
 
 
-            MyApplication.getInstance().isOpenInent = true;
+//            MyApplication.getInstance().isOpenInent = true;
 
         } else {
-            final ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
+            final ArrayList<CardInfo> tmps = DbUtils.getCardInfos(EnumInfo.homeTab.LIKE.getValue());
             if (!Xutils.listNotNull(tmps)) {
                 return;
             }
@@ -97,7 +97,7 @@ public class OpenInentActivity extends AppCompatActivity {
                 items.add(info.getTitle());
             }
             new MaterialDialog.Builder(this)
-                    .title("添加活动到桌面")
+                    .title("添加已收藏的活动到桌面")
                     .items(items)
                     .itemsCallback(new MaterialDialog.ListCallback() {
                         @Override
@@ -116,7 +116,7 @@ public class OpenInentActivity extends AppCompatActivity {
     }
 
 
-    private void initLikes() {
+    public static void initLikes(final Activity ctx) {
 
         final ArrayList<Map<String, Object>> list = new ArrayList<>();
         //应用相关的活动
@@ -149,7 +149,7 @@ public class OpenInentActivity extends AppCompatActivity {
 
             @Override
             public void onOutClickListener() {
-                finish();
+                ctx.finish();
             }
         };
 

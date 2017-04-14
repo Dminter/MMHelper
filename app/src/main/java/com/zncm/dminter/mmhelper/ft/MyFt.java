@@ -2,6 +2,7 @@ package com.zncm.dminter.mmhelper.ft;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -20,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +35,12 @@ import com.software.shell.fab.ActionButton;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MainActivity;
 import com.zncm.dminter.mmhelper.MyApplication;
+import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
 import com.zncm.dminter.mmhelper.SPHelper;
 import com.zncm.dminter.mmhelper.SettingNew;
+import com.zncm.dminter.mmhelper.ShortcutActionActivity;
+import com.zncm.dminter.mmhelper.SortActivity;
 import com.zncm.dminter.mmhelper.WatchingAccessibilityService;
 import com.zncm.dminter.mmhelper.WatchingService;
 import com.zncm.dminter.mmhelper.adapter.CardAdapter;
@@ -47,6 +52,8 @@ import com.zncm.dminter.mmhelper.data.FzInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
+import com.zncm.dminter.mmhelper.dragrecyclerview.CallbackWrap;
+import com.zncm.dminter.mmhelper.dragrecyclerview.OnTouchListener;
 import com.zncm.dminter.mmhelper.utils.BottomSheetDlg;
 import com.zncm.dminter.mmhelper.utils.ShellUtils;
 import com.zncm.dminter.mmhelper.utils.Xutils;
@@ -64,7 +71,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     private RecyclerView mListView;
     private Activity ctx;
     public ArrayList<CardInfo> cardInfos;
-    private MaterialDialog dialog;
     private RecyclerView.LayoutManager layoutManager;
     private String packageName = "";
     private SwipeRefreshLayout swipeLayout;
@@ -72,6 +78,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     private GetDate getDate;
     public CardAdapter cardAdapter;
     public ActionButton actionButton;
+    boolean isSort = false;
+
+    Dialog dialog;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ft_myft, container, false);
@@ -86,7 +95,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setProgressViewOffset(false, 100, 400);
         swipeLayout.setColorSchemeColors(
-                getResources().getColor(R.color.material_purple_accent_400)
+                SPHelper.getThemeColor(ctx)
         );
         mListView = (RecyclerView) view.findViewById(R.id.recyclerView);
         actionButton = (ActionButton) view.findViewById(R.id.action_button);
@@ -176,6 +185,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         }
                         CardInfo info = cardInfos.get(position);
                         if (isLongClick) {
+                            if (isSort) {
+                                return;
+                            }
                             longClick(info, position);
                         } else {
                             if (info.getType() == EnumInfo.cType.START_APP.getValue() && info.isDisabled()) {
@@ -291,7 +303,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             if (which == DialogAction.NEUTRAL) {
-                                Xutils.debug("11111111111111");
                                 Xutils.tShort("正在彻底冻结...");
                                 ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(1);
                                 if (Xutils.listNotNull(pkInfos)) {
@@ -323,6 +334,22 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             });
             actionButton.setOnLongClickListener(null);
         }
+
+
+        if (ctx instanceof SortActivity) {
+            isSort = true;
+            final ItemTouchHelper helper = new ItemTouchHelper(new CallbackWrap(cardAdapter));
+            helper.attachToRecyclerView(mListView);
+            mListView.addOnItemTouchListener(new OnTouchListener(mListView) {
+                @Override
+                public void onLongClick(RecyclerView.ViewHolder vh) {
+                    if (vh.getLayoutPosition() != cardInfos.size()) {
+                        helper.startDrag(vh);
+                    }
+                }
+            });
+        }
+
 
     }
 
@@ -374,6 +401,11 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         if (WatchingAccessibilityService.getInstance() == null) {
             if (ctx instanceof Activity) {
                 final Activity mCtx = (Activity) ctx;
+
+                if (mCtx instanceof ShortcutActionActivity || mCtx instanceof OpenInentActivity) {
+                    openSetting(ctx);
+                    return;
+                }
                 new MaterialDialog.Builder(ctx)
                         .title("开启无障碍")
                         .content(R.string.dialog_enable_accessibility_msg)
@@ -382,10 +414,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                Intent intent = new Intent();
-                                intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                mCtx.startActivity(intent);
+                                openSetting(ctx);
                             }
                         })
                         .onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -397,12 +426,16 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         .canceledOnTouchOutside(false)
                         .show();
             } else {
-                Intent intent = new Intent();
-                intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ctx.startActivity(intent);
+                openSetting(ctx);
             }
         }
+    }
+
+    public static void openSetting(Context ctx) {
+        Intent intent = new Intent();
+        intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ctx.startActivity(intent);
     }
 
 
@@ -604,7 +637,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         ArrayList<PkInfo> tmps = new ArrayList<>();
 //                        tmps = DbUtils.getPkInfos();
                         if (packageName.equals(EnumInfo.homeTab.APPS.getValue())) {
-                            tmps = DbUtils.getPkInfos(null);
+                            tmps = DbUtils.getPkInfos(null, true);
                         } else if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                             tmps = DbUtils.getPkInfosBatStop(1);
                         }
@@ -781,7 +814,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
                         break;
                     case 4:
-                        sendToDesk(ctx, info);
+                        Xutils.sendToDesktop(ctx, info);
                         break;
                     case 5:
                         final ArrayList<String> fzStr = new ArrayList<String>();
@@ -841,7 +874,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                             for (int i = 0; i < which.length; i++) {
                                                 CardInfo cardInfo = cardInfos.get(which[i]);
                                                 if (cardInfo != null) {
-                                                    info.setStatus(EnumInfo.cStatus.DELETE.getValue());
+                                                    cardInfo.setStatus(EnumInfo.cStatus.DELETE.getValue());
                                                     DbUtils.updateCard(cardInfo);
                                                 }
                                             }

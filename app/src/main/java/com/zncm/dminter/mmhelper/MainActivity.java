@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
         if (SPHelper.isHS(ctx)) {
             toolbar.setVisibility(View.GONE);
-            indicator.setVisibility(View.GONE);
+            indicator.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Xutils.dip2px(2)));
             mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Xutils.dip2px(300)));
         }
 
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             screenListener.begin(new ScreenListener.ScreenStateListener() {
                 public void onScreenOff() {
                     if (SPHelper.isAutoStop(ctx)) {
-                        new MyFt.BatStopTask().execute(new Boolean[0]);
+                        new MyFt.BatStopTask().execute(false);
                     }
                 }
 
@@ -293,6 +293,9 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if (this.screenListener != null) {
+            this.screenListener.unregisterListener();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -519,7 +522,6 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
     public static void pay(Activity ctx) {
         if (AlipayZeroSdk.hasInstalledAlipayClient(ctx)) {
-            SPHelper.setIsPay(ctx, true);//是否已支付，但不作为Pro依据
             AlipayZeroSdk.startAlipayClient(ctx, "aex02461t5uptlcygocfsbc");
         } else {
             Xutils.tShort("请先安装支付宝~");

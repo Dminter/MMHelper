@@ -200,6 +200,9 @@ public class Xutils {
         String commands = cmdEnd;
         int ret = AndroidCommand.noRoot;
         if (Xutils.isNotEmptyOrNull(commands)) {
+            if (commands.contains("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI") && isNewWx()) {
+                commands = commands.replace("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI", "com.tencent.mm.plugin.sns.ui.En_424b8e16");
+            }
             ret = AndroidCommand.execRooted(commands);
             if (ret == AndroidCommand.noRoot) {
                 try {
@@ -264,33 +267,33 @@ public class Xutils {
     }
 
     // 发送到桌面快捷方式
-    public static void sendToDesktop(Activity ctx, Class<?> mClass, String title, Drawable drawable, String pkName, String className, int cardId) {
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-        Bitmap bitmap = null;
-        if (bitmapDrawable == null) {
-            bitmapDrawable = (BitmapDrawable) ctx.getResources().getDrawable(R.mipmap.ic_launcher);
-        }
-        if (bitmapDrawable == null) {
-            return;
-        }
-        bitmap = bitmapDrawable.getBitmap();
-        Intent sender = new Intent();
-        Intent shortcutIntent = new Intent(ctx, mClass);
-        shortcutIntent.setAction(Intent.ACTION_VIEW);
-        shortcutIntent.putExtra(Intent.EXTRA_UID, 0);
-        shortcutIntent.putExtra("pkName", pkName);
-        shortcutIntent.putExtra("className", className);
-        shortcutIntent.putExtra("cardId", cardId);
-        sender.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        sender.putExtra(Intent.EXTRA_SHORTCUT_NAME, makeShortcutIconTitle(title));
-        sender.putExtra(Intent.EXTRA_SHORTCUT_ICON,
-                bitmap);
-//        sender.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-//                Intent.ShortcutIconResource.fromContext(ctx, resId));
-        sender.putExtra("duplicate", true);
-        sender.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        ctx.sendBroadcast(sender);
-    }
+//    public static void sendToDesktop(Activity ctx, Class<?> mClass, String title, Drawable drawable, String pkName, String className, int cardId) {
+//        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+//        Bitmap bitmap = null;
+//        if (bitmapDrawable == null) {
+//            bitmapDrawable = (BitmapDrawable) ctx.getResources().getDrawable(R.mipmap.ic_launcher);
+//        }
+//        if (bitmapDrawable == null) {
+//            return;
+//        }
+//        bitmap = bitmapDrawable.getBitmap();
+//        Intent sender = new Intent();
+//        Intent shortcutIntent = new Intent(ctx, mClass);
+//        shortcutIntent.setAction(Intent.ACTION_VIEW);
+//        shortcutIntent.putExtra(Intent.EXTRA_UID, 0);
+//        shortcutIntent.putExtra("pkName", pkName);
+//        shortcutIntent.putExtra("className", className);
+//        shortcutIntent.putExtra("cardId", cardId);
+//        sender.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+//        sender.putExtra(Intent.EXTRA_SHORTCUT_NAME, makeShortcutIconTitle(title));
+//        sender.putExtra(Intent.EXTRA_SHORTCUT_ICON,
+//                bitmap);
+////        sender.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+////                Intent.ShortcutIconResource.fromContext(ctx, resId));
+//        sender.putExtra("duplicate", true);
+//        sender.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+//        ctx.sendBroadcast(sender);
+//    }
 
     // 创建快捷方式
     public static String makeShortcutIconTitle(String content) {

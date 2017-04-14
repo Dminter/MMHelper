@@ -8,16 +8,6 @@ import com.zncm.dminter.mmhelper.data.EnumInfo;
 
 public class SPHelper {
 
-    public static boolean isShowWindow(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean("is_show_window", true);
-    }
-
-    public static void setIsShowWindow(Context context, boolean isShow) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean("is_show_window", isShow).commit();
-    }
-
     public static boolean isFloatBall(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean("float_ball", false);
@@ -82,28 +72,17 @@ public class SPHelper {
     }
 
 
-    //是否已经支付
-    public static void setIsPay(Context context, boolean is_pay) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("is_pay", is_pay).commit();
-    }
-
-    public static boolean isPay(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean("is_pay", false);
-    }
-
-
     public static void setIsT9(Context context, boolean is_t9) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("is_t9", is_t9).commit();
     }
 
     public static boolean isT9(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean("is_t9", false);
+        return sp.getBoolean("is_t9", true);
     }
 
     public static void setT9Auto(Context context, boolean t9_auto) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("t9_auto", true).commit();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("t9_auto", t9_auto).commit();
     }
 
     public static boolean isT9Auto(Context context) {
@@ -112,7 +91,7 @@ public class SPHelper {
     }
 
     public static void setT9Clear(Context context, boolean t9_clear) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("t9_clear", true).commit();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("t9_clear", t9_clear).commit();
     }
 
     public static boolean isT9Clear(Context context) {
@@ -152,15 +131,6 @@ public class SPHelper {
     }
 
 
-    public static int getBallUp(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getInt("ball_up", 0);
-    }
-
-    public static void setBallUp(Context context, int ball_up) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putInt("ball_up", ball_up).commit();
-    }
 
     public static int getCurTab(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -170,36 +140,6 @@ public class SPHelper {
     public static void setCurTab(Context context, int cur_tab) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putInt("cur_tab", cur_tab).commit();
-    }
-
-    public static int getBallLeft(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getInt("ball_left", 0);
-    }
-
-    public static void setBallLeft(Context context, int ball_left) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putInt("ball_left", ball_left).commit();
-    }
-
-    public static int getBallDown(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getInt("ball_down", 0);
-    }
-
-    public static void setBallDown(Context context, int ball_down) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putInt("ball_down", ball_down).commit();
-    }
-
-    public static int getBallRight(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getInt("ball_right", 0);
-    }
-
-    public static void setBallRight(Context context, int ball_right) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putInt("ball_right", ball_right).commit();
     }
 
 

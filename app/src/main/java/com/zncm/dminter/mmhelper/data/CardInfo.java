@@ -5,47 +5,47 @@ import com.j256.ormlite.field.DatabaseField;
 
 /**
  * Created by dminter on 2016/7/22.
+ * 活动实体
  */
 
 public class CardInfo {
-//    packageName:" + info.topActivity.getPackageName() + " className:
 
     @DatabaseField(generatedId = true)
-    private int id;
+    private int id;//ID
     @DatabaseField
-    private String cmd;
+    private String cmd;//命令行
     @DatabaseField
-    private String packageName;
+    private String packageName;//包名
     @DatabaseField
-    private String className;
+    private String className;//类名
     @DatabaseField
-    private String title;
+    private String title;//标题
     @DatabaseField
-    private String description;
+    private String description;//描述-未使用
     @DatabaseField
-    private String icon;
+    private String icon;//图标
     @DatabaseField
-    private String iconUrl;
+    private String iconUrl;//网络图标-未使用
 
     @DatabaseField
     private int type;//1微信聊天
     @DatabaseField
     private int status = EnumInfo.cStatus.NORMAL.getValue();//1正常2删除 -1停用，-2启用TMP
     @DatabaseField
-    private int index;
+    private int index;//未使用
     @DatabaseField
-    private int card_type;//
+    private int card_type;//未使用
     @DatabaseField
-    private int card_color;//
+    private int card_color;//未使用
     @DatabaseField
-    private Long time;
+    private Long time;//添加时间
 
     @DatabaseField
-    private String ex1;//appName
+    private String ex1;//appName-应用名称
     @DatabaseField
-    private String ex2;//pinyin
+    private String ex2;//pinyin-拼音-弃用
     @DatabaseField
-    private String ex3;
+    private String ex3;//新的拼音字段
     @DatabaseField
     private String ex4;
     @DatabaseField
@@ -53,7 +53,7 @@ public class CardInfo {
 
 
     @DatabaseField
-    private int exi1;   //1收藏
+    private int exi1; //1收藏
     @DatabaseField
     private int exi2;//排序
     @DatabaseField

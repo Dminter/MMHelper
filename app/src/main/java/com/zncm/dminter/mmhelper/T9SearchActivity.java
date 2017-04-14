@@ -103,7 +103,7 @@ public class T9SearchActivity extends BaseActivity {
      * 添加活动到T9，没有拼音的第一次需要初始化
      */
     private void initAc() {
-        ArrayList<CardInfo> cardInfos = DbUtils.getCardInfos(null);
+        ArrayList<CardInfo> cardInfos = DbUtils.getCardInfos(EnumInfo.homeTab.LIKE.getValue());
         if (Xutils.listNotNull(cardInfos)) {
             for (CardInfo info : cardInfos
                     ) {

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MyApplication;
@@ -14,7 +13,7 @@ import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
-import com.zncm.dminter.mmhelper.utils.PinyinConv;
+import com.zncm.dminter.mmhelper.t9search.T9SearchSupport;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,6 +29,7 @@ import java.util.Random;
 
 /**
  * Created by dminter on 2016/7/23.
+ * 数据库查询工具类
  */
 
 public class DbUtils {
@@ -56,12 +56,14 @@ public class DbUtils {
     }
 
 
+    /**
+     * 导入txt
+     */
     public static List<String> importTxt(File file) {
         List<String> dataList = new ArrayList<String>();
 
         BufferedReader br = null;
         try {
-            //new FileReader(file)
             br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
             String line = "";
             while ((line = br.readLine()) != null) {
@@ -72,7 +74,6 @@ public class DbUtils {
             if (br != null) {
                 try {
                     br.close();
-                    br = null;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -82,10 +83,46 @@ public class DbUtils {
         return dataList;
     }
 
+    /**
+     * 活动排序
+     */
+    public static void updateCardPos(int cardId, int pos) {
+
+        try {
+            CardInfo cardInfo = getCardInfoById(cardId);
+            if (cardInfo != null) {
+                cardInfo.setExi4(pos);
+                cardInfoDao.update(cardInfo);
+            }
+            return;
+        } catch (Exception localException) {
+            localException.printStackTrace();
+        }
+    }
+
+    /**
+     * 应用排序
+     */
+    public static void updatePkPos(String packageName, int pos) {
+
+        try {
+            PkInfo pkInfo = getPkOne(packageName);
+            if (pkInfo != null) {
+                pkInfo.setExb3(pos);
+                pkDao.update(pkInfo);
+            }
+            return;
+        } catch (Exception localException) {
+            localException.printStackTrace();
+        }
+    }
+
+    /**
+     * 活动导出为txt
+     */
     public static void importCardFromTxt(List<String> list, boolean isFirst) {
         init();
         try {
-//            File file = new File(path);
             List<String> datas = list;
             if (Xutils.listNotNull(datas)) {
                 for (String info :
@@ -115,6 +152,9 @@ public class DbUtils {
         }
     }
 
+    /**
+     * 根据包名，查询活动
+     */
     public static ArrayList<CardInfo> getCardInfosByPackageName(String packageName) {
         init();
         ArrayList<CardInfo> cardInfos = new ArrayList();
@@ -132,7 +172,9 @@ public class DbUtils {
         return cardInfos;
     }
 
-
+    /**
+     * 应用转换为活动
+     */
     public static ArrayList<CardInfo> getPkInfosToCard() {
         init();
         ArrayList<CardInfo> cardInfos = new ArrayList();
@@ -161,14 +203,9 @@ public class DbUtils {
         return cardInfos;
     }
 
-
-
-
-
-
-
-
-
+    /**
+     * 根据类名获取活动
+     */
     public static CardInfo getCardInfoByClassName(String cName) {
         if (Xutils.isEmptyOrNull(cName)) {
             return null;
@@ -190,13 +227,15 @@ public class DbUtils {
         return ret;
     }
 
+    /**
+     * 根据命令查询活动
+     */
     public static CardInfo getCardInfoByCmd(String cmd) {
         if (Xutils.isEmptyOrNull(cmd)) {
             return null;
         }
         CardInfo ret = null;
         init();
-        ArrayList<CardInfo> datas = new ArrayList<CardInfo>();
         try {
             QueryBuilder<CardInfo, Integer> builder = cardInfoDao.queryBuilder();
             builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue()).and().eq("cmd", cmd);
@@ -211,6 +250,9 @@ public class DbUtils {
         return ret;
     }
 
+    /**
+     * 根据包名查询应用
+     */
     public static PkInfo getPkOne(String packageName) {
         if (Xutils.isEmptyOrNull(packageName)) {
             return null;
@@ -228,19 +270,19 @@ public class DbUtils {
         return ret;
     }
 
+    /**
+     * 插入活动
+     */
     public static void insertCard(CardInfo cardInfo) {
         init();
         try {
-
-
             if (cardInfo != null) {
                 if (!Xutils.isNotEmptyOrNull(cardInfo.getTitle())) {
                     ApplicationInfo applicationInfo = Xutils.getAppInfo(cardInfo.getPackageName());
                     PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
                     String appName = applicationInfo.loadLabel(pm).toString();
                     if (applicationInfo != null && Xutils.isNotEmptyOrNull(appName)) {
-                        String pinyin = PinyinConv.cn2py(appName);
-                        cardInfo.setEx2(pinyin);
+                        cardInfo.setEx3(T9SearchSupport.buildT9Key(appName));
                         cardInfo.setTitle(appName);
                     }
                 }
@@ -252,6 +294,9 @@ public class DbUtils {
         }
     }
 
+    /**
+     * 插入应用
+     */
     public static void insertPkInfo(PkInfo pkInfo) {
         init();
         try {
@@ -262,14 +307,12 @@ public class DbUtils {
                 PkInfo tmp = getPkOne(pkInfo.getPackageName());
                 if (tmp != null) {
                     tmp.setStatus(pkInfo.getStatus());
-                    if (Xutils.isEmptyOrNull(tmp.getEx2())) {
-                        String pinyin = PinyinConv.cn2py(pkInfo.getName());
-                        tmp.setEx2(pinyin);
+                    if (Xutils.isEmptyOrNull(tmp.getEx3())) {
+                        pkInfo.setEx3(T9SearchSupport.buildT9Key(pkInfo.getName()));
                     }
                     pkDao.update(tmp);
                 } else {
-                    String pinyin = PinyinConv.cn2py(pkInfo.getName());
-                    pkInfo.setEx2(pinyin);
+                    pkInfo.setEx3(T9SearchSupport.buildT9Key(pkInfo.getName()));
                     pkDao.create(pkInfo);
                 }
             }
@@ -278,26 +321,10 @@ public class DbUtils {
         }
     }
 
-    public static void clearPkInfo() {
-        init();
-        try {
-            pkDao.deleteBuilder().where().ge("id", "1");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static void deleteCard(CardInfo cardInfo) {
-        init();
-        try {
-            if (cardInfo != null) {
-                cardInfoDao.delete(cardInfo);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * 删除应用
+     */
     public static void deletePk(PkInfo pkInfo) {
         init();
         try {
@@ -309,13 +336,15 @@ public class DbUtils {
         }
     }
 
+    /**
+     * 更新活动
+     */
     public static void updateCard(CardInfo cardInfo) {
         init();
         try {
             if (cardInfo != null) {
                 if (Xutils.isNotEmptyOrNull(cardInfo.getTitle())) {
-                    String pinyin = PinyinConv.cn2py(cardInfo.getTitle());
-                    cardInfo.setEx2(pinyin);
+                    cardInfo.setEx3(T9SearchSupport.buildT9Key(cardInfo.getTitle()));
                 }
                 cardInfoDao.update(cardInfo);
             }
@@ -324,6 +353,9 @@ public class DbUtils {
         }
     }
 
+    /**
+     * 更新应用
+     */
     public static void updatePkInfo(PkInfo pkInfo) {
         init();
         try {
@@ -335,48 +367,9 @@ public class DbUtils {
         }
     }
 
-
-    //select packageName FROM cardinfo WHERE className NOTNULL AND type = 2 group by packageName ORDER BY count(packageName) DESC
-
-
-//    public static ArrayList<PkInfo> getPkInfos() {
-//        init();
-//        ArrayList<PkInfo> infos = new ArrayList<PkInfo>();
-//        try {
-//            GenericRawResults<String[]> rawResults =
-//                    cardInfoDao.queryRaw("select packageName FROM cardinfo WHERE className NOTNULL AND type = 2 AND status =1 group by packageName ORDER BY count(packageName) DESC LIMIT 10");
-//
-//
-//            ArrayList<String> pNames = new ArrayList<>();
-//            for (String[] resultColumns : rawResults) {
-//                pNames.add(resultColumns[0]);
-//            }
-//            if (Xutils.listNotNull(pNames))
-//                for (String pkgName : pNames
-//                        ) {
-//                    if (Xutils.isNotEmptyOrNull(pkgName)) {
-//                        ApplicationInfo app = Xutils.getAppInfo(pkgName);
-//                        if (app != null) {
-//                            PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
-//                            Drawable icon = app.loadIcon(pm);
-//                            String name = app.loadLabel(pm).toString();
-//                            String packageName = pkgName;
-//
-//                            PkInfo item = new PkInfo(packageName, name, icon);
-//                            infos.add(item);
-//                        }
-//
-//                    }
-//                }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return infos;
-//    }
-
-//    select max("index"+0) as max_sort  from cardinfo
-
-
+    /**
+     * 查询最大活动id用于置顶
+     */
     public static int getMaxIndex() {
         init();
         int max_sort = 0;
@@ -392,41 +385,39 @@ public class DbUtils {
         return max_sort;
     }
 
+
+    /**
+     * 根据包名获取所有活动
+     */
     public static ArrayList<CardInfo> getCardInfos(String packageName) {
         return getCardInfos(packageName, Constant.MAX_DB_QUERY);
     }
 
+    /**
+     * 根据包名获取所有活动 分页
+     */
     public static ArrayList<CardInfo> getCardInfos(String packageName, int limit) {
         init();
         ArrayList<CardInfo> datas = new ArrayList<CardInfo>();
         try {
             QueryBuilder<CardInfo, Integer> builder = cardInfoDao.queryBuilder();
-//            builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue());
             if (Xutils.isNotEmptyOrNull(packageName)) {
                 if (packageName.equals(EnumInfo.homeTab.LIKE.getValue())) {
-//                    builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue()).and().eq("exi1", 1);
-//                    builder.orderBy("exi2", false);
-
                     builder.where().eq("status", Integer.valueOf(EnumInfo.cStatus.NORMAL.getValue())).and().eq("exi1", 1);
-
                     builder.orderBy("exi2", false);
                     builder.orderBy("exi4", true);
                     builder.orderBy("time", false).limit(limit);
-
-
                 } else if (packageName.equals(EnumInfo.homeTab.ALL.getValue())) {
                     builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue());
                 } else {
                     builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue()).and().eq("exi3", packageName);
                     builder.orderBy("exi2", false);
-//                    builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue()).and().eq("packageName", packageName);
                 }
 
             } else {
                 builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue());
             }
             builder.orderBy("time", false).limit(limit);
-//            builder.orderBy("exi2", false).orderBy("packageName", false).orderBy("time", false).limit(Constant.MAX_DB_QUERY);
             List<CardInfo> list = cardInfoDao.query(builder.prepare());
             if (Xutils.listNotNull(list)) {
                 datas.addAll(list);
@@ -436,46 +427,6 @@ public class DbUtils {
         }
         return datas;
     }
-
-    public static ArrayList<CardInfo> getCardInfosByTitle(String title) {
-        if (Xutils.isEmptyOrNull(title)) {
-            return null;
-        }
-        init();
-        ArrayList<CardInfo> datas = new ArrayList<CardInfo>();
-        try {
-            QueryBuilder<CardInfo, Integer> builder = cardInfoDao.queryBuilder();
-            builder.where().like("title", "%" + title + "%").or().like("ex1", "%" + title + "%").or().like("ex2", "%" + title + "%").and().eq("status", EnumInfo.cStatus.NORMAL.getValue());
-            builder.orderBy("time", false).limit(Constant.MAX_DB_QUERY);
-            List<CardInfo> list = cardInfoDao.query(builder.prepare());
-            if (Xutils.listNotNull(list)) {
-                datas.addAll(list);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return datas;
-    }
-
-
-//    public static ArrayList<PkInfo> getPkInfos(String packageName) {
-//        init();
-//        ArrayList<PkInfo> datas = new ArrayList<PkInfo>();
-//        try {
-//            QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
-//            if (Xutils.isNotEmptyOrNull(packageName)) {
-//                builder.where().eq("packageName", packageName);
-//            }
-//            builder.orderBy("name", true).limit(Constant.MAX_DB_QUERY);
-//            List<PkInfo> list = pkDao.query(builder.prepare());
-//            if (Xutils.listNotNull(list)) {
-//                datas.addAll(list);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return datas;
-//    }
 
 
     //冷冻室里面的APP
@@ -501,33 +452,10 @@ public class DbUtils {
         return datas;
     }
 
-    public static ArrayList<CardInfo> getPkInfosByTitle(String title) {
-        init();
-        ArrayList<CardInfo> datas = new ArrayList<CardInfo>();
-        try {
-            QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
-            builder.where().like("name", "%" + title + "%").or().like("ex1", "%" + title + "%").or().like("ex2", "%" + title + "%");
-            builder.orderBy("name", true).limit(Constant.MAX_DB_QUERY);
-            List<PkInfo> list = pkDao.query(builder.prepare());
-            if (Xutils.listNotNull(list)) {
-//                datas.addAll(list);
-                for (PkInfo tmp : list
-                        ) {
-                    CardInfo info = new CardInfo();
-                    info.setTitle(tmp.getName());
-                    info.setPackageName(tmp.getPackageName());
-                    info.setImg(tmp.getIcon());
-                    info.setType(EnumInfo.cType.START_APP.getValue());
-                    info.setDisabled(tmp.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
-                    datas.add(info);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return datas;
-    }
 
+    /**
+     * 根据包名获取应用
+     */
     public static ArrayList<PkInfo> getPkInfos(String pkgName) {
         return getPkInfos(pkgName, false);
     }
@@ -551,7 +479,6 @@ public class DbUtils {
                     builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
                 }
             }
-//            builder.orderBy("status", true).orderBy("ex2", true).limit(Constant.MAX_DB_QUERY);
             List<PkInfo> list = pkDao.query(builder.prepare());
             if (Xutils.listNotNull(list)) {
                 datas.addAll(list);
@@ -562,18 +489,10 @@ public class DbUtils {
         return datas;
     }
 
-    public static void deletePk() {
-        init();
-        try {
-            DeleteBuilder<PkInfo, Integer> builder = pkDao.deleteBuilder();
-            builder.where().isNotNull("status");
-            pkDao.delete(builder.prepare());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-
+    /**
+     * 根据ID查询活动
+     */
     public static CardInfo getCardInfoById(int cardId) {
         init();
         CardInfo cardInfo = null;
@@ -586,6 +505,9 @@ public class DbUtils {
     }
 
 
+    /**
+     * 开发者微信
+     */
     public static void cardXm() {
         if (DbUtils.getCardInfoByCmd(Constant.author_wx) != null) {
             return;
@@ -594,6 +516,9 @@ public class DbUtils {
         DbUtils.insertCard(new CardInfo(EnumInfo.cType.WX.getValue(), Constant.author_wx, "开发者微信"));
     }
 
+    /**
+     * 更新应用
+     */
     public static void cardUpdate() {
 
         if (DbUtils.getCardInfoByCmd(Constant.update_url) != null) {
@@ -601,7 +526,5 @@ public class DbUtils {
         }
         //更新
         DbUtils.insertCard(new CardInfo(EnumInfo.cType.URL.getValue(), Constant.update_url, "更新地址"));
-
-
     }
 }

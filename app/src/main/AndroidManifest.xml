@@ -34,6 +34,22 @@
                 <action android:name="android.intent.action.CREATE_SHORTCUT"/>
             </intent-filter>
         </activity>
+
+
+        <activity
+            android:name=".ShortcutActionActivity"
+            android:excludeFromRecents="true"
+            android:label="全部冷冻、T9搜索、锁屏"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.Translucent">
+
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+            </intent-filter>
+        </activity>
+
+
         <activity android:name=".MainActivity"
                   android:launchMode="singleInstance"
         >
@@ -59,8 +75,7 @@
         <activity
             android:name="com.zncm.dminter.mmhelper.SettingNew"
             android:label="设置"
-            android:theme="@style/MyMaterialSettings"
-            android:launchMode="singleInstance" />
+            android:theme="@style/MyMaterialSettings" />
         <activity
             android:name="com.zncm.dminter.mmhelper.ShellBatActivity"
             android:label="批量添加Shell"
@@ -73,8 +88,11 @@
 
         <activity
             android:name="com.zncm.dminter.mmhelper.AboutAc"
-            android:launchMode="singleInstance"
+            android:label="关于应用"
             android:theme="@style/MyMaterialSettings" />
+        <activity
+            android:name="com.zncm.dminter.mmhelper.SortActivity"
+            android:label="排序" />
 
 
         <service

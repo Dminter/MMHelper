@@ -12,6 +12,7 @@ import com.zncm.dminter.mmhelper.data.PkInfo;
 
 /**
  * Created by dminter on 2016/7/23.
+ * 数据库 ormlite
  */
 
 public class DbHelper extends OrmLiteSqliteOpenHelper {

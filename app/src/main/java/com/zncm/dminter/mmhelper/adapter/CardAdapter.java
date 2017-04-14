@@ -12,20 +12,23 @@ import android.widget.TextView;
 import com.zncm.dminter.mmhelper.R;
 import com.zncm.dminter.mmhelper.SPHelper;
 import com.zncm.dminter.mmhelper.data.CardInfo;
+import com.zncm.dminter.mmhelper.dragrecyclerview.DragMethod;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
+import java.util.Collections;
 import java.util.List;
-
-public abstract class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+/**
+ *card适配器
+ */
+public abstract class CardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DragMethod {
 
     private List<CardInfo> items;
     private Activity ctx;
-
     private int gridColumns = 0;
+
     public CardAdapter(Activity ctx) {
         this.ctx = ctx;
     }
-
     public void setItems(List<CardInfo> items) {
         this.items = items;
         notifyDataSetChanged();
@@ -95,5 +98,29 @@ public abstract class CardAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public abstract void setData(int position, CardViewHolder holder);
+
+
+    @Override
+    public void onMove(int fromPosition, int toPosition) {
+        if (fromPosition == items.size() || toPosition == items.size()) {
+            return;
+        }
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(items, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(items, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onSwiped(int position) {
+        items.remove(position);
+        notifyItemRemoved(position);
+    }
 
 }

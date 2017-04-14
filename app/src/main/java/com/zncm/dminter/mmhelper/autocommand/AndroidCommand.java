@@ -7,7 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
+/**
+ *命令执行
+ */
 public final class AndroidCommand {
     public static String lastError = "";
     public static int noRoot = -1;
