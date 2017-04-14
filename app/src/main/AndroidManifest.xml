@@ -75,7 +75,32 @@
             android:enabled="true"></service>
 
 
-        <service android:name=".floatball.FloatBallService" />
+        <receiver
+            android:name=".floatball.ScreenOffAdminReceiver"
+            android:description="@string/app_name"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/lock_screen" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+
+
+        <receiver android:name="com.zncm.dminter.mmhelper.appwidget.SmallAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.zncm.dminter.mmhelper.appwidget.SmallAppWidget"></action>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_small_info"></meta-data>
+        </receiver>
 
 
         <service

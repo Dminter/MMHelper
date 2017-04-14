@@ -53,6 +53,9 @@ public class OpenInentActivity extends AppCompatActivity {
 
             if ((Xutils.isNotEmptyOrNull(pkName)) && (pkName.equals(Constant.OPENINENT_LIKE))) {
                 initLikes();
+            } else if ((Xutils.isNotEmptyOrNull(pkName)) && (pkName.equals(Constant.OPENINENT_BALL))) {
+                MainActivity.initBallService(ctx);
+                finish();
             } else {
                 if (cardId != 0) {
                     CardInfo cardInfo = DbUtils.getCardInfoById(cardId);

@@ -3,6 +3,7 @@ package com.zncm.dminter.mmhelper;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -12,7 +13,7 @@ import com.zncm.dminter.mmhelper.utils.Xutils;
  * Created by dminter on 2016/7/26.
  */
 
-public abstract class BaseActivity extends MySwipeBackActivity {
+public abstract class BaseActivity extends AppCompatActivity {
     protected Context ctx;
     public Toolbar toolbar;
 

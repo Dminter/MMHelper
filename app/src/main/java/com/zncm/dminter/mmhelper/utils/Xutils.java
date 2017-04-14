@@ -22,7 +22,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.Constant;
@@ -54,6 +53,51 @@ import java.util.Random;
  */
 
 public class Xutils {
+
+    public static int cmdWxUserExe(String cmd) {
+        String str = "com.tencent.mm.ui.chatting.ChattingUI -e Chat_User ";
+        if (isNewWx()) {
+            str = "com.tencent.mm.ui.chatting.En_5b8fbb1e -e Chat_User ";
+        }
+        return cmdExe("am start -n com.tencent.mm/" + str + cmd);
+    }
+
+    public static boolean isNewWx() {
+        boolean flag = false;
+        int version = 0;
+        String str = getAppVersion("com.tencent.mm");
+        try {
+            if (str.contains(".")) {
+                str = str.replaceAll("\\.", "");
+            }
+            if (str.length() > 3) {
+                str = str.substring(0, 3);
+            }
+            version = Integer.parseInt(str);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (version >= 656) {
+            flag = true;
+        }
+        return flag;
+    }
+
+    public static String getFileSaveTime() {
+        return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    }
+
+    public static File createFolder(String name) {
+        if (isNotEmptyOrNull(name)) {
+            File file = new File(name);
+            if ((file.exists()) && (file.isDirectory())) {
+                return file;
+            }
+            file.mkdirs();
+            return file;
+        }
+        return null;
+    }
     public static void initBarTheme(Activity activity, Toolbar toolbar)
     {
         toolbar.setBackgroundColor(SPHelper.getThemeColor(activity));
@@ -143,14 +187,6 @@ public class Xutils {
     }
 
 
-    public static void snTip(Activity activity, String string) {
-        new SnackBar.Builder(activity)
-                .withMessage(string)
-                .withStyle(SnackBar.Style.INFO)
-                .withBackgroundColorId(R.color.colorPrimary)
-                .withDuration(SnackBar.MED_SNACK)
-                .show();
-    }
 
     public static void copyText(Context ctx, String text) {
         ClipboardManager cbm = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -386,7 +422,7 @@ public class Xutils {
     /*
      *获取程序的版本号
      */
-    public String getAppVersion(String packname) {
+    public static String getAppVersion(String packname) {
 
         try {
             PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();

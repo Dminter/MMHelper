@@ -13,7 +13,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,19 +23,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.software.shell.fab.ActionButton;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MainActivity;
 import com.zncm.dminter.mmhelper.MyApplication;
-import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
 import com.zncm.dminter.mmhelper.SPHelper;
 import com.zncm.dminter.mmhelper.SettingNew;
@@ -397,12 +393,12 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         .canceledOnTouchOutside(false)
                         .show();
                 SPHelper.setIsShowWindow(ctx, true);
+            } else {
+                Intent intent = new Intent();
+                intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ctx.startActivity(intent);
             }
-        } else {
-            Intent intent = new Intent();
-            intent.setAction("android.settings.ACCESSIBILITY_SETTINGS");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ctx.startActivity(intent);
         }
     }
 
@@ -457,10 +453,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 //                drawable, info.getPackageName(), info.getClassName(), info.getId());
 
         Xutils.sendToDesktop(ctx, info, false);
-        Xutils.snTip(ctx, Constant.add_shortcut);
+        Xutils.tShort(Constant.add_shortcut);
     }
 
-    public static void clickCard(final Activity activity, CardInfo info) {
+    public static void clickCard(final Context activity, CardInfo info) {
         if (info == null) {
             return;
         }
@@ -499,9 +495,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             }
                         }
                     }).build();
-                    if ((activity instanceof OpenInentActivity)) {
-                        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-                    }
+                    BottomSheetDlg.checkSysDlg(activity, dialog);
                     dialog.show();
                 }
 
@@ -540,7 +534,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             }
         }
         if (ret == AndroidCommand.noRoot) {
-            Xutils.snTip(activity, Constant.no_root);
+            Xutils.tShort(Constant.no_root);
         }
     }
 
@@ -747,7 +741,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         list.add(map7);
         new BottomSheetDlg(ctx, list, false) {
             @Override
-            public void onGridItemClickListener(int pos) {
+            public void onGridItemClickListener(final int pos) {
                 switch (pos) {
 
                     case 0:
@@ -774,21 +768,19 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         DbUtils.updateCard(info);
                         cardInfos.remove(position);
                         cardAdapter.notifyDataSetChanged();
-                        new SnackBar.Builder(ctx)
-                                .withOnClickListener(new SnackBar.OnMessageClickListener() {
-                                    @Override
-                                    public void onMessageClick(Parcelable token) {
-                                        info.setStatus(EnumInfo.cStatus.NORMAL.getValue());
-                                        DbUtils.updateCard(info);
-                                        fillArray();
-                                    }
-                                })
-                                .withMessage("移除这张活动卡!")
-                                .withActionMessage("撤销")
-                                .withStyle(SnackBar.Style.DEFAULT)
-                                .withBackgroundColorId(SPHelper.getThemeColor(ctx))
-                                .withDuration(SnackBar.LONG_SNACK)
-                                .show();
+//                        new SnackBar.Builder(ctx)
+//                                .withOnClickListener(new SnackBar.OnMessageClickListener() {
+//                                    @Override
+//                                    public void onMessageClick(Parcelable token) {
+//
+//                                    }
+//                                })
+//                                .withMessage("移除这张活动卡!")
+//                                .withActionMessage("撤销")
+//                                .withStyle(SnackBar.Style.DEFAULT)
+//                                .withBackgroundColorId(SPHelper.getThemeColor(ctx))
+//                                .withDuration(SnackBar.LONG_SNACK)
+//                                .show();
                         break;
                     case 3:
                         if (top) {
@@ -807,6 +799,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     case 5:
                         final ArrayList<String> fzStr = new ArrayList<String>();
                         if (!Xutils.listNotNull(pkInfos)) {
+                            Xutils.tShort("请先添加分组~");
                             return;
                         }
                         for (FzInfo tmp : pkInfos
@@ -821,8 +814,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                 .itemsCallback(new MaterialDialog.ListCallback() {
                                     @Override
                                     public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                        info.setStatus(EnumInfo.cStatus.NORMAL.getValue());
+                                        info.setExi3(which + 1);
                                         DbUtils.updateCard(info);
+                                        Xutils.tShort("已添加到分组->" + (String) fzStr.get(which));
                                     }
                                 })
                                 .show();
@@ -854,11 +848,11 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                     }
                                 }
 
-                                new MaterialDialog.Builder(ctx).title("确定删除").title(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+                                new MaterialDialog.Builder(ctx).title("确定删除").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
                                     public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which2) {
                                         if (which2 == DialogAction.POSITIVE) {
                                             for (int i = 0; i < which.length; i++) {
-                                                CardInfo cardInfo = (CardInfo) cardInfos.get(which[i]);
+                                                CardInfo cardInfo = cardInfos.get(which[i]);
                                                 if (cardInfo != null) {
                                                     info.setStatus(EnumInfo.cStatus.DELETE.getValue());
                                                     DbUtils.updateCard(cardInfo);

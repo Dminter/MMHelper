@@ -48,6 +48,16 @@ public class SPHelper {
         sp.edit().putBoolean("is_hs", is_hs).commit();
     }
 
+    public static boolean isAutoStop(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("is_auto_stop", false);
+    }
+
+    public static void setIsAutoStop(Context context, boolean is_auto_stop) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean("is_auto_stop", is_auto_stop).commit();
+    }
+
 
     public static String getFzInfo(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);

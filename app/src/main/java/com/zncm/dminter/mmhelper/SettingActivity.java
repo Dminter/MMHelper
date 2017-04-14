@@ -162,10 +162,10 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                                         fzInfo = name;
                                         initFzView();
                                         SPHelper.setFzInfo(SettingActivity.this, name);
-                                        Xutils.snTip(SettingActivity.this, "分组修改成功！");
+                                        Xutils.tShort("分组修改成功！");
                                     }
                                 } else {
-                                    Xutils.snTip(SettingActivity.this, "分组格式错误，英文逗号分隔中间不能为空且不超过8个~");
+                                    Xutils.tShort("分组格式错误，英文逗号分隔中间不能为空且不超过8个~");
                                 }
                                 dialog.dismiss();
                             }

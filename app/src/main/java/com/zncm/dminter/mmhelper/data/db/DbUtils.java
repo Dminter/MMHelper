@@ -121,8 +121,7 @@ public class DbUtils {
         try {
             QueryBuilder builder = cardInfoDao.queryBuilder();
             if (Xutils.isNotEmptyOrNull(packageName)) {
-                //.eq("exi1", "1").and()
-                builder.where().eq("status", Integer.valueOf(EnumInfo.cStatus.NORMAL.getValue())).and().eq("packageName", packageName);
+                builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue()).and().eq("exi1", "1").and().eq("packageName", packageName);
                 builder.orderBy("exi2", false);
             }
             builder.orderBy("time", false).limit(Constant.MAX_DB_QUERY);

@@ -9,21 +9,19 @@ public class Constant {
     public static String DB_TAG_PRE_ = "DB_TAG_PRE_";
     public static String SA_BATSTOP = "SA_BATSTOP";
     public static String SA_T9 = "SA_T9";
+    public static String OPENINENT_BALL = "OPENINENT_BALL";
     public static String SA_GET_ACTIVITY = "SA_GET_ACTIVITY";
     public static String SA_LOCK_SCREEN = "SA_LOCK_SCREEN";
     public static String OPENINENT_LIKE = "OPENINENT_LIKE";
 
     public static final int sort_apps = 999;
+    public static String PATH_ROOT = "快速打开活动";
 
-
-
-
-
-
+    public static int n_id = 100000;
 
 
     public static String author_wx = "xm0ff255";
-    public static String app_pkg = "com.zncm.dminter.mmhelper2";
+    public static String app_pkg = "com.zncm.dminter.mmhelper";
     public static String app_shortcut = "com.zncm.dminter.mmhelper.ShortcutActionActivity";
     public static String app_shortcut_openinentactivity = "com.zncm.dminter.mmhelper.OpenInentActivity";
     public static String no_root = "打开失败~请检查root权限！！";

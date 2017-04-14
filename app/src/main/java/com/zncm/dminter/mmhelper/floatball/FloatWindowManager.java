@@ -5,13 +5,15 @@ import android.graphics.PixelFormat;
 import android.view.Gravity;
 import android.view.WindowManager;
 
+import com.zncm.dminter.mmhelper.WatchingAccessibilityService;
+
 public class FloatWindowManager {
     public static FloatBallView mBallView;
 
     private static WindowManager mWindowManager;
 
 
-    public static void addBallView(Context context) {
+    public static void addBallView(WatchingAccessibilityService context) {
         if (mBallView == null) {
             WindowManager windowManager = getWindowManager(context);
             int screenWidth = windowManager.getDefaultDisplay().getWidth();

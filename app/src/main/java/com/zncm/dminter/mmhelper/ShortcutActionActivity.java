@@ -1,10 +1,14 @@
 package com.zncm.dminter.mmhelper;
 
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.zncm.dminter.mmhelper.floatball.ScreenOffAdminReceiver;
 import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
@@ -13,12 +17,7 @@ import com.zncm.dminter.mmhelper.utils.Xutils;
  */
 
 public class ShortcutActionActivity extends Activity {
-    private String pkName = "";
-    private String className = "";
-    private int cardId = 0;
     String action = Constant.SA_T9;
-    public final static String INSTALL_SHORTCUT_ACTION = "com.android.launcher.action.INSTALL_SHORTCUT";
-
     Activity ctx;
 
     @Override
@@ -35,23 +34,31 @@ public class ShortcutActionActivity extends Activity {
                 } else if (action.equals(Constant.SA_T9)) {
                     startActivity(new Intent(ctx, T9SearchActivity.class));
                 } else if (action.equals(Constant.SA_GET_ACTIVITY)) {
-//                    SPHelper.setIsAcFloat(ctx, true);
-//                    MyFt.getActivityDlg(ctx);
+                    SPHelper.setIsAcFloat(ctx, true);
+                    MyFt.getActivityDlg(ctx);
                 } else if (action.equals(Constant.SA_LOCK_SCREEN)) {
-//                    FloatBallView.lockScreen(ctx);
+                    lockScreen(ctx);
                 }
             }
             MyApplication.getInstance().isOpenInent = true;
             finish();
         } else {
-//            Xutils.tShort("已创建，全部冷冻、T9搜索、采集活动三个快捷方式~");
+            Xutils.tShort("已创建，全部冷冻、T9搜索、锁屏三个快捷方式~");
             SettingNew.shortCutAdd(ctx, Constant.SA_BATSTOP, "全部冷冻");
             SettingNew.shortCutAdd(ctx, Constant.SA_T9, "T9搜索");
             SettingNew.shortCutAdd(ctx, Constant.SA_LOCK_SCREEN, "锁屏");
-//            SettingNew.shortCutAdd(ctx, Constant.SA_GET_ACTIVITY, "采集活动");
         }
 
     }
 
+
+    public static void lockScreen(Context paramContext) {
+        DevicePolicyManager devicePolicy = (DevicePolicyManager) paramContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        if (devicePolicy.isAdminActive(new ComponentName(paramContext, ScreenOffAdminReceiver.class))) {
+            devicePolicy.lockNow();
+            return;
+        }
+        Xutils.tLong("请在设备管理器授权~");
+    }
 
 }

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -26,19 +27,21 @@ import com.kenumir.materialsettings.items.HeaderItem;
 import com.kenumir.materialsettings.items.TextItem;
 import com.kenumir.materialsettings.storage.StorageInterface;
 import com.malinskiy.materialicons.Iconify;
+import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.MyPackageInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
-import com.zncm.dminter.mmhelper.floatball.FloatBallService;
 import com.zncm.dminter.mmhelper.floatball.FloatWindowManager;
 import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -94,16 +97,17 @@ public class SettingNew extends MaterialSettings {
             public void onClick(TextItem textItem) {
                 final EditText editText = new EditText(ctx);
                 editText.setTextColor(getResources().getColor(R.color.colorPrimary));
+                if (Xutils.isNotEmptyOrNull(fzInfo)) {
+                    editText.setText(fzInfo);
+                }
                 new MaterialDialog.Builder(ctx).title("分组-英文逗号分隔").customView(editText, false).positiveText("好").negativeText("不").onAny(new MaterialDialog.SingleButtonCallback() {
                     public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which) {
                         if (which == DialogAction.POSITIVE) {
                             String fz = editText.getText().toString();
-                            if (Xutils.isEmptyOrNull(fz)) {
-                                return;
-                            }
                             if (!fzInfo.equals(fz)) {
                                 SPHelper.setFzInfo(ctx, fz);
                                 Xutils.tShort("分组修改成功！");
+                                fzInfo = fz;
                                 isNeedUpdate = true;
                             }
                         }
@@ -196,6 +200,51 @@ public class SettingNew extends MaterialSettings {
 
 
         addItem(new DividerItem(ctx));
+        addItem(new CheckboxItem(this, "").setTitle("锁屏自动冷冻").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                SPHelper.setIsAutoStop(ctx, b);
+            }
+        }).setDefaultValue(SPHelper.isAutoStop(ctx)));
+
+
+        addItem(new DividerItem(ctx));
+        addItem(new CheckboxItem(this, "").setTitle("采集活动悬浮窗【左上角】").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                SPHelper.setIsAcFloat(ctx, b);
+                if (b) {
+                    MyFt.getActivityDlg(ctx);
+                } else {
+                    TasksWindow.dismiss(ctx);
+                }
+
+            }
+        }).setDefaultValue(SPHelper.isAcFloat(ctx)));
+
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this.ctx, "").setTitle("导入配置").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                showFileChooser();
+            }
+        }));
+        addItem(new TextItem(this.ctx, "").setTitle("导出配置").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                csvOutput();
+            }
+
+
+        }));
+        addItem(new DividerItem(this.ctx));
+        addItem(new TextItem(this.ctx, "").setTitle("关于应用").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                startActivity(new Intent(ctx, AboutAc.class));
+            }
+        }));
+
+        addItem(new DividerItem(ctx));
         addItem(new TextItem(this, "").setTitle("抽屉网格大小-列数").setSubtitle(SPHelper.getGridColumns(ctx) + "").setOnclick(new TextItem.OnClickListener() {
             public void onClick(final TextItem textItem) {
                 ArrayList<String> items = new ArrayList();
@@ -263,18 +312,26 @@ public class SettingNew extends MaterialSettings {
             }
         }));
         addItem(new DividerItem(ctx));
-        addItem(new CheckboxItem(this, "").setTitle("悬浮球").setSubtitle("点击【返回】，上【最近任务】，左【收藏的活动】，下【桌面】，右【采集活动】，长按【截屏、拖动位置】").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+        addItem(new CheckboxItem(this, "").setTitle("悬浮球").setSubtitle("点击【返回】，上【最近任务】，左【收藏的活动】，下【桌面】，右【采集活动】，长按【拖动位置】，长下拉【隐藏到通知栏】，长下拉【截屏】").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
                 if (checkNotPro()) {
                     return;
                 }
                 SPHelper.setIsFloatBall(ctx, b);
-                Intent localIntent = new Intent(ctx, FloatBallService.class);
+//                Intent localIntent = new Intent(ctx, FloatBallService.class);
                 if (b) {
-                    startService(localIntent);
+                    WatchingAccessibilityService mService;
+                    if (WatchingAccessibilityService.getInstance() != null) {
+                        mService = WatchingAccessibilityService.getInstance();
+                    } else {
+                        MyFt.getActivityDlg(ctx);
+                        return;
+                    }
+                    FloatWindowManager.addBallView(mService);
+//                    FloatWindowManager.addBallView(ctx);
                 } else {
-                    stopService(localIntent);
+//                    stopService(localIntent);
                     FloatWindowManager.removeBallView(ctx);
                 }
             }
@@ -341,9 +398,35 @@ public class SettingNew extends MaterialSettings {
         }));
     }
 
+    private void csvOutput() {
+
+        try {
+            ArrayList<CardInfo> cardInfos = DbUtils.getCardInfos(null);
+            if (Xutils.listNotNull(cardInfos)) {
+                StringBuffer stringBuffer = new StringBuffer();
+                for (int i = 0; i < cardInfos.size(); i++) {
+                    CardInfo info = cardInfos.get(i);
+                    if (info != null && info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
+                        stringBuffer.append(info.getTitle());
+                        stringBuffer.append("|");
+                        stringBuffer.append(info.getPackageName());
+                        stringBuffer.append("|");
+                        stringBuffer.append(info.getClassName());
+                        stringBuffer.append("\n");
+                    }
+
+                }
+                String path = Xutils.getSDPath() + "/" + Xutils.getTimeYMDHM_(new Date().getTime()) + ".txt";
+                Xutils.writeTxtFile(path, stringBuffer.toString());
+                Xutils.tLong("已导出到" + path);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static void shortCutAdd(Context context, String action, String name) {
-
         shortCutAdd(context, action, name, Constant.app_shortcut);
     }
 
@@ -472,8 +555,7 @@ public class SettingNew extends MaterialSettings {
         }
 
         if (item.getTitle().equals("back")) {
-            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.FZ.getValue()));
-            finish();
+            backDo();
         }
 
         return true;
@@ -482,4 +564,52 @@ public class SettingNew extends MaterialSettings {
     public StorageInterface initStorageInterface() {
         return null;
     }
+
+
+    public void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("text/xml");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "选择文件导入"), 103);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Xutils.tShort("没有找到文件管理器");
+        }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 103:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri uri = data.getData();
+                    String path = Xutils.getPathFromUri(ctx, uri);
+                    importData(path);
+                }
+                break;
+        }
+    }
+
+
+    private void importData(String path) {
+        boolean canImport = false;
+        File file = new File(path);
+        String fileName = "";
+        if (file.exists()) {
+            fileName = file.getName();
+            if (fileName.endsWith(".txt")) {
+                canImport = true;
+            }
+        }
+        if (canImport) {
+            List<String> list = DbUtils.importTxt(new File(path));
+            DbUtils.importCardFromTxt(list, false);
+            Xutils.tShort(fileName + " 导入成功~");
+        } else {
+            Xutils.tShort("文件格式非法~");
+        }
+    }
+
 }

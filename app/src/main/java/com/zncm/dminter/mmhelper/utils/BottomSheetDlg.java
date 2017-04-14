@@ -2,7 +2,10 @@ package com.zncm.dminter.mmhelper.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,8 @@ import com.zncm.dminter.mmhelper.R;
 
 import java.util.List;
 import java.util.Map;
+
+import ezy.assist.compat.SettingsCompat;
 
 /**
  * Created by jiaomx on 2017/4/10.
@@ -70,9 +75,7 @@ public abstract class BottomSheetDlg {
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setGravity(Gravity.BOTTOM);
-        if ((activity instanceof OpenInentActivity)) {
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        }
+//        checkSysDlg(activity, dialog);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -83,6 +86,16 @@ public abstract class BottomSheetDlg {
         dialog.show();
 
 
+    }
+
+    public static void checkSysDlg(Context activity, Dialog dialog) {
+        if ((activity instanceof OpenInentActivity)) {
+            if (!SettingsCompat.canDrawOverlays(activity)) {
+                activity.startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+            } else {
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            }
+        }
     }
 
     public abstract void onGridItemClickListener(int position);

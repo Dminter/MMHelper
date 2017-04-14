@@ -1,6 +1,7 @@
 package com.zncm.dminter.mmhelper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
@@ -32,9 +33,12 @@ import com.zncm.dminter.mmhelper.data.FzInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
-import com.zncm.dminter.mmhelper.floatball.FloatBallService;
+import com.zncm.dminter.mmhelper.floatball.FloatBallView;
+import com.zncm.dminter.mmhelper.floatball.FloatWindowManager;
 import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.DataInitHelper;
+import com.zncm.dminter.mmhelper.utils.NotiHelper;
+import com.zncm.dminter.mmhelper.utils.ScreenListener;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     public ArrayList<MyFt> fragments = new ArrayList<>();
     MaterialDialog progressDlg;
     private LinearLayout topView;
+    ScreenListener screenListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ctx = this;
@@ -129,6 +134,23 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         }
 
 
+        if (SPHelper.isAutoStop(ctx)) {
+            screenListener = new ScreenListener(ctx);
+            screenListener.begin(new ScreenListener.ScreenStateListener() {
+                public void onScreenOff() {
+                    if (SPHelper.isAutoStop(ctx)) {
+                        new MyFt.BatStopTask().execute(new Boolean[0]);
+                    }
+                }
+
+                public void onScreenOn() {
+                }
+
+                public void onUserPresent() {
+                }
+            });
+        }
+
         topView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,11 +158,35 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             }
         });
 
-        if ((SPHelper.isFloatBall(this.ctx)) && (MyApplication.isPay)) {
-            startService(new Intent(this, FloatBallService.class));
-        }
+
         EventBus.getDefault().register(this);
     }
+
+
+    public static void initBallService(Context ctx) {
+        try {
+            if (SPHelper.isFloatBall(ctx) && MyApplication.isPay) {
+                NotiHelper.clearNoti(ctx, Constant.n_id);
+                FloatBallView ballView = FloatWindowManager.mBallView;
+                if (ballView != null && ballView.getVisibility() == View.GONE) {
+                    ballView.setVisibility(View.VISIBLE);
+                } else {
+//                    ctx.startService(new Intent(ctx, FloatBallService.class));
+                    WatchingAccessibilityService mService = null;
+                    if (WatchingAccessibilityService.getInstance() != null) {
+                        mService = WatchingAccessibilityService.getInstance();
+                    } else {
+//                        MyFt.getActivityDlg(ctx);
+//                        return;
+                    }
+                    FloatWindowManager.addBallView(mService);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void initApps() {
 
@@ -243,6 +289,11 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 //        if (SPHelper.isShowWindow(ctx)) {
 ////            NotificationActionReceiver.cancelNotification(this);
 //        }
+        if (SPHelper.isShowWindow(ctx)) {
+            MyFt.updateServiceStatus(ctx);
+        }
+        initBallService(ctx);
+
     }
 
 
@@ -259,27 +310,27 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         if (type == EnumInfo.RefreshEnum.FZ.getValue()) {
             initActicity();
         }
-        if (this.fragments.size() > 0) {
+        if (fragments.size() > 0) {
             if (type == EnumInfo.RefreshEnum.APPS.getValue()) {
-                MyFt myFt = (MyFt) this.fragments.get(Integer.valueOf(EnumInfo.homeTab.APPS.getPosition()));
+                MyFt myFt = (MyFt) fragments.get(Integer.valueOf(EnumInfo.homeTab.APPS.getPosition()));
                 if (myFt != null) {
                     myFt.onRefresh();
                 }
             }
             if (type == EnumInfo.RefreshEnum.LIKE.getValue()) {
-                MyFt myFt = (MyFt) this.fragments.get(Integer.valueOf(EnumInfo.homeTab.LIKE.getPosition()));
+                MyFt myFt = (MyFt) fragments.get(Integer.valueOf(EnumInfo.homeTab.LIKE.getPosition()));
                 if (myFt != null) {
                     myFt.onRefresh();
                 }
             }
             if (type == EnumInfo.RefreshEnum.ALL.getValue()) {
-                MyFt myFt = (MyFt) this.fragments.get(Integer.valueOf(EnumInfo.homeTab.ALL.getPosition()));
+                MyFt myFt = (MyFt) fragments.get(Integer.valueOf(EnumInfo.homeTab.ALL.getPosition()));
                 if (myFt != null) {
                     myFt.onRefresh();
                 }
             }
             if (type == EnumInfo.RefreshEnum.BAT_STOP.getValue()) {
-                MyFt myFt = (MyFt) this.fragments.get(Integer.valueOf(EnumInfo.homeTab.BAT_STOP.getPosition()));
+                MyFt myFt = (MyFt) fragments.get(Integer.valueOf(EnumInfo.homeTab.BAT_STOP.getPosition()));
                 if (myFt != null) {
                     myFt.onRefresh();
                 }
