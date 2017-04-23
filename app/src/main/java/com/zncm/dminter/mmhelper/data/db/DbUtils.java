@@ -470,6 +470,7 @@ public class DbUtils {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
                     builder.where().eq("packageName", pkgName);
                 }
+                builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
                 builder.groupBy("packageName");
                 builder.orderBy("exb3", true).orderBy("ex4", false).orderBy("name", true).limit(Constant.MAX_DB_QUERY);
             } else {

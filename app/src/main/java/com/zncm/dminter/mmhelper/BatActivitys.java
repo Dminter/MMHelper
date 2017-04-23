@@ -1,7 +1,6 @@
 package com.zncm.dminter.mmhelper;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -29,30 +28,28 @@ import com.zncm.dminter.mmhelper.utils.Xutils;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class ActivityShortcut extends BaseActivity {
-
-    public static final String INSTALL_SHORTCUT_ACTION = "com.android.launcher.action.INSTALL_SHORTCUT";
-    ActivityArrayAdapter activityArrayAdapter;
-    EditText activityName;
-    Spinner activitySpinner;
-    Spinner appSpinner;
-    public List<PackageInfo> apps;
-    ApplicationArrayAdapter appsListAdapter;
-    Button btnAdd;
-    Button btnAddDesk;
-    Button btnAddLike;
-    Button btnPre;
-    String className;
-    Activity ctx;
-    PackageManager packageManager;
-    String packageName;
-    String preClassName;
-    MaterialDialog progressDlg;
-    Intent startIntent;
-    int type = EnumInfo.typeShortcut.THREE_MORE.getValue();
-
-    List<MyAppInfo> activitys = new ArrayList<>();
+/**
+ * 批量添加活动
+ */
+public class BatActivitys extends BaseActivity {
+    private ActivityArrayAdapter activityArrayAdapter;
+    private EditText activityName;
+    private Spinner activitySpinner;
+    private Spinner appSpinner;
+    private List<PackageInfo> apps;
+    private ApplicationArrayAdapter appsListAdapter;
+    private Button btnAdd;
+    private Button btnAddDesk;
+    private Button btnAddLike;
+    private Button btnPre;
+    private String className;
+    private Activity ctx;
+    private PackageManager packageManager;
+    private String packageName;
+    private String preClassName;
+    private MaterialDialog progressDlg;
+    private int type = EnumInfo.typeShortcut.THREE_MORE.getValue();
+    private List<MyAppInfo> activitys = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,21 +61,19 @@ public class ActivityShortcut extends BaseActivity {
             finish();
             return;
         }
-        startIntent = getIntent();
+        initViews();
+        loadData();
+    }
+
+    public void initViews() {
         packageManager = getPackageManager();
         appSpinner = (Spinner) findViewById(R.id.app_spinner);
         activitySpinner = (Spinner) findViewById(R.id.activity_spinner);
-
-
-        loadData();
-
         activityName = (EditText) findViewById(R.id.activityName);
         btnPre = (Button) findViewById(R.id.btnPre);
         btnAdd = (Button) findViewById(R.id.btnAdd);
         btnAddLike = (Button) findViewById(R.id.btnAddLike);
         btnAddDesk = (Button) findViewById(R.id.btnAddDesk);
-
-
         btnPre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,16 +127,17 @@ public class ActivityShortcut extends BaseActivity {
                 }
             }
         });
-
-
     }
 
     private void loadData() {
-        new MyGetAppsTask().execute();
         progressDlg = new MaterialDialog.Builder(this).title("请稍后...").show();
+        new MyGetAppsTask().execute();
     }
 
 
+    /**
+     * 初始化数据
+     */
     class MyGetAppsTask extends AsyncTask<Void, Void, Void>
 
     {
@@ -152,7 +148,9 @@ public class ActivityShortcut extends BaseActivity {
                 List<PackageInfo> packages = pm.getInstalledPackages(0);
                 List<PackageInfo> tmpApp = new ArrayList<>();
                 List<PackageInfo> tmpAppSys = new ArrayList<>();
-
+                /**
+                 *是否系统应用
+                 */
                 for (PackageInfo packageInfo : packages) {
                     if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) // 非系统应用
                     {
@@ -160,16 +158,14 @@ public class ActivityShortcut extends BaseActivity {
                     } else {
                         tmpAppSys.add(packageInfo);
                     }
-
                 }
+
 
                 if (type == EnumInfo.typeShortcut.THREE_MORE.getValue() || type == EnumInfo.typeShortcut.THREE_LESS.getValue()) {
                     apps = tmpApp;
                 } else if (type == EnumInfo.typeShortcut.ALL_MORE.getValue() || type == EnumInfo.typeShortcut.ALL_LESS.getValue()) {
                     apps = tmpAppSys;
                 }
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -179,7 +175,6 @@ public class ActivityShortcut extends BaseActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
             if (progressDlg != null && progressDlg.isShowing()) {
                 progressDlg.dismiss();
             }
@@ -203,11 +198,16 @@ public class ActivityShortcut extends BaseActivity {
                 ArrayList<String> acList = new ArrayList<String>();
 
                 if ((type == EnumInfo.typeShortcut.ALL_LESS.getValue()) || (type == EnumInfo.typeShortcut.THREE_LESS.getValue())) {
-                    infos = appInfo.activities;
-                    if (infos != null && infos.length > 0) {
-                        for (int i = 0; i < infos.length; i++) {
-                            acList.add(infos[i].name);
+                    try {
+                        infos = getPackageManager().getPackageInfo(appInfo.packageName, PackageManager.GET_ACTIVITIES).activities;
+                        infos = appInfo.activities;
+                        if (infos != null && infos.length > 0) {
+                            for (int i = 0; i < infos.length; i++) {
+                                acList.add(infos[i].name);
+                            }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
                 } else if ((type == EnumInfo.typeShortcut.ALL_MORE.getValue()) || (type == EnumInfo.typeShortcut.THREE_MORE.getValue())) {

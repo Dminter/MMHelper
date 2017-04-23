@@ -60,6 +60,9 @@ public class SettingNew extends MaterialSettings {
     private String fzInfo;
     private boolean isNeedUpdate = false;
 
+
+    CheckboxItem checkboxItemBall;
+    CheckboxItem checkboxItemFloat;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,105 +125,189 @@ public class SettingNew extends MaterialSettings {
             }
         }));
 
-        addItem(new TextItem(ctx, "").setTitle("系统应用->冷冻室【慎重】").setOnclick(new TextItem.OnClickListener() {
-                                                                                    public void onClick(TextItem textItem) {
-                                                                                        new MaterialDialog.Builder(ctx).title("系统应用->冷冻室【慎重】").content("注意：冻结系统应用可能会导致系统崩溃，无法开机，切忌盲目冻结，以免造成严重后果！！~")
-                                                                                                .positiveText("确定").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
-
-
-                                                                                                                                                @Override
-                                                                                                                                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                                                                                                                    if (which == DialogAction.POSITIVE) {
-
-                                                                                                                                                        try {
-
-                                                                                                                                                            final ArrayList<String> appNames = new ArrayList<String>();
-                                                                                                                                                            final ArrayList<String> pkNames = new ArrayList<String>();
-                                                                                                                                                            PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
-                                                                                                                                                            List<PackageInfo> packages = pm.getInstalledPackages(0);
-                                                                                                                                                            for (PackageInfo packageInfo : packages) {
-                                                                                                                                                                if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-
-                                                                                                                                                                } else {
-                                                                                                                                                                    String name = packageInfo.applicationInfo.loadLabel(pm)
-                                                                                                                                                                            .toString();
-                                                                                                                                                                    if (Xutils.isNotEmptyOrNull(name) && Xutils.isNotEmptyOrNull(packageInfo.packageName)) {
-                                                                                                                                                                        appNames.add(name);
-                                                                                                                                                                        pkNames.add(packageInfo.packageName);
-                                                                                                                                                                    }
-                                                                                                                                                                }
-                                                                                                                                                            }
-
-
-                                                                                                                                                            new MaterialDialog.Builder(ctx).title("系统应用->冷冻室").items(appNames).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
-                                                                                                                                                                @Override
-                                                                                                                                                                public boolean onSelection(MaterialDialog dialog, final Integer[] which, CharSequence[] text) {
-                                                                                                                                                                    final StringBuffer names = new StringBuffer();
-                                                                                                                                                                    for (int i = 0; i < which.length; i++) {
-                                                                                                                                                                        String name = appNames.get(which[i]);
-                                                                                                                                                                        if (Xutils.isNotEmptyOrNull(name)) {
-                                                                                                                                                                            names.append(name).append("，");
-                                                                                                                                                                        }
-                                                                                                                                                                    }
-
-                                                                                                                                                                    new MaterialDialog.Builder(ctx).title("确定添加到冷冻室").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
-                                                                                                                                                                        public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which2) {
-                                                                                                                                                                            if (which2 == DialogAction.POSITIVE) {
-                                                                                                                                                                                for (int i = 0; i < which.length; i++) {
-                                                                                                                                                                                    String pkName = pkNames.get(which[i]);
-                                                                                                                                                                                    if (Xutils.isNotEmptyOrNull(pkName)) {
-                                                                                                                                                                                        PkInfo pkInfo = DbUtils.getPkOne(pkName);
-                                                                                                                                                                                        if (pkInfo != null) {
-                                                                                                                                                                                            pkInfo.setExb2(1);
-                                                                                                                                                                                            DbUtils.insertPkInfo(pkInfo);
-                                                                                                                                                                                        } else {
-                                                                                                                                                                                            String description = "";
-                                                                                                                                                                                            Drawable drawable = null;
-                                                                                                                                                                                            if (Xutils.isNotEmptyOrNull(pkName)) {
-                                                                                                                                                                                                ApplicationInfo app = Xutils.getAppInfo(pkName);
-                                                                                                                                                                                                if (app != null) {
-                                                                                                                                                                                                    PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
-                                                                                                                                                                                                    drawable = app.loadIcon(pm);
-                                                                                                                                                                                                    description = app.loadLabel(pm).toString();
-                                                                                                                                                                                                }
-                                                                                                                                                                                            }
-                                                                                                                                                                                            Bitmap bitmap = null;
-                                                                                                                                                                                            if (drawable != null) {
-                                                                                                                                                                                                bitmap = ((BitmapDrawable) drawable).getBitmap();
-                                                                                                                                                                                            }
-                                                                                                                                                                                            byte[] bitInfo = null;
-                                                                                                                                                                                            if (bitmap != null) {
-                                                                                                                                                                                                bitInfo = Xutils.bitmap2Bytes(bitmap);
-                                                                                                                                                                                            }
-                                                                                                                                                                                            PkInfo tmp = new PkInfo(pkName, description, bitInfo, EnumInfo.appStatus.ENABLE.getValue(), EnumInfo.appType.THREE.getValue());
-                                                                                                                                                                                            tmp.setExb2(1);
-                                                                                                                                                                                            DbUtils.insertPkInfo(tmp);
-                                                                                                                                                                                        }
-                                                                                                                                                                                    }
-                                                                                                                                                                                }
-                                                                                                                                                                                Xutils.tShort("已添加到冷冻室，但暂未冻结~");
-
-                                                                                                                                                                            }
-                                                                                                                                                                        }
-                                                                                                                                                                    }).show();
-
-
-                                                                                                                                                                    return true;
-                                                                                                                                                                }
-                                                                                                                                                            }).positiveText("确定").negativeText("取消").show();
-                                                                                                                                                        } catch (Exception e) {
-                                                                                                                                                            e.printStackTrace();
-                                                                                                                                                        }
-
-
-                                                                                                                                                    }
-
-                                                                                                                                                }
-                                                                                                                                            }
-
-                                                                                        ).show();
+        addItem(new TextItem(ctx, "").setTitle("添加应用")
+                .setSubtitle("解决安装的应用未自动添加到应用列表的情形").setOnclick(new TextItem.OnClickListener() {
+                                                                    public void onClick(TextItem textItem) {
+                                                                        try {
+                                                                            final ArrayList<String> appNames = new ArrayList<String>();
+                                                                            final ArrayList<String> pkNames = new ArrayList<String>();
+                                                                            PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
+                                                                            List<PackageInfo> packages = pm.getInstalledPackages(0);
+                                                                            for (PackageInfo packageInfo : packages) {
+                                                                                if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                                                                                    String name = packageInfo.applicationInfo.loadLabel(pm)
+                                                                                            .toString();
+                                                                                    if (Xutils.isNotEmptyOrNull(name) && Xutils.isNotEmptyOrNull(packageInfo.packageName)) {
+                                                                                        PkInfo pkInfo = DbUtils.getPkOne(packageInfo.packageName);
+                                                                                        if (pkInfo == null) {
+                                                                                            appNames.add(name);
+                                                                                            pkNames.add(packageInfo.packageName);
+                                                                                        }
                                                                                     }
                                                                                 }
+                                                                            }
+                                                                            new MaterialDialog.Builder(ctx).title("添加应用").items(appNames).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                                                                                @Override
+                                                                                public boolean onSelection(MaterialDialog dialog, final Integer[] which, CharSequence[] text) {
+                                                                                    final StringBuffer names = new StringBuffer();
+                                                                                    for (int i = 0; i < which.length; i++) {
+                                                                                        String name = appNames.get(which[i]);
+                                                                                        if (Xutils.isNotEmptyOrNull(name)) {
+                                                                                            names.append(name).append("，");
+                                                                                        }
+                                                                                    }
+
+                                                                                    new MaterialDialog.Builder(ctx).title("确定添加应用").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+                                                                                        public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which2) {
+                                                                                            if (which2 == DialogAction.POSITIVE) {
+                                                                                                for (int i = 0; i < which.length; i++) {
+                                                                                                    String pkName = pkNames.get(which[i]);
+                                                                                                    if (Xutils.isNotEmptyOrNull(pkName)) {
+                                                                                                        PkInfo pkInfo = DbUtils.getPkOne(pkName);
+                                                                                                        if (pkInfo != null) {
+                                                                                                            DbUtils.insertPkInfo(pkInfo);
+                                                                                                        } else {
+                                                                                                            String description = "";
+                                                                                                            Drawable drawable = null;
+                                                                                                            if (Xutils.isNotEmptyOrNull(pkName)) {
+                                                                                                                ApplicationInfo app = Xutils.getAppInfo(pkName);
+                                                                                                                if (app != null) {
+                                                                                                                    PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
+                                                                                                                    drawable = app.loadIcon(pm);
+                                                                                                                    description = app.loadLabel(pm).toString();
+                                                                                                                }
+                                                                                                            }
+                                                                                                            Bitmap bitmap = null;
+                                                                                                            if (drawable != null) {
+                                                                                                                bitmap = ((BitmapDrawable) drawable).getBitmap();
+                                                                                                            }
+                                                                                                            byte[] bitInfo = null;
+                                                                                                            if (bitmap != null) {
+                                                                                                                bitInfo = Xutils.bitmap2Bytes(bitmap);
+                                                                                                            }
+                                                                                                            PkInfo tmp = new PkInfo(pkName, description, bitInfo, EnumInfo.appStatus.ENABLE.getValue(), EnumInfo.appType.THREE.getValue());
+                                                                                                            DbUtils.insertPkInfo(tmp);
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                                Xutils.tShort("已全部添加~");
+
+                                                                                            }
+                                                                                        }
+                                                                                    }).show();
+
+
+                                                                                    return true;
+                                                                                }
+                                                                            }).positiveText("确定").negativeText("取消").show();
+                                                                        } catch (Exception e) {
+                                                                            e.printStackTrace();
+                                                                        }
+                                                                    }
+                                                                }
+
+                ));
+
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(ctx, "").setTitle("系统应用->冷冻室【慎重】").setOnclick(new TextItem.OnClickListener() {
+                                                                               public void onClick(TextItem textItem) {
+                                                                                   new MaterialDialog.Builder(ctx).title("系统应用->冷冻室【慎重】").content("注意：冻结系统应用可能会导致系统崩溃，无法开机，切忌盲目冻结，以免造成严重后果！！~")
+                                                                                           .positiveText("确定").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+
+
+                                                                                                                                           @Override
+                                                                                                                                           public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                                                                                                               if (which == DialogAction.POSITIVE) {
+
+                                                                                                                                                   try {
+
+                                                                                                                                                       final ArrayList<String> appNames = new ArrayList<String>();
+                                                                                                                                                       final ArrayList<String> pkNames = new ArrayList<String>();
+                                                                                                                                                       PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
+                                                                                                                                                       List<PackageInfo> packages = pm.getInstalledPackages(0);
+                                                                                                                                                       for (PackageInfo packageInfo : packages) {
+                                                                                                                                                           if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+
+                                                                                                                                                           } else {
+                                                                                                                                                               String name = packageInfo.applicationInfo.loadLabel(pm)
+                                                                                                                                                                       .toString();
+                                                                                                                                                               if (Xutils.isNotEmptyOrNull(name) && Xutils.isNotEmptyOrNull(packageInfo.packageName)) {
+                                                                                                                                                                   appNames.add(name);
+                                                                                                                                                                   pkNames.add(packageInfo.packageName);
+                                                                                                                                                               }
+                                                                                                                                                           }
+                                                                                                                                                       }
+
+
+                                                                                                                                                       new MaterialDialog.Builder(ctx).title("系统应用->冷冻室").items(appNames).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                                                                                                                                                           @Override
+                                                                                                                                                           public boolean onSelection(MaterialDialog dialog, final Integer[] which, CharSequence[] text) {
+                                                                                                                                                               final StringBuffer names = new StringBuffer();
+                                                                                                                                                               for (int i = 0; i < which.length; i++) {
+                                                                                                                                                                   String name = appNames.get(which[i]);
+                                                                                                                                                                   if (Xutils.isNotEmptyOrNull(name)) {
+                                                                                                                                                                       names.append(name).append("，");
+                                                                                                                                                                   }
+                                                                                                                                                               }
+
+                                                                                                                                                               new MaterialDialog.Builder(ctx).title("确定添加到冷冻室").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+                                                                                                                                                                   public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which2) {
+                                                                                                                                                                       if (which2 == DialogAction.POSITIVE) {
+                                                                                                                                                                           for (int i = 0; i < which.length; i++) {
+                                                                                                                                                                               String pkName = pkNames.get(which[i]);
+                                                                                                                                                                               if (Xutils.isNotEmptyOrNull(pkName)) {
+                                                                                                                                                                                   PkInfo pkInfo = DbUtils.getPkOne(pkName);
+                                                                                                                                                                                   if (pkInfo != null) {
+                                                                                                                                                                                       pkInfo.setExb2(1);
+                                                                                                                                                                                       DbUtils.insertPkInfo(pkInfo);
+                                                                                                                                                                                   } else {
+                                                                                                                                                                                       String description = "";
+                                                                                                                                                                                       Drawable drawable = null;
+                                                                                                                                                                                       if (Xutils.isNotEmptyOrNull(pkName)) {
+                                                                                                                                                                                           ApplicationInfo app = Xutils.getAppInfo(pkName);
+                                                                                                                                                                                           if (app != null) {
+                                                                                                                                                                                               PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
+                                                                                                                                                                                               drawable = app.loadIcon(pm);
+                                                                                                                                                                                               description = app.loadLabel(pm).toString();
+                                                                                                                                                                                           }
+                                                                                                                                                                                       }
+                                                                                                                                                                                       Bitmap bitmap = null;
+                                                                                                                                                                                       if (drawable != null) {
+                                                                                                                                                                                           bitmap = ((BitmapDrawable) drawable).getBitmap();
+                                                                                                                                                                                       }
+                                                                                                                                                                                       byte[] bitInfo = null;
+                                                                                                                                                                                       if (bitmap != null) {
+                                                                                                                                                                                           bitInfo = Xutils.bitmap2Bytes(bitmap);
+                                                                                                                                                                                       }
+                                                                                                                                                                                       PkInfo tmp = new PkInfo(pkName, description, bitInfo, EnumInfo.appStatus.ENABLE.getValue(), EnumInfo.appType.THREE.getValue());
+                                                                                                                                                                                       tmp.setExb2(1);
+                                                                                                                                                                                       DbUtils.insertPkInfo(tmp);
+                                                                                                                                                                                   }
+                                                                                                                                                                               }
+                                                                                                                                                                           }
+                                                                                                                                                                           Xutils.tShort("已添加到冷冻室，但暂未冻结~");
+
+                                                                                                                                                                       }
+                                                                                                                                                                   }
+                                                                                                                                                               }).show();
+
+
+                                                                                                                                                               return true;
+                                                                                                                                                           }
+                                                                                                                                                       }).positiveText("确定").negativeText("取消").show();
+                                                                                                                                                   } catch (Exception e) {
+                                                                                                                                                       e.printStackTrace();
+                                                                                                                                                   }
+
+
+                                                                                                                                               }
+
+                                                                                                                                           }
+                                                                                                                                       }
+
+                                                                                   ).show();
+                                                                               }
+                                                                           }
 
         ));
 
@@ -251,6 +338,7 @@ public class SettingNew extends MaterialSettings {
 
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                checkboxItemFloat = checkboxItem;
                 SPHelper.setIsAcFloat(ctx, b);
                 if (b) {
                     if (!SettingsCompat.canDrawOverlays(ctx)) {
@@ -338,7 +426,7 @@ public class SettingNew extends MaterialSettings {
                 if (checkNotPro()) {
                     return;
                 }
-                startActivity(new Intent(ctx, ActivityShortcut.class));
+                startActivity(new Intent(ctx, BatActivitys.class));
             }
         }));
         addItem(new DividerItem(ctx));
@@ -360,9 +448,13 @@ public class SettingNew extends MaterialSettings {
                 if (checkNotPro()) {
                     return;
                 }
+                checkboxItemBall = checkboxItem;
                 SPHelper.setIsFloatBall(ctx, b);
 //                Intent localIntent = new Intent(ctx, FloatBallService.class);
                 if (b) {
+                    if (!SettingsCompat.canDrawOverlays(ctx)) {
+                        startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                    }
                     ctx.startService(new Intent(ctx, FloatBallService.class));
                 } else {
                     ctx.stopService(new Intent(ctx, FloatBallService.class));
@@ -424,10 +516,8 @@ public class SettingNew extends MaterialSettings {
         addItem(new TextItem(this, "").setTitle("全部解冻").setSubtitle("卸载本软件前请先解冻，若无法直接卸载，请先到设备管理器取消激活").setOnclick(new TextItem.OnClickListener() {
             @Override
             public void onClick(TextItem textItem) {
-
-                MyFt.BatStopTask batStopTask = new MyFt.BatStopTask();
-                batStopTask.execute(true);
-
+                Xutils.tShort("正在解冻...");
+                new MyFt.BatStopTask().execute(EnumInfo.typeBatStop.ENABLE_ALL.getValue());
             }
         }));
 
@@ -587,6 +677,11 @@ public class SettingNew extends MaterialSettings {
 
 
                             } else if (which == DialogAction.POSITIVE) {
+                                String payOrderCheck = SPHelper.getPayOrderCheck(ctx);
+                                if (!payOrderCheck.contains(Xutils.getTimeTodayYMD())) {
+                                    String payCheck = payOrderCheck + "," + Xutils.getTimeTodayYMD();
+                                    SPHelper.setPayOrderCheck(ctx, payCheck);
+                                }
                                 MainActivity.pay(ctx);
                             }
 
@@ -672,4 +767,29 @@ public class SettingNew extends MaterialSettings {
         }
     }
 
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (SettingsCompat.canDrawOverlays(ctx)) {
+//            SPHelper.setIsAcFloat(ctx, true);
+//            SPHelper.setIsFloatBall(ctx, true);
+//
+//            if (checkboxItemBall != null) {
+//                checkboxItemBall.setDefaultValue(true);
+//            }
+//            if (checkboxItemFloat != null) {
+//                checkboxItemFloat.setDefaultValue(true);
+//            }
+//        } else {
+//            SPHelper.setIsAcFloat(ctx, false);
+//            SPHelper.setIsFloatBall(ctx, false);
+//            if (checkboxItemBall != null) {
+//                checkboxItemBall.setDefaultValue(false);
+//            }
+//            if (checkboxItemFloat != null) {
+//                checkboxItemFloat.setDefaultValue(false);
+//            }
+//        }
+//
+//    }
 }

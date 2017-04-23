@@ -26,30 +26,50 @@ public class MyInstalledReceiver extends BroadcastReceiver {
         if (Xutils.isNotEmptyOrNull(pkgName) && pkgName.contains("package:")) {
             pkgName = pkgName.replaceAll("package:", "");
         }
-        if (intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {     // install
-            String description = "";
-            Drawable drawable = null;
-            if (Xutils.isNotEmptyOrNull(pkgName)) {
-                ApplicationInfo app = Xutils.getAppInfo(pkgName);
-                if (app != null) {
-                    PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
-                    drawable = app.loadIcon(pm);
-                    description = app.loadLabel(pm).toString();
+        if (!Xutils.isNotEmptyOrNull(pkgName)) {
+            return;
+        }
+        if (intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {
+            PkInfo pk = DbUtils.getPkOne(pkgName);
+            if (pk != null) {
+                pk.setExi1(EnumInfo.pkStatus.NORMAL.getValue());
+                DbUtils.updatePkInfo(pk);
+            } else {
+                String description = "";
+                Drawable drawable = null;
+                if (Xutils.isNotEmptyOrNull(pkgName)) {
+                    ApplicationInfo app = Xutils.getAppInfo(pkgName);
+                    if (app != null) {
+                        PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
+                        drawable = app.loadIcon(pm);
+                        description = app.loadLabel(pm).toString();
+                    }
                 }
-            }
-            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            PkInfo tmp = new PkInfo(pkgName, description, Xutils.bitmap2Bytes(bitmap), EnumInfo.appStatus.ENABLE.getValue(), EnumInfo.appType.THREE.getValue());
-            DbUtils.insertPkInfo(tmp);
+                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                PkInfo tmp = new PkInfo(pkgName, description, Xutils.bitmap2Bytes(bitmap), EnumInfo.appStatus.ENABLE.getValue(), EnumInfo.appType.THREE.getValue());
+                DbUtils.insertPkInfo(tmp);
+                }
             Log.i("homer", "安装了 :" + pkgName);
             EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
         }
 
-        if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {   // uninstall
+        if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {
             PkInfo pk = DbUtils.getPkOne(pkgName);
             if (pk != null) {
-                DbUtils.deletePk(pk);
+                pk.setExi1(EnumInfo.pkStatus.DELETE.getValue());
+                DbUtils.updatePkInfo(pk);
             }
             Log.i("homer", "卸载了 :" + pkgName);
+            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+        }
+
+        if (intent.getAction().equals("android.intent.action.ACTION_PACKAGE_REPLACED")) {
+            PkInfo pk = DbUtils.getPkOne(pkgName);
+            if (pk != null) {
+                pk.setExi1(EnumInfo.pkStatus.NORMAL.getValue());
+                DbUtils.updatePkInfo(pk);
+            }
+            Log.i("homer", "重装 :" + pkgName);
             EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
         }
     }

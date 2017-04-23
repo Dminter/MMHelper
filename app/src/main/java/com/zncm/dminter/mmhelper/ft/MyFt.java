@@ -113,28 +113,22 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 }
                 CardInfo info = cardInfos.get(position);
                 String title = info.getTitle();
-//                int bgColor = info.getCard_color();
-//                if (bgColor == 0) {
-//                    bgColor = getResources().getColor(R.color.material_light_white);
-//                }
-
                 int titleColor = getResources().getColor(R.color.material_light_black);
                 String pkgName = info.getPackageName();
                 Drawable drawable = null;
-                if (info.getType() == EnumInfo.cType.WX.getValue()) {
-                } else if (info.getType() == EnumInfo.cType.QQ.getValue()) {
-                } else if (info.getType() == EnumInfo.cType.URL.getValue()) {
+                if (info.getType() == EnumInfo.cType.URL.getValue()) {
                     drawable = getResources().getDrawable(R.mipmap.ic_url);
-                } else if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
-                    if (info.isDisabled()) {
-                        titleColor = getResources().getColor(R.color.material_amber_accent_700);
-                    } else {
-                        titleColor = getResources().getColor(R.color.material_light_black);
-                    }
                 } else if (info.getType() == EnumInfo.cType.CMD.getValue()) {
                     drawable = getResources().getDrawable(R.mipmap.ic_shell);
                 } else if (info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
                     drawable = getResources().getDrawable(R.mipmap.ic_shortcut);
+                } else {
+                    drawable = getResources().getDrawable(R.mipmap.ic_launcher);
+                }
+                if (info.getType() == EnumInfo.cType.START_APP.getValue() && info.isDisabled()) {
+                    titleColor = getResources().getColor(R.color.material_amber_accent_700);
+                } else {
+                    titleColor = getResources().getColor(R.color.material_light_black);
                 }
                 int index = info.getExi2();
                 if (index > 0) {
@@ -220,7 +214,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             public void onClick(View v) {
 
                 if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
-                    new MyFt.BatStopTask().execute(false);
+                    new MyFt.BatStopTask().execute(EnumInfo.typeBatStop.DISABLE_LESS.getValue());
                 } else if (packageName.equals(EnumInfo.homeTab.ALL.getValue())) {
                     String[] items = {"采集活动", "添加活动", "微信聊天", "QQ聊天", "书签", "Shell", "快捷方式"};
                     new MaterialDialog.Builder(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
@@ -314,7 +308,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                         }
                                     }
                                 }
-                                new BatStopTask().execute(false);
+                                new MyFt.BatStopTask().execute(EnumInfo.typeBatStop.DISABLE_ALL.getValue());
                             }
                         }
                     }).show();
@@ -348,6 +342,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     }
                 }
             });
+            swipeLayout.setEnabled(false);
         }
 
 
@@ -474,23 +469,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         activity.startActivity(intent);
     }
 
-    public static void sendToDesk(Activity ctx, CardInfo info) {
-        Drawable drawable = null;
-        if (info.getType() == EnumInfo.cType.URL.getValue()) {
-            drawable = ctx.getResources().getDrawable(R.mipmap.ic_url);
-        } else if (info.getType() == EnumInfo.cType.CMD.getValue()) {
-            drawable = ctx.getResources().getDrawable(R.mipmap.ic_shell);
-        } else if (info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
-            drawable = ctx.getResources().getDrawable(R.mipmap.ic_shortcut);
-        } else if (Xutils.isNotEmptyOrNull(info.getPackageName())) {
-            drawable = Xutils.getAppIcon(info.getPackageName());
-        }
-//        Xutils.sendToDesktop(ctx, OpenInentActivity.class, info.getTitle(),
-//                drawable, info.getPackageName(), info.getClassName(), info.getId());
-
-        Xutils.sendToDesktop(ctx, info, false);
-        Xutils.tShort(Constant.add_shortcut);
-    }
 
 
     public static void clickCard(final Context activity, CardInfo info) {
@@ -507,13 +485,13 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 String url = "mqqwpa://im/chat?chat_type=wpa&uin=" + info.getCmd();
                 activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             } catch (Exception e) {
+                Xutils.tShort("请检查是否安装QQ~");
                 e.printStackTrace();
             }
         } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
             appNewStatus(info);
             RunOpenActivity runOpenActivity = new RunOpenActivity(info, Constant.open_ac_attempt);
             runOpenActivity.execute();
-
         } else if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
             appNewStatus(info);
             Xutils.startAppByPackageName(activity, info.getPackageName(), Constant.attempt);
@@ -534,38 +512,47 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     }).build();
                     BottomSheetDlg.checkSysDlg(activity, dialog);
                     dialog.show();
+                } else {
+                    Xutils.tShort("找不到该命令~");
                 }
 
+            } else {
+                Xutils.tShort("找不到该命令~");
             }
         } else if (info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
             String cmd = info.getCmd();
             try {
                 activity.startActivity(Intent.parseUri(cmd, 0));
             } catch (Exception e) {
-                String pkgName = info.getPackageName();
-                if (Xutils.isNotEmptyOrNull(cmd)) {
-                    if (cmd.contains("component")) {
-                        pkgName = cmd.substring(1 + (cmd.indexOf("component") + "component".length()), cmd.length());
-                    } else if (cmd.contains("package")) {
-                        pkgName = cmd.substring(1 + (cmd.indexOf("package") + "package".length()), cmd.length());
-                        if (pkgName.contains(";")) {
-                            pkgName = pkgName.substring(0, pkgName.indexOf(";"));
+                try {
+                    String pkgName = info.getPackageName();
+                    if (Xutils.isNotEmptyOrNull(cmd)) {
+                        if (cmd.contains("component")) {
+                            pkgName = cmd.substring(1 + (cmd.indexOf("component") + "component".length()), cmd.length());
+                        } else if (cmd.contains("package")) {
+                            pkgName = cmd.substring(1 + (cmd.indexOf("package") + "package".length()), cmd.length());
+                            if (pkgName.contains(";")) {
+                                pkgName = pkgName.substring(0, pkgName.indexOf(";"));
+                            }
                         }
-                    }
-                    if (Xutils.isNotEmptyOrNull(pkgName)) {
-                        info.setPackageName(pkgName);
-                        DbUtils.updateCard(info);
-                        Xutils.exec("pm enable " + pkgName);
-                        appNewStatus(info);
-                        try {
-                            activity.startActivity(Intent.parseUri(cmd, 0));
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
+                        if (Xutils.isNotEmptyOrNull(pkgName)) {
+                            info.setPackageName(pkgName);
+                            DbUtils.updateCard(info);
+                            Xutils.exec("pm enable " + pkgName);
+                            appNewStatus(info);
 
+                            activity.startActivity(Intent.parseUri(cmd, 0));
+
+                        } else {
+                            Xutils.tShort("快捷方式错误~");
+                        }
                     }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    Xutils.tShort("快捷方式错误~");
                 }
-                e.printStackTrace();
+
+//                e.printStackTrace();
             }
         }
         if (ret == AndroidCommand.noRoot) {
@@ -619,6 +606,8 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     Xutils.exec(Constant.common_pm_e_p + info.getPackageName());
                     RunOpenActivity runOpenActivity = new RunOpenActivity(info, --attempt);
                     runOpenActivity.execute();
+                } else {
+                    Xutils.tShort(Constant.no_open);
                 }
             } else if (ret == AndroidCommand.noRoot) {
                 Xutils.tShort(Constant.no_root);
@@ -932,6 +921,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         }
 
         final PkInfo pkInfo = DbUtils.getPkOne(info.getPackageName());
+        if (pkInfo == null) {
+            return;
+        }
         final boolean isDisabled = pkInfo.getStatus() == EnumInfo.appStatus.DISABLED.getValue();
 
         //冻结，解冻
@@ -969,10 +961,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         map7.put("text", "shortcut");
         map7.put("key", "-7");
         list.add(map7);
-        Map<String, Object> map8 = new HashMap<>();
-        map8.put("text", "卸载");
-        map8.put("key", "-8");
-        list.add(map8);
+//        Map<String, Object> map8 = new HashMap<>();
+//        map8.put("text", "卸载");
+//        map8.put("key", "-8");
+//        list.add(map8);
         new BottomSheetDlg(ctx, list, false) {
             @Override
             public void onGridItemClickListener(int position) {
@@ -1017,7 +1009,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         Xutils.sendToDesktop(ctx, info);
                         break;
                     case 4:
-
                         String str = Xutils.getLaunchClassNameByPkName(ctx, info.getPackageName());
                         pkInfo.setStatus(EnumInfo.appStatus.ENABLE.getValue());
                         DbUtils.updatePkInfo(pkInfo);
@@ -1037,13 +1028,11 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     case 6:
                         Xutils.sendToDesktop(ctx, info, true);
                         break;
-                    case 7:
-                        Xutils.unstallApp(ctx, info.getPackageName());
-                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
-                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
-                        break;
-
-
+//                    case 7:
+//                        Xutils.unstallApp(ctx, info.getPackageName());
+//                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+//                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
+//                        break;
 
                 }
 
@@ -1215,26 +1204,31 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 //    }
 
 
-    //批量冻结冷冻室里面的APP
+    //批量冻结冷冻室里面的APP 冷冻已经解冻的，冷冻全部处于冷冻室里的，解冻全部
     public static class BatStopTask
-            extends AsyncTask<Boolean, Void, Void> {
-        boolean isEnable = false;
+            extends AsyncTask<Integer, Void, Void> {
+        int type = EnumInfo.typeBatStop.DISABLE_LESS.getValue();
 
-        protected Void doInBackground(Boolean... flag) {
-            isEnable = flag[0];
-
+        protected Void doInBackground(Integer... flag) {
+            type = flag[0];
             ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(1);
-
-
             for (PkInfo info : pkInfos
                     ) {
-                if (isEnable) {
-                    Xutils.exec("pm enable " + info.getPackageName());
-                } else {
-                    Xutils.exec("pm disable " + info.getPackageName());
+                if (info.getPackageName().equals(Constant.app_pkg)) {
+                    continue;
                 }
-                info.setStatus(isEnable ? EnumInfo.appStatus.ENABLE.getValue() :
-                        EnumInfo.appStatus.DISABLED.getValue());
+                if (type == EnumInfo.typeBatStop.DISABLE_LESS.getValue()) {
+                    if (info.getStatus() == EnumInfo.appStatus.ENABLE.getValue()) {
+                        Xutils.exec("pm disable " + info.getPackageName());
+                        info.setStatus(EnumInfo.appStatus.DISABLED.getValue());
+                    }
+                } else if (type == EnumInfo.typeBatStop.DISABLE_ALL.getValue()) {
+                    Xutils.exec("pm disable " + info.getPackageName());
+                    info.setStatus(EnumInfo.appStatus.DISABLED.getValue());
+                } else if (type == EnumInfo.typeBatStop.ENABLE_ALL.getValue()) {
+                    Xutils.exec("pm enable " + info.getPackageName());
+                    info.setStatus(EnumInfo.appStatus.ENABLE.getValue());
+                }
                 DbUtils.updatePkInfo(info);
             }
             return null;
@@ -1244,11 +1238,14 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             super.onPostExecute(aVoid);
             EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
             EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
-            if (isEnable) {
-                Xutils.tShort("已全部解冻！");
-            } else {
+            if (type == EnumInfo.typeBatStop.DISABLE_LESS.getValue()) {
                 Xutils.tShort("已全部冷冻！");
+            } else if (type == EnumInfo.typeBatStop.DISABLE_ALL.getValue()) {
+                Xutils.tShort("已彻底冷冻！");
+            } else if (type == EnumInfo.typeBatStop.ENABLE_ALL.getValue()) {
+                Xutils.tShort("已全部解冻！");
             }
+
         }
     }
 
@@ -1257,6 +1254,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
     @Override
     public void onRefresh() {
+
         fillArray();
         swipeLayout.setRefreshing(false);
     }

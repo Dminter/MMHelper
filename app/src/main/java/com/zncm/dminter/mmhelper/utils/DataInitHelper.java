@@ -23,8 +23,6 @@ import java.util.List;
  */
 
 public class DataInitHelper {
-
-
     public static class MyTask extends AsyncTask<Void, Void, Void> {
 
         protected Void doInBackground(Void... params) {
@@ -39,10 +37,9 @@ public class DataInitHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPSINIT.getValue()));
+            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
         }
     }
-
     private static void initPkInfo() {
         PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
         List<PackageInfo> packages = pm.getInstalledPackages(0);

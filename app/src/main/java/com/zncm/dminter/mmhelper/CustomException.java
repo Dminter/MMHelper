@@ -19,7 +19,7 @@ public class CustomException implements Thread.UncaughtExceptionHandler {
         String errorMsg = getErrorInfo(throwable);
         Xutils.debug("errorMsg==>" + errorMsg);
         SPHelper.setFcLog(ctx, errorMsg);
-//        System.exit(0);
+        System.exit(0);
     }
 
 

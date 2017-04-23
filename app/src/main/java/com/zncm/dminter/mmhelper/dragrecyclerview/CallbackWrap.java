@@ -9,9 +9,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import com.zncm.dminter.mmhelper.adapter.CardAdapter;
 
 public class CallbackWrap extends ItemTouchHelper.Callback {
-
     private CardAdapter adapter;
-
     private int mBackgroundColor = Color.WHITE;
     private int mDragcolor = Color.parseColor("#f5f5f5");
 
@@ -27,7 +25,6 @@ public class CallbackWrap extends ItemTouchHelper.Callback {
             return makeMovementFlags(dragFlags, swipeFlags);
         } else {
             final int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-            //final int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
             final int swipeFlags = 0;
             return makeMovementFlags(dragFlags, swipeFlags);
         }

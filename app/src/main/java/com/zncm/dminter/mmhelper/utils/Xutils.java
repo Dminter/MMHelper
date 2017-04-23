@@ -76,6 +76,7 @@ public class Xutils {
             version = Integer.parseInt(str);
         } catch (Exception e) {
             e.printStackTrace();
+            Xutils.tShort("请检查是否安装微信~");
         }
         if (version >= 656) {
             flag = true;
@@ -154,7 +155,7 @@ public class Xutils {
             it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             MyApplication.getInstance().ctx.startActivity(it);
         } catch (Exception e) {
-
+            Xutils.tShort("请检查是否安装浏览器~");
         }
     }
 
@@ -329,6 +330,8 @@ public class Xutils {
             exec(Constant.common_pm_e_p + packagename);
             if (attempt > 0) {
                 startAppByPackageName(context, packagename, --attempt);
+            }else {
+                Xutils.tShort(Constant.no_open);
             }
         }
 
@@ -395,7 +398,6 @@ public class Xutils {
             info = pm.getApplicationInfo(pName, 0);
             return info;
         } catch (PackageManager.NameNotFoundException e) {
-            // TODO Auto-generated catch block
 //            e.printStackTrace();
 
         }
@@ -413,7 +415,6 @@ public class Xutils {
             ApplicationInfo info = pm.getApplicationInfo(packname, 0);
             return info.loadIcon(pm);
         } catch (PackageManager.NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
 
         }
@@ -472,7 +473,6 @@ public class Xutils {
             ApplicationInfo info = pm.getApplicationInfo(packname, 0);
             return info.loadLabel(pm).toString();
         } catch (PackageManager.NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
 
         }

@@ -47,6 +47,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ColorChooserDialog.ColorCallback {
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     private Toolbar toolbar;
     public ArrayList<FzInfo> fzInfos = new ArrayList<>();
     private MainActivity ctx;
-    public ArrayList<MyFt> fragments = new ArrayList<>();
+    public HashMap<Integer, MyFt> fragments = new HashMap();
     //    MaterialDialog progressDlg;
     private LinearLayout topView;
     ScreenListener screenListener;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             screenListener.begin(new ScreenListener.ScreenStateListener() {
                 public void onScreenOff() {
                     if (SPHelper.isAutoStop(ctx)) {
-                        new MyFt.BatStopTask().execute(false);
+                        new MyFt.BatStopTask().execute(EnumInfo.typeBatStop.DISABLE_LESS.getValue());
                     }
                 }
 
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                 bundle.putString("packageName", fzInfos.get(position - baseTab).getId() + "");
             }
             fragment.setArguments(bundle);
-            fragments.add(fragment);
+            fragments.put(position, fragment);
             return fragment;
         }
 

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 
+import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.floatball.ScreenOffAdminReceiver;
 import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.Xutils;
@@ -32,8 +33,7 @@ public class ShortcutActionActivity extends Activity {
             action = bundle.getString("action");
             if (Xutils.isNotEmptyOrNull(action)) {
                 if (action.equals(Constant.SA_BATSTOP)) {
-                    MyFt.BatStopTask batStopTask = new MyFt.BatStopTask();
-                    batStopTask.execute(false);
+                    new MyFt.BatStopTask().execute(EnumInfo.typeBatStop.DISABLE_LESS.getValue());
                     finish();
                 } else if (action.equals(Constant.SA_T9)) {
                     startActivity(new Intent(ctx, T9SearchActivity.class));

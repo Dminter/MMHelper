@@ -25,6 +25,7 @@ public class Constant {
     public static String app_shortcut = "com.zncm.dminter.mmhelper.ShortcutActionActivity";
     public static String app_shortcut_openinentactivity = "com.zncm.dminter.mmhelper.OpenInentActivity";
     public static String no_root = "打开失败~请检查root权限！！";
+    public static String no_open = "打开失败~请检查应用是否已被卸载！！";
     public static String add_shortcut = "已添加快捷方式到桌面！！";
     public static String update_url = "http://www.coolapk.com/apk/com.zncm.dminter.mmhelper";
     public static String github_url = "https://github.com/Dminter/MMHelper";

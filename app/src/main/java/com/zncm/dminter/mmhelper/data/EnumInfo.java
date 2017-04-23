@@ -60,6 +60,34 @@ public class EnumInfo {
         }
     }
 
+    public enum typeBatStop {
+        DISABLE_LESS(1, "冻结"), DISABLE_ALL(2, "彻底冻结"), ENABLE_ALL(3, "全部解冻");
+        private int value;
+        public String strName;
+
+        private typeBatStop(int value, String strName) {
+            this.value = value;
+            this.strName = strName;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public String getStrName() {
+            return strName;
+        }
+
+        public static typeBatStop getTypeBatStop(int value) {
+            for (typeBatStop tab : typeBatStop.values()) {
+                if (tab.value == value) {
+                    return tab;
+                }
+            }
+            return DISABLE_LESS;
+        }
+    }
+
     /**
      * 数据状态，正常，删除
      */

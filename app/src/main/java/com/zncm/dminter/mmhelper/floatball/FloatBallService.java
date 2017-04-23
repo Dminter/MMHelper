@@ -4,13 +4,13 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-public class FloatBallService extends Service {
-    public static final int TYPE_ADD = 0;
-    public static final int TYPE_DEL = 1;
+import ezy.assist.compat.SettingsCompat;
 
+public class FloatBallService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
