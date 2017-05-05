@@ -726,7 +726,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             initAppCard(info, position);
         }
     }
-
     private void initAppCard(final CardInfo info, final int position) {
 
         final ArrayList<Map<String, Object>> list = new ArrayList<>();
@@ -736,7 +735,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         map.put("text", like ? "取消收藏" : "收藏");
         map.put("key", "-1");
         list.add(map);
-        final PkInfo pkInfo = DbUtils.getPkOne(info.getPackageName());
         Map<String, Object> map2 = new HashMap<>();
         map2.put("text", "修改");
         map2.put("key", "-2");

@@ -250,17 +250,22 @@ public class DbUtils {
         return ret;
     }
 
+
+    public static PkInfo getPkOne(String packageName) {
+        return getPkOne(packageName, true);
+    }
+
     /**
      * 根据包名查询应用
      */
-    public static PkInfo getPkOne(String packageName) {
+    public static PkInfo getPkOne(String packageName, boolean isNormal) {
         if (Xutils.isEmptyOrNull(packageName)) {
             return null;
         }
         PkInfo ret = null;
         init();
         try {
-            List<PkInfo> list = getPkInfos(packageName);
+            List<PkInfo> list = getPkInfos(packageName, isNormal);
             if (Xutils.listNotNull(list)) {
                 ret = list.get(0);
             }
@@ -457,7 +462,7 @@ public class DbUtils {
      * 根据包名获取应用
      */
     public static ArrayList<PkInfo> getPkInfos(String pkgName) {
-        return getPkInfos(pkgName, false);
+        return getPkInfos(pkgName, true);
     }
 
     public static ArrayList<PkInfo> getPkInfos(String pkgName, boolean isNormal) {

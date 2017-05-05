@@ -30,7 +30,7 @@ public class MyInstalledReceiver extends BroadcastReceiver {
             return;
         }
         if (intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {
-            PkInfo pk = DbUtils.getPkOne(pkgName);
+            PkInfo pk = DbUtils.getPkOne(pkgName,false);
             if (pk != null) {
                 pk.setExi1(EnumInfo.pkStatus.NORMAL.getValue());
                 DbUtils.updatePkInfo(pk);
@@ -64,7 +64,7 @@ public class MyInstalledReceiver extends BroadcastReceiver {
         }
 
         if (intent.getAction().equals("android.intent.action.ACTION_PACKAGE_REPLACED")) {
-            PkInfo pk = DbUtils.getPkOne(pkgName);
+            PkInfo pk = DbUtils.getPkOne(pkgName,false);
             if (pk != null) {
                 pk.setExi1(EnumInfo.pkStatus.NORMAL.getValue());
                 DbUtils.updatePkInfo(pk);

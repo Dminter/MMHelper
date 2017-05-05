@@ -47,9 +47,10 @@ public class DataInitHelper {
             if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) // 非系统应用
             {
                 String pkgName = packageInfo.packageName;
-                PkInfo pkInfo = DbUtils.getPkOne(pkgName);
+                PkInfo pkInfo = DbUtils.getPkOne(pkgName,false);
                 if (pkInfo != null) {
-                    DbUtils.insertPkInfo(pkInfo);
+                    pkInfo.setExi1(EnumInfo.pkStatus.NORMAL.getValue());
+                    DbUtils.updatePkInfo(pkInfo);
                 } else {
                     String description = packageInfo.applicationInfo.loadLabel(pm)
                             .toString();
