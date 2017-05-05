@@ -624,7 +624,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     if (packageName.equals(EnumInfo.homeTab.APPS.getValue()) || packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                         cardInfos = new ArrayList<>();
                         ArrayList<PkInfo> tmps = new ArrayList<>();
-//                        tmps = DbUtils.getPkInfos();
                         if (packageName.equals(EnumInfo.homeTab.APPS.getValue())) {
                             tmps = DbUtils.getPkInfos(null, true);
                         } else if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
@@ -640,7 +639,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             info.setDisabled(tmp.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
                             cardInfos.add(info);
                         }
-
                     } else {
                         cardInfos = DbUtils.getCardInfos(packageName);
                     }

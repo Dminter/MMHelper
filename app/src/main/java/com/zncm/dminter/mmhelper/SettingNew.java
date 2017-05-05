@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -520,8 +521,14 @@ public class SettingNew extends MaterialSettings {
                 new MyFt.BatStopTask().execute(EnumInfo.typeBatStop.ENABLE_ALL.getValue());
             }
         }));
-
-
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(this, "").setTitle("全部添加到桌面").setSubtitle("为全部应用创建桌面快捷方式，便于冷冻后打开").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+                Xutils.tShort("正在创建桌面快捷方式...");
+                new MyTaskBatSendToDesk().execute();
+            }
+        }));
         final String str = SPHelper.getFcLog(ctx);
         if (Xutils.isNotEmptyOrNull(str)) {
             addItem(new DividerItem(ctx));
@@ -534,11 +541,7 @@ public class SettingNew extends MaterialSettings {
                 }
             }));
         }
-        
-        
-        
-        
-        
+
         
     }
 
@@ -569,6 +572,38 @@ public class SettingNew extends MaterialSettings {
         }
     }
 
+    public class MyTaskBatSendToDesk extends AsyncTask<Void, Void, Void> {
+
+        protected Void doInBackground(Void... params) {
+            try {
+
+                ArrayList<PkInfo> pkInfos = DbUtils.getPkInfos(null);
+                if (Xutils.listNotNull(pkInfos)) {
+                    for (PkInfo tmp : pkInfos
+                            ) {
+                        CardInfo info = new CardInfo();
+                        info.setTitle(tmp.getName());
+                        info.setPackageName(tmp.getPackageName());
+                        info.setImg(tmp.getIcon());
+                        info.setType(EnumInfo.cType.START_APP.getValue());
+                        info.setDisabled(tmp.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
+                        Xutils.sendToDesktop(SettingNew.this, info, false, false);
+                    }
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Xutils.tShort("全部桌面快捷方式已创建完成~");
+        }
+    }
 
     public static void shortCutAdd(Context context, String action, String name) {
         shortCutAdd(context, action, name, "");

@@ -225,6 +225,10 @@ public class Xutils {
 
 
     public static void sendToDesktop(Activity activity, CardInfo cardInfo, boolean isShotcut) {
+        sendToDesktop(activity, cardInfo, isShotcut, true);
+    }
+
+    public static void sendToDesktop(Activity activity, CardInfo cardInfo, boolean isShotcut, boolean isTip) {
 
         Drawable drawable = null;
         if (cardInfo.getType() == EnumInfo.cType.URL.getValue()) {
@@ -264,7 +268,9 @@ public class Xutils {
         intent.putExtra("duplicate", false);
         intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
         activity.sendBroadcast(intent);
-        tShort(Constant.add_shortcut);
+        if (isTip) {
+            tShort(Constant.add_shortcut);
+        }
     }
 
     // 发送到桌面快捷方式

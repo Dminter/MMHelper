@@ -460,13 +460,13 @@ public class DbUtils {
         return getPkInfos(pkgName, false);
     }
 
-    public static ArrayList<PkInfo> getPkInfos(String pkgName, boolean flag) {
+    public static ArrayList<PkInfo> getPkInfos(String pkgName, boolean isNormal) {
         init();
         ArrayList<PkInfo> datas = new ArrayList<PkInfo>();
         try {
 
             QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
-            if (flag) {
+            if (isNormal) {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
                     builder.where().eq("packageName", pkgName);
                 }
@@ -475,7 +475,8 @@ public class DbUtils {
                 builder.orderBy("exb3", true).orderBy("ex4", false).orderBy("name", true).limit(Constant.MAX_DB_QUERY);
             } else {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
-                    builder.where().eq("packageName", pkgName).and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
+                    //.and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()))
+                    builder.where().eq("packageName", pkgName);
                 } else {
                     builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
                 }
