@@ -38,6 +38,7 @@ import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.floatball.FloatBallService;
 import com.zncm.dminter.mmhelper.floatball.FloatWindowManager;
 import com.zncm.dminter.mmhelper.ft.MyFt;
+import com.zncm.dminter.mmhelper.utils.DataInitHelper;
 import com.zncm.dminter.mmhelper.utils.MyPath;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
@@ -70,6 +71,14 @@ public class SettingNew extends MaterialSettings {
         ctx = this;
         Xutils.verifyStoragePermissions(this);
         fzInfo = SPHelper.getFzInfo(this);
+
+
+        addItem(new TextItem(ctx, "").setTitle("建议活动").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                startActivity(new Intent(ctx, SuggestAc.class));
+            }
+        }));
+
         addItem(new HeaderItem(this).setTitle("创建快捷方式"));
         addItem(new TextItem(ctx, "").setTitle("全部冷冻").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
@@ -529,6 +538,30 @@ public class SettingNew extends MaterialSettings {
                 new MyTaskBatSendToDesk().execute();
             }
         }));
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(this, "").setTitle("初始化应用列表").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+
+                new MaterialDialog.Builder(ctx).title("初始化应用列表").content("应用列表和排序将会重建~")
+                        .positiveText("确定").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+
+
+                                                                        @Override
+                                                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                                            if (which == DialogAction.POSITIVE) {
+                                                                                DbUtils.deletePkAll();
+                                                                                DataInitHelper.MyTask task = new DataInitHelper.MyTask();
+                                                                                task.execute();
+                                                                                Xutils.tShort("正在初始化应用列表...");
+                                                                            }
+                                                                        }
+                                                                    }
+                ).show();
+
+            }
+        }));
+
         final String str = SPHelper.getFcLog(ctx);
         if (Xutils.isNotEmptyOrNull(str)) {
             addItem(new DividerItem(ctx));
@@ -576,7 +609,6 @@ public class SettingNew extends MaterialSettings {
 
         protected Void doInBackground(Void... params) {
             try {
-
                 ArrayList<PkInfo> pkInfos = DbUtils.getPkInfos(null);
                 if (Xutils.listNotNull(pkInfos)) {
                     for (PkInfo tmp : pkInfos
@@ -590,7 +622,6 @@ public class SettingNew extends MaterialSettings {
                         Xutils.sendToDesktop(SettingNew.this, info, false, false);
                     }
                 }
-
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -67,6 +67,9 @@
         <activity
             android:name="com.zncm.dminter.mmhelper.T9SearchActivity"
             android:label="T9搜索"
+            android:launchMode="singleInstance"></activity>        <activity
+            android:name="com.zncm.dminter.mmhelper.SuggestInfoActivity"
+            android:label="建议活动"
             android:launchMode="singleInstance"></activity>
         <activity
             android:name="com.zncm.dminter.mmhelper.SettingNew"
@@ -85,6 +88,10 @@
         <activity
             android:name="com.zncm.dminter.mmhelper.AboutAc"
             android:label="关于应用"
+            android:theme="@style/MyMaterialSettings" />
+        <activity
+            android:name="com.zncm.dminter.mmhelper.SuggestAc"
+            android:label="建议活动"
             android:theme="@style/MyMaterialSettings" />
         <activity
             android:name="com.zncm.dminter.mmhelper.SortActivity"

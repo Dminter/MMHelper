@@ -629,6 +629,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         } else if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                             tmps = DbUtils.getPkInfosBatStop(1);
                         }
+                        StringBuffer stringBuffer = new StringBuffer();
                         for (PkInfo tmp : tmps
                                 ) {
                             CardInfo info = new CardInfo();
@@ -638,9 +639,21 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             info.setType(EnumInfo.cType.START_APP.getValue());
                             info.setDisabled(tmp.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
                             cardInfos.add(info);
+                            stringBuffer.append(info.getPackageName()).append(",").append(info.getTitle());
                         }
+                        Xutils.debug(stringBuffer.toString());
                     } else {
                         cardInfos = DbUtils.getCardInfos(packageName);
+                        if (packageName.equals(EnumInfo.homeTab.LIKE.getValue())){
+                            StringBuffer stringBuffer = new StringBuffer();
+                            for (CardInfo tmp:cardInfos
+                                 ) {
+                                stringBuffer.append(tmp.getPackageName()).append(",").append(tmp.getClassName()).append(",").append(tmp.getTitle()).append("\n");
+                            }
+                            Xutils.debug("LIKE:"+stringBuffer.toString());
+                        }
+
+
                     }
                 }
             } catch (Exception e) {

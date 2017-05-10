@@ -106,7 +106,7 @@ public class DbUtils {
     public static void updatePkPos(String packageName, int pos) {
 
         try {
-            PkInfo pkInfo = getPkOne(packageName);
+            PkInfo pkInfo = getPkOne(packageName, true);
             if (pkInfo != null) {
                 pkInfo.setExb3(pos);
                 pkDao.update(pkInfo);
@@ -341,6 +341,15 @@ public class DbUtils {
         }
     }
 
+    public static void deletePkAll() {
+        init();
+        try {
+            pkDao.queryRaw("delete from pkinfo");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 更新活动
      */
@@ -473,10 +482,11 @@ public class DbUtils {
             QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
             if (isNormal) {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
-                    builder.where().eq("packageName", pkgName);
+                    builder.where().eq("packageName", pkgName).and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
+                } else {
+                    builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
                 }
-                builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
-                builder.groupBy("packageName");
+//                builder.groupBy("packageName");
                 builder.orderBy("exb3", true).orderBy("ex4", false).orderBy("name", true).limit(Constant.MAX_DB_QUERY);
             } else {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
