@@ -14,7 +14,7 @@ import com.kenumir.materialsettings.storage.StorageInterface;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -44,11 +44,20 @@ public class SuggestAc extends MaterialSettings {
 
     public static final String wx = "com.tencent.mm";
     public static final String zfb = "com.eg.android.AlipayGphone";
+    public static final String wc = "com.wacai365";
+    public static final String tb = "com.taobao.taobao";
+    public static final String bili = "tv.danmaku.bili";
+    public static final String dianping = "com.dianping.v1";
+    public static final String youdaonote = "com.youdao.note";
+    public static final String jingdong = "com.jingdong.app.mall";
+    public static final String cloudmusic = "com.netease.cloudmusic";
+    public static final String coolapk = "com.coolapk.market";
+    public static final String douban = "com.douban.frodo";
 
     Activity ctx;
 
 
-    Map<String, String> items = new HashMap<>();
+    LinkedHashMap<String, String> items = new LinkedHashMap<>();
 
 
     @Override
@@ -57,10 +66,53 @@ public class SuggestAc extends MaterialSettings {
         ctx = this;
         /**
          *本地有才建议
-         * 微信，支付宝，QQ,淘宝，网易云音乐，微博，哔哩哔哩，京东，高德地图，知乎，有道云笔记，
+         * 微信，支付宝，QQ,，网易云音乐，微博，哔哩哔哩，京东，高德地图，知乎，有道云笔记，
          */
-        items.put(zfb, "支付宝-微信，支付宝，QQ,淘宝，网易云音乐，微博，哔哩哔哩，京东，高德地图，知乎，有道云笔记，");
-        items.put(wx, "微信");
+
+//        items.put(zfb, "支付宝-微信，支付宝，QQ,淘宝，，微博，，，高德地图，知乎，，");
+//        items.put(wx, "微信");
+//        items.put(wc, "");
+
+
+        if (Xutils.hasInstalledApp(ctx, wx)) {
+            items.put(wx, "微信");
+        }
+        if (Xutils.hasInstalledApp(ctx, zfb)) {
+            items.put(zfb, "支付宝");
+        }
+        if (Xutils.hasInstalledApp(ctx, cloudmusic)) {
+            items.put(cloudmusic, "网易云音乐");
+        }
+
+        if (Xutils.hasInstalledApp(ctx, coolapk)) {
+            items.put(coolapk, "酷安");
+        }
+        if (Xutils.hasInstalledApp(ctx, tb)) {
+            items.put(tb, "淘宝");
+        }
+        if (Xutils.hasInstalledApp(ctx, jingdong)) {
+            items.put(jingdong, "京东");
+        }
+
+
+        if (Xutils.hasInstalledApp(ctx, dianping)) {
+            items.put(dianping, "大众点评");
+        }
+
+
+        if (Xutils.hasInstalledApp(ctx, wc)) {
+            items.put(wc, "挖财");
+        }
+        if (Xutils.hasInstalledApp(ctx, youdaonote)) {
+            items.put(youdaonote, "有道云笔记");
+        }
+
+        if (Xutils.hasInstalledApp(ctx, douban)) {
+            items.put(douban, "豆瓣");
+        }
+        if (Xutils.hasInstalledApp(ctx, bili)) {
+            items.put(bili, "哔哩哔哩");
+        }
         if (items != null && items.size() > 0) {
             for (Map.Entry<String, String> entry : items.entrySet()
                     ) {

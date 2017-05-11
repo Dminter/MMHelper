@@ -282,6 +282,9 @@ public class DbUtils {
         init();
         try {
             if (cardInfo != null) {
+                if (cardInfo.getExi4()==0){
+                    cardInfo.setExi4(Constant.sort_apps);
+                }
                 if (!Xutils.isNotEmptyOrNull(cardInfo.getTitle())) {
                     ApplicationInfo applicationInfo = Xutils.getAppInfo(cardInfo.getPackageName());
                     PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
@@ -309,8 +312,14 @@ public class DbUtils {
                 if (Xutils.isEmptyOrNull(pkInfo.getPackageName())) {
                     return;
                 }
+                if (pkInfo.getExb3()==0){
+                    pkInfo.setExb3(Constant.sort_apps);
+                }
                 PkInfo tmp = getPkOne(pkInfo.getPackageName());
                 if (tmp != null) {
+                    if (tmp.getExb3()==0){
+                        tmp.setExb3(Constant.sort_apps);
+                    }
                     tmp.setStatus(pkInfo.getStatus());
                     if (Xutils.isEmptyOrNull(tmp.getEx3())) {
                         pkInfo.setEx3(T9SearchSupport.buildT9Key(pkInfo.getName()));
@@ -418,8 +427,8 @@ public class DbUtils {
             if (Xutils.isNotEmptyOrNull(packageName)) {
                 if (packageName.equals(EnumInfo.homeTab.LIKE.getValue())) {
                     builder.where().eq("status", Integer.valueOf(EnumInfo.cStatus.NORMAL.getValue())).and().eq("exi1", 1);
-                    builder.orderBy("exi2", false);
-                    builder.orderBy("exi4", true);
+                    builder.orderBy("exi4", false);
+//                    builder.orderBy("exi2", false);
                     builder.orderBy("time", false).limit(limit);
                 } else if (packageName.equals(EnumInfo.homeTab.ALL.getValue())) {
                     builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue());
@@ -487,7 +496,7 @@ public class DbUtils {
                     builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
                 }
 //                builder.groupBy("packageName");
-                builder.orderBy("exb3", true).orderBy("ex4", false).orderBy("name", true).limit(Constant.MAX_DB_QUERY);
+                builder.orderBy("exb3", true).orderBy("ex4", false).orderBy("ex2", true).limit(Constant.MAX_DB_QUERY);
             } else {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
                     //.and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()))

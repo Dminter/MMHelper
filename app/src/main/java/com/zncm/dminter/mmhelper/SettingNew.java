@@ -321,6 +321,123 @@ public class SettingNew extends MaterialSettings {
 
         ));
 
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(this, "").setTitle("抽屉网格大小-列数").setSubtitle(SPHelper.getGridColumns(ctx) + "").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(final TextItem textItem) {
+                ArrayList<String> items = new ArrayList();
+                int i = 0;
+                for (int j = 2; j <= 12; j++) {
+                    if (SPHelper.getGridColumns(ctx) == j) {
+                        i = j - 2;
+                    }
+                    items.add(j + "");
+                }
+                new MaterialDialog.Builder(ctx).title("抽屉网格大小-列数").items(items).theme(Theme.LIGHT).itemsCallbackSingleChoice(i, new MaterialDialog.ListCallbackSingleChoice() {
+
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                        try {
+                            SPHelper.setGridColumns(ctx, Integer.parseInt(text.toString()));
+                            textItem.updateSubTitle(text.toString());
+                            isNeedUpdate = true;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return false;
+                    }
+                }).positiveText("确定").negativeText("取消").onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                    }
+                }).show();
+
+            }
+        }));
+
+
+
+
+
+
+
+
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(this, "").setTitle("全部解冻").setSubtitle("卸载本软件前请先解冻，若无法直接卸载，请先到设备管理器取消激活").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+                Xutils.tShort("正在解冻...");
+                new MyFt.BatStopTask().execute(EnumInfo.typeBatStop.ENABLE_ALL.getValue());
+            }
+        }));
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(this, "").setTitle("全部添加到桌面").setSubtitle("为全部应用创建桌面快捷方式，便于冷冻后打开").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+                Xutils.tShort("正在创建桌面快捷方式...");
+                new MyTaskBatSendToDesk().execute();
+            }
+        }));
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(this, "").setTitle("初始化应用列表").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+
+                new MaterialDialog.Builder(ctx).title("初始化应用列表").content("应用列表和排序将会重建~")
+                        .positiveText("确定").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+
+
+                                                                        @Override
+                                                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                                            if (which == DialogAction.POSITIVE) {
+                                                                                DbUtils.deletePkAll();
+                                                                                DataInitHelper.MyTask task = new DataInitHelper.MyTask();
+                                                                                task.execute();
+                                                                                Xutils.tShort("正在初始化应用列表...");
+                                                                            }
+                                                                        }
+                                                                    }
+                ).show();
+
+            }
+        }));
+
+        final String str = SPHelper.getFcLog(ctx);
+        if (Xutils.isNotEmptyOrNull(str)) {
+            addItem(new DividerItem(ctx));
+            addItem(new TextItem(ctx, "").setTitle("FC LOG").setSubtitle("若你愿意帮助开发者，完善和改进此程序，请点击反馈给开发者").setOnclick(new TextItem.OnClickListener() {
+                public void onClick(TextItem paramAnonymousTextItem) {
+                    Xutils.tShort("log已粘贴至剪切板！");
+                    Xutils.copyText(ctx, str);
+                    Xutils.cmdWxUserExe(Constant.author_wx);
+                    SPHelper.setFcLog(ctx, "");
+                }
+            }));
+        }
+
+
+
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(ctx, "").setTitle("导入配置").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                showFileChooser();
+            }
+        }));
+        addItem(new TextItem(ctx, "").setTitle("导出配置").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                csvOutput();
+            }
+
+
+        }));
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(ctx, "").setTitle("关于应用").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                startActivity(new Intent(ctx, AboutAc.class));
+            }
+        }));
+
 
         addItem(new DividerItem(ctx));
         addItem(new CheckboxItem(this, "").setTitle("主界面半屏风格").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
@@ -362,60 +479,63 @@ public class SettingNew extends MaterialSettings {
             }
         }).setDefaultValue(SPHelper.isAcFloat(ctx)));
 
-        addItem(new DividerItem(ctx));
-        addItem(new TextItem(ctx, "").setTitle("导入配置").setOnclick(new TextItem.OnClickListener() {
-            public void onClick(TextItem textItem) {
-                showFileChooser();
-            }
-        }));
-        addItem(new TextItem(ctx, "").setTitle("导出配置").setOnclick(new TextItem.OnClickListener() {
-            public void onClick(TextItem textItem) {
-                csvOutput();
-            }
 
+        
+        
+        
+        
+        
+        
 
-        }));
-        addItem(new DividerItem(ctx));
-        addItem(new TextItem(ctx, "").setTitle("关于应用").setOnclick(new TextItem.OnClickListener() {
-            public void onClick(TextItem textItem) {
-                startActivity(new Intent(ctx, AboutAc.class));
-            }
-        }));
-
-        addItem(new DividerItem(ctx));
-        addItem(new TextItem(this, "").setTitle("抽屉网格大小-列数").setSubtitle(SPHelper.getGridColumns(ctx) + "").setOnclick(new TextItem.OnClickListener() {
+        addItem(new HeaderItem(this).setTitle("T9搜索"));
+        addItem(new TextItem(ctx, "").setTitle("搜索范围").setSubtitle(EnumInfo.typeT9.getTypeT9(SPHelper.getTypeT9(ctx)).getStrName()).setOnclick(new TextItem.OnClickListener() {
             public void onClick(final TextItem textItem) {
-                ArrayList<String> items = new ArrayList();
-                int i = 0;
-                for (int j = 2; j <= 12; j++) {
-                    if (SPHelper.getGridColumns(ctx) == j) {
-                        i = j - 2;
+                try {
+                    int typeT9 = SPHelper.getTypeT9(ctx);
+                    String[] items = new String[]{EnumInfo.typeT9.APP.getStrName(), EnumInfo.typeT9.ACTIVITY.getStrName(), EnumInfo.typeT9.APP_ACTIVITY.getStrName()};
+                    if (typeT9 < items.length + 1) {
+                        items[typeT9 - 1] = items[typeT9 - 1] + "   ✔";
                     }
-                    items.add(j + "");
-                }
-                new MaterialDialog.Builder(ctx).title("抽屉网格大小-列数").items(items).theme(Theme.LIGHT).itemsCallbackSingleChoice(i, new MaterialDialog.ListCallbackSingleChoice() {
+                    new MaterialDialog.Builder(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
 
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                        try {
-                            SPHelper.setGridColumns(ctx, Integer.parseInt(text.toString()));
-                            textItem.updateSubTitle(text.toString());
-                            isNeedUpdate = true;
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        @Override
+                        public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                            SPHelper.setTypeT9(ctx, position + 1);
+                            MyApplication.t9List = new ArrayList();
+                            textItem.updateSubTitle(EnumInfo.typeT9.getTypeT9(position + 1).getStrName());
                         }
-                        return false;
-                    }
-                }).positiveText("确定").negativeText("取消").onPositive(new MaterialDialog.SingleButtonCallback() {
-
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                    }
-                }).show();
-
+                    }).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }));
+
+
+        addItem(new DividerItem(ctx));
+        addItem(new CheckboxItem(this, "").setTitle("匹配结果仅一项自动打开").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                SPHelper.setT9Auto(ctx, b);
+            }
+        }).setDefaultValue(SPHelper.isT9Auto(ctx)));
+        addItem(new DividerItem(ctx));
+        addItem(new CheckboxItem(this, "").setTitle("每次打开重置搜索条件").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                SPHelper.setT9Clear(ctx, b);
+            }
+        }).setDefaultValue(SPHelper.isT9Clear(ctx)));
+
+
+
+
+
+
+
+
 
 
         addItem(new HeaderItem(this).setTitle("Pro"));
@@ -472,110 +592,9 @@ public class SettingNew extends MaterialSettings {
                 }
             }
         }).setDefaultValue(SPHelper.isFloatBall(ctx)));
-        
-        
-        
-        
-        
-        
-        
-
-        addItem(new HeaderItem(this).setTitle("T9搜索"));
-        addItem(new TextItem(ctx, "").setTitle("搜索范围").setSubtitle(EnumInfo.typeT9.getTypeT9(SPHelper.getTypeT9(ctx)).getStrName()).setOnclick(new TextItem.OnClickListener() {
-            public void onClick(final TextItem textItem) {
-                try {
-                    int typeT9 = SPHelper.getTypeT9(ctx);
-                    String[] items = new String[]{EnumInfo.typeT9.APP.getStrName(), EnumInfo.typeT9.ACTIVITY.getStrName(), EnumInfo.typeT9.APP_ACTIVITY.getStrName()};
-                    if (typeT9 < items.length + 1) {
-                        items[typeT9 - 1] = items[typeT9 - 1] + "   ✔";
-                    }
-                    new MaterialDialog.Builder(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
-
-                        @Override
-                        public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                            SPHelper.setTypeT9(ctx, position + 1);
-                            MyApplication.t9List = new ArrayList();
-                            textItem.updateSubTitle(EnumInfo.typeT9.getTypeT9(position + 1).getStrName());
-                        }
-                    }).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }));
-
-        addItem(new DividerItem(ctx));
-        addItem(new CheckboxItem(this, "").setTitle("匹配结果仅一项自动打开").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
-                SPHelper.setT9Auto(ctx, b);
-            }
-        }).setDefaultValue(SPHelper.isT9Auto(ctx)));
-        addItem(new DividerItem(ctx));
-        addItem(new CheckboxItem(this, "").setTitle("每次打开重置搜索条件").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
-                SPHelper.setT9Clear(ctx, b);
-            }
-        }).setDefaultValue(SPHelper.isT9Clear(ctx)));
 
 
-        addItem(new HeaderItem(this).setTitle("其他"));
-        addItem(new TextItem(this, "").setTitle("全部解冻").setSubtitle("卸载本软件前请先解冻，若无法直接卸载，请先到设备管理器取消激活").setOnclick(new TextItem.OnClickListener() {
-            @Override
-            public void onClick(TextItem textItem) {
-                Xutils.tShort("正在解冻...");
-                new MyFt.BatStopTask().execute(EnumInfo.typeBatStop.ENABLE_ALL.getValue());
-            }
-        }));
-        addItem(new DividerItem(ctx));
-        addItem(new TextItem(this, "").setTitle("全部添加到桌面").setSubtitle("为全部应用创建桌面快捷方式，便于冷冻后打开").setOnclick(new TextItem.OnClickListener() {
-            @Override
-            public void onClick(TextItem textItem) {
-                Xutils.tShort("正在创建桌面快捷方式...");
-                new MyTaskBatSendToDesk().execute();
-            }
-        }));
-        addItem(new DividerItem(ctx));
-        addItem(new TextItem(this, "").setTitle("初始化应用列表").setOnclick(new TextItem.OnClickListener() {
-            @Override
-            public void onClick(TextItem textItem) {
 
-                new MaterialDialog.Builder(ctx).title("初始化应用列表").content("应用列表和排序将会重建~")
-                        .positiveText("确定").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
-
-
-                                                                        @Override
-                                                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                                            if (which == DialogAction.POSITIVE) {
-                                                                                DbUtils.deletePkAll();
-                                                                                DataInitHelper.MyTask task = new DataInitHelper.MyTask();
-                                                                                task.execute();
-                                                                                Xutils.tShort("正在初始化应用列表...");
-                                                                            }
-                                                                        }
-                                                                    }
-                ).show();
-
-            }
-        }));
-
-        final String str = SPHelper.getFcLog(ctx);
-        if (Xutils.isNotEmptyOrNull(str)) {
-            addItem(new DividerItem(ctx));
-            addItem(new TextItem(ctx, "").setTitle("FC LOG").setSubtitle("若你愿意帮助开发者，完善和改进此程序，请点击反馈给开发者").setOnclick(new TextItem.OnClickListener() {
-                public void onClick(TextItem paramAnonymousTextItem) {
-                    Xutils.tShort("log已粘贴至剪切板！");
-                    Xutils.copyText(ctx, str);
-                    Xutils.cmdWxUserExe(Constant.author_wx);
-                    SPHelper.setFcLog(ctx, "");
-                }
-            }));
-        }
-
-        
     }
 
     private void csvOutput() {

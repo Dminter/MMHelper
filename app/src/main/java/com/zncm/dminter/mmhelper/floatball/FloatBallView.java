@@ -137,8 +137,7 @@ public class FloatBallView extends LinearLayout {
                             mBigBallX = mImgBigBall.getX();
                             mBigBallY = mImgBigBall.getY();
                             mCurrentMode = MODE_MOVE;
-                            SPHelper.setBigBallX(ctx, (int) mBigBallX);
-                            SPHelper.setBigBallY(ctx, (int) mBigBallY);
+
                         } else {
                             doGesture(event);
                         }
@@ -147,6 +146,11 @@ public class FloatBallView extends LinearLayout {
                     case MotionEvent.ACTION_UP:
                         mIsTouching = false;
                         if (mIsLongTouch) {
+                            /**
+                             *记录拖动后的位置
+                             */
+                            SPHelper.setBigBallX(ctx, mLayoutParams.x);
+                            SPHelper.setBigBallY(ctx, mLayoutParams.y);
                             mIsLongTouch = false;
                         } else if (isClick(event)) {
                             if (mService == null) {

@@ -439,6 +439,23 @@ public class Xutils {
         return R.mipmap.ic_launcher;
     }
 
+
+
+    /**
+     *是否安装了xxx应用
+     */
+    public static boolean hasInstalledApp(Context context,String pkgName) {
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo info = pm.getPackageInfo(pkgName, 0);
+            return info != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     /*
      *获取程序的版本号
      */

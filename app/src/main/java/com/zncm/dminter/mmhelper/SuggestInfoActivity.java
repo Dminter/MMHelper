@@ -116,7 +116,165 @@ public class SuggestInfoActivity extends BaseActivity {
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.onsitepay9.payer.OspTabHostActivity", "付款码"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.scan.as.main.MainCaptureActivity", "扫一扫"));
             cardInfos.addAll(zfbCard);
+        }else if (SuggestAc.tb.equals(pkName)) {
+            /**
+             **com.taobao.taobao,com.taobao.tao.rate.ui.myrate.MyRateActivity,我的评价
+             com.taobao.taobao,com.tmall.market.plugin.main.MainTabActivity,天猫超市
+             com.taobao.taobao,com.taobao.ju.android.ui.main.TabMainActivity,聚划算
+             com.taobao.taobao,com.taobao.takeout.TakeoutMainActivity,淘宝外卖
+             com.taobao.taobao,com.taobao.search.searchdoor.SearchDoorActivity,搜索
+             com.taobao.taobao,com.etao.feimagesearch.FEISCaptureActivity,拍立淘
+             com.taobao.taobao,com.taobao.taobao.scancode.gateway.activity.ScancodeGatewayActivity,扫一扫
+             com.taobao.taobao,com.taobao.android.trade.cart.CartActivity,购物车
+             com.taobao.taobao,com.taobao.order.list.OrderListActivity,我的订单
+             com.taobao.taobao,com.taobao.favorites.NewFavoriteGoodsActivity,我的收藏
+             com.taobao.taobao,com.taobao.tao.mytaobao.MyTaoBaoActivity,我的淘宝
+             com.taobao.taobao,com.taobao.tao.homepage.MainActivity3,淘宝
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.tao.rate.ui.myrate.MyRateActivity", "我的评价"));
+            card.add(new CardInfo(SuggestAc.tb, "com.tmall.market.plugin.main.MainTabActivity", "天猫超市"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.ju.android.ui.main.TabMainActivity", "聚划算"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.takeout.TakeoutMainActivity", "淘宝外卖"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.search.searchdoor.SearchDoorActivity", "搜索"));
+            card.add(new CardInfo(SuggestAc.tb, "com.etao.feimagesearch.FEISCaptureActivity", "拍立淘"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.taobao.scancode.gateway.activity.ScancodeGatewayActivity", "扫一扫"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.android.trade.cart.CartActivity", "购物车"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.order.list.OrderListActivity", "我的订单"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.favorites.NewFavoriteGoodsActivity", "我的收藏"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.tao.mytaobao.MyTaoBaoActivity", "我的淘宝"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.tao.homepage.MainActivity3", "淘宝"));
+            cardInfos.addAll(card);
+        }else if (SuggestAc.wc.equals(pkName)) {
+            /**
+             com.wacai365,com.wacai365.account.AccountManagerActivity,账户
+             com.wacai365,com.wacai365.statement.StatChart,报表
+             com.wacai365,com.wacai365.detail.DetailsSummary,明细
+             com.wacai365,com.wacai365.InputTrade,记账
+             com.wacai365,com.wacai365.Wacai365,挖财
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(SuggestAc.wc, "com.wacai365.account.AccountManagerActivity", "账户"));
+            card.add(new CardInfo(SuggestAc.wc, "com.wacai365.statement.StatChart", "报表"));
+            card.add(new CardInfo(SuggestAc.wc, "com.wacai365.detail.DetailsSummary", "明细"));
+            card.add(new CardInfo(SuggestAc.wc, "com.wacai365.InputTrade", "记账"));
+            card.add(new CardInfo(SuggestAc.wc, "com.wacai365.Wacai365", "挖财"));
+            cardInfos.addAll(card);
+        }else if (SuggestAc.dianping.equals(pkName)) {
+            /**
+             com.dianping.v1,com.dianping.search.suggest.SearchSuggestActivity,搜索
+             com.dianping.v1,com.dianping.search.history.HistoryActivity,浏览历史
+             com.dianping.v1,com.dianping.user.favorite.FavoriteBaseActivity,我的收藏
+             com.dianping.v1,com.dianping.v1.NovaMainActivity,大众点评
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(SuggestAc.dianping, "com.dianping.search.suggest.SearchSuggestActivity", "搜索"));
+            card.add(new CardInfo(SuggestAc.dianping, "com.dianping.search.history.HistoryActivity", "浏览历史"));
+            card.add(new CardInfo(SuggestAc.dianping, "com.dianping.user.favorite.FavoriteBaseActivity", "我的收藏"));
+            card.add(new CardInfo(SuggestAc.dianping, "com.dianping.v1.NovaMainActivity", "大众点评"));
+            cardInfos.addAll(card);
+        }else if (SuggestAc.bili.equals(pkName)) {
+            /**
+             tv.danmaku.bili,tv.danmaku.bili.MainActivity,哔哩哔哩
+             tv.danmaku.bili,tv.danmaku.bili.ui.rank.RankPagerActivity,排行榜
+             tv.danmaku.bili,tv.danmaku.bili.ui.qrcode.QRcodeCaptureActivity,扫一扫
+             tv.danmaku.bili,tv.danmaku.bili.ui.videodownload.VideoDownloadListActivity,我的下载
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(SuggestAc.bili, "tv.danmaku.bili.MainActivity", "哔哩哔哩"));
+            card.add(new CardInfo(SuggestAc.bili, "tv.danmaku.bili.ui.rank.RankPagerActivity", "排行榜"));
+            card.add(new CardInfo(SuggestAc.bili, "tv.danmaku.bili.ui.qrcode.QRcodeCaptureActivity", "扫一扫"));
+            card.add(new CardInfo(SuggestAc.bili, "tv.danmaku.bili.ui.videodownload.VideoDownloadListActivity", "我的下载"));
+            cardInfos.addAll(card);
+        }else if (SuggestAc.jingdong.equals(pkName)) {
+            /**
+             com.jingdong.app.mall,com.jd.lib.favourites.FavoListFragmentActivity,我的收藏
+             com.jingdong.app.mall,com.jd.lib.ordercenter.myGoodsOrderList.view.activity.MyOrderListActivity,我的订单
+             com.jingdong.app.mall,com.jd.lib.search.view.Activity.SearchActivity,搜索
+             com.jingdong.app.mall,com.jd.lib.scan.lib.zxing.client.android.CaptureActivity,扫一扫
+             com.jingdong.app.mall,com.jingdong.app.mall.MainFrameActivity,京东
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(SuggestAc.jingdong, "com.jd.lib.favourites.FavoListFragmentActivity", "我的收藏"));
+            card.add(new CardInfo(SuggestAc.jingdong, "com.jd.lib.ordercenter.myGoodsOrderList.view.activity.MyOrderListActivity", "我的订单"));
+            card.add(new CardInfo(SuggestAc.jingdong, "com.jd.lib.search.view.Activity.SearchActivity", "搜索"));
+            card.add(new CardInfo(SuggestAc.jingdong, "com.jd.lib.scan.lib.zxing.client.android.CaptureActivity", "扫一扫"));
+            card.add(new CardInfo(SuggestAc.jingdong, "com.jingdong.app.mall.MainFrameActivity", "京东"));
+            cardInfos.addAll(card);
+        }else if (SuggestAc.youdaonote.equals(pkName)) {
+            /**
+             com.youdao.note,com.youdao.note.activity2.YDocGlobalSearchAcitivity,搜索
+             com.youdao.note,com.youdao.note.activity2.TextNoteActivity,记笔记
+             com.youdao.note,com.youdao.note.activity2.YDocShorthandActivity,语音笔记
+             com.youdao.note,com.youdao.note.activity2.MainActivity,有道云笔记
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(SuggestAc.youdaonote, "com.youdao.note.activity2.YDocGlobalSearchAcitivity", "搜索"));
+            card.add(new CardInfo(SuggestAc.youdaonote, "com.youdao.note.activity2.TextNoteActivity", "记笔记"));
+            card.add(new CardInfo(SuggestAc.youdaonote, "com.youdao.note.activity2.YDocShorthandActivity", "语音笔记"));
+            card.add(new CardInfo(SuggestAc.youdaonote, "com.youdao.note.activity2.MainActivity", "有道云笔记"));
+            cardInfos.addAll(card);
+        }else if (SuggestAc.cloudmusic.equals(pkName)) {
+            /**
+             com.netease.cloudmusic,com.netease.cloudmusic.activity.MyRecentMusicActivity,最近播放
+             com.netease.cloudmusic,com.netease.cloudmusic.activity.MainActivity,网易云音乐
+             com.netease.cloudmusic,com.netease.cloudmusic.activity.SearchActivity,搜索
+             com.netease.cloudmusic,com.netease.cloudmusic.activity.ArtistCategoryActivity,歌手分类
+             com.netease.cloudmusic,com.netease.cloudmusic.activity.ScanMusicActivity,本地音乐
+             com.netease.cloudmusic,com.netease.cloudmusic.activity.PlayerRadioActivity,私人FM
+             com.netease.cloudmusic,com.netease.cloudmusic.activity.DailyRcmdMusicActivity,每日推荐
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(SuggestAc.cloudmusic, "com.netease.cloudmusic.activity.MyRecentMusicActivity", "最近播放"));
+            card.add(new CardInfo(SuggestAc.cloudmusic, "com.netease.cloudmusic.activity.MainActivity", "网易云音乐"));
+            card.add(new CardInfo(SuggestAc.cloudmusic, "com.netease.cloudmusic.activity.SearchActivity", "搜索"));
+            card.add(new CardInfo(SuggestAc.cloudmusic, "com.netease.cloudmusic.activity.ArtistCategoryActivity", "歌手分类"));
+            card.add(new CardInfo(SuggestAc.cloudmusic, "com.netease.cloudmusic.activity.ScanMusicActivity", "本地音乐"));
+            card.add(new CardInfo(SuggestAc.cloudmusic, "com.netease.cloudmusic.activity.PlayerRadioActivity", "私人FM"));
+            card.add(new CardInfo(SuggestAc.cloudmusic, "com.netease.cloudmusic.activity.DailyRcmdMusicActivity", "每日推荐"));
+            cardInfos.addAll(card);
+        }else if (SuggestAc.coolapk.equals(pkName)) {
+            /**
+             com.coolapk.market,com.coolapk.market.view.main.MainActivity,酷安
+             com.coolapk.market,com.coolapk.market.view.user.UserHistoryListActivity,浏览历史
+             com.coolapk.market,com.coolapk.market.view.collection.FavoriteActivity,我的收藏
+             com.coolapk.market,com.coolapk.market.view.user.UserFollowAppActivity,我的关注
+             com.coolapk.market,com.coolapk.market.view.appmanager.AppManagerActivity,应用管理
+             com.coolapk.market,com.coolapk.market.view.notification.NotificationActivity,通知
+             com.coolapk.market,com.coolapk.market.view.search.SearchExtendActivity,搜索
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.main.MainActivity", "酷安"));
+            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.user.UserHistoryListActivity", "浏览历史"));
+            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.collection.FavoriteActivity", "我的收藏"));
+            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.user.UserFollowAppActivity", "我的关注"));
+            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.appmanager.AppManagerActivity", "应用管理"));
+            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.notification.NotificationActivity", "通知"));
+            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.search.SearchExtendActivity", "搜索"));
+            cardInfos.addAll(card);
+        }else if (SuggestAc.douban.equals(pkName)) {
+            /**
+             com.douban.frodo,com.douban.frodo.search.activity.SearchActivity,搜索
+             com.douban.frodo,com.douban.frodo.search.activity.CaptureActivity,扫描
+             com.douban.frodo,com.douban.frodo.MainActivity,豆瓣
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(SuggestAc.douban, "com.douban.frodo.search.activity.SearchActivity", "搜索"));
+            card.add(new CardInfo(SuggestAc.douban, "com.douban.frodo.search.activity.CaptureActivity", "扫描"));
+            card.add(new CardInfo(SuggestAc.douban, "com.douban.frodo.MainActivity", "豆瓣"));
+            cardInfos.addAll(card);
         }
+
+
+      
+      
+    
+   
+
+
+      
+
+        
 
         if (Xutils.listNotNull(cardInfos) && fragment != null && fragment.cardAdapter != null) {
             fragment.cardInfos = new ArrayList();
