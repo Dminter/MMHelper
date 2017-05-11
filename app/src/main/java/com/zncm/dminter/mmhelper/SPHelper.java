@@ -131,6 +131,31 @@ public class SPHelper {
     }
 
 
+    /**
+     * private float mBigBallX;
+     * private float mBigBallY;
+     */
+    public static int getBigBallX(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt("bigballx", -1);
+    }
+
+    public static void setBigBallY(Context context, int bigbally) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt("bigbally", bigbally).commit();
+    }
+
+    public static int getBigBallY(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getInt("bigbally", -1);
+    }
+
+    public static void setBigBallX(Context context, int bigballx) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putInt("bigballx", bigballx).commit();
+    }
+
+
 
     public static int getCurTab(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);

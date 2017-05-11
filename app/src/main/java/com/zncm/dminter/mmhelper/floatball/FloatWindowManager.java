@@ -5,6 +5,7 @@ import android.graphics.PixelFormat;
 import android.view.Gravity;
 import android.view.WindowManager;
 
+import com.zncm.dminter.mmhelper.SPHelper;
 import com.zncm.dminter.mmhelper.WatchingAccessibilityService;
 
 public class FloatWindowManager {
@@ -20,8 +21,14 @@ public class FloatWindowManager {
             int screenHeight = windowManager.getDefaultDisplay().getHeight();
             mBallView = new FloatBallView(context);
             WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-            params.x = screenWidth;
-            params.y = screenHeight / 2;
+            int ballX = SPHelper.getBigBallX(context);
+            int ballY = SPHelper.getBigBallY(context);
+            if (ballX==-1&&ballY==-1){
+                ballX = screenWidth;
+                ballY = screenHeight / 2;
+            }
+            params.x = ballX;
+            params.y = ballY;
             params.width = WindowManager.LayoutParams.WRAP_CONTENT;
             params.height = WindowManager.LayoutParams.WRAP_CONTENT;
             params.gravity = Gravity.LEFT | Gravity.TOP;

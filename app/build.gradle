@@ -2,14 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "com.zncm.dminter.mmhelper"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 29
         versionName "2.2.1"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -37,6 +36,4 @@ dependencies {
     compile 'com.belerweb:pinyin4j:2.5.0'
     compile 'com.github.czy1121:settingscompat:1.1.4'
     compile 'com.github.shell-software:fab:1.1.2'
-
-
 }

@@ -78,4 +78,9 @@
     <string name="touch_to_open">点击添加.</string>
     <string name="tutorial_done">尽情体验</string>
     <string name="tutorial_skip">跳过</string>
+
+
+    <string name="new_function">
+        记住悬浮球位置，建议活动【收集常用app，常用活动，推荐给用户，因许多用户觉得采集麻烦】，
+    </string>
 </resources>

@@ -234,7 +234,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                     }
                                     break;
                                 case 1:
-                                    initActivity(null);
+                                    initActivity(null, -1);
                                     break;
                                 case 2:
                                     talkUI(null, EnumInfo.cType.WX.getValue(), "微信-直接聊天", "朋友姓名", "朋友微信号");
@@ -621,7 +621,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         protected Void doInBackground(Void... params) {
             try {
                 if (Xutils.isNotEmptyOrNull(packageName)) {
-                    if (packageName.equals(EnumInfo.homeTab.APPS.getValue()) || packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
+                    if (packageName.equals(EnumInfo.homeTab.SUGGEST_ACTIVITY.getValue())) {
+
+                    } else if (packageName.equals(EnumInfo.homeTab.APPS.getValue()) || packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                         cardInfos = new ArrayList<>();
                         ArrayList<PkInfo> tmps = new ArrayList<>();
                         if (packageName.equals(EnumInfo.homeTab.APPS.getValue())) {
@@ -681,7 +683,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     }
 
 
-    private void initActivity(final CardInfo info) {
+    private void initActivity(final CardInfo info, final int position) {
         View view = LayoutInflater.from(ctx).inflate(
                 R.layout.view_card, null);
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 400));
@@ -716,6 +718,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             info.setPackageName(pName);
                             info.setClassName(cName);
                             DbUtils.updateCard(info);
+                            if (position != -1) {
+                                cardInfos.set(position, info);
+                                cardAdapter.notifyDataSetChanged();
+                            }
                         } else {
                             CardInfo card = new CardInfo(pName, cName, acName);
                             DbUtils.insertCard(card);
@@ -736,6 +742,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
             initAppBS(info, position);
         } else {
+
             initAppCard(info, position);
         }
     }
@@ -748,49 +755,60 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         map.put("text", like ? "取消收藏" : "收藏");
         map.put("key", "-1");
         list.add(map);
-        Map<String, Object> map2 = new HashMap<>();
-        map2.put("text", "修改");
-        map2.put("key", "-2");
-        list.add(map2);
-        Map<String, Object> map3 = new HashMap<>();
-        map3.put("text", "删除");
-        map3.put("key", "-3");
-        list.add(map3);
-        Map<String, Object> map4 = new HashMap<>();
-        map4.put("text", top ? "取消置顶" : "置顶");
-        map4.put("key", "-4");
-        list.add(map4);
-        Map<String, Object> map5 = new HashMap<>();
-        map5.put("text", "添加到桌面");
-        map5.put("key", "-5");
-        list.add(map5);
-        Map<String, Object> map6 = new HashMap<>();
-        map6.put("text", "分组");
-        map6.put("key", "-6");
-        list.add(map6);
-        Map<String, Object> map7 = new HashMap<>();
-        map7.put("text", "批量删除");
-        map7.put("key", "-7");
-        list.add(map7);
+
+        if (!packageName.equals(EnumInfo.homeTab.SUGGEST_ACTIVITY.getValue())) {
+            Map<String, Object> map2 = new HashMap<>();
+            map2.put("text", "修改");
+            map2.put("key", "-2");
+            list.add(map2);
+            Map<String, Object> map3 = new HashMap<>();
+            map3.put("text", "删除");
+            map3.put("key", "-3");
+            list.add(map3);
+            Map<String, Object> map4 = new HashMap<>();
+            map4.put("text", top ? "取消置顶" : "置顶");
+            map4.put("key", "-4");
+            list.add(map4);
+            Map<String, Object> map5 = new HashMap<>();
+            map5.put("text", "添加到桌面");
+            map5.put("key", "-5");
+            list.add(map5);
+            Map<String, Object> map6 = new HashMap<>();
+            map6.put("text", "分组");
+            map6.put("key", "-6");
+            list.add(map6);
+            Map<String, Object> map7 = new HashMap<>();
+            map7.put("text", "批量删除");
+            map7.put("key", "-7");
+            list.add(map7);
+        }
+
         new BottomSheetDlg(ctx, list, false) {
             @Override
             public void onGridItemClickListener(final int pos) {
                 switch (pos) {
 
                     case 0:
-                        if (like) {
-                            info.setExi1(0);
-                        } else {
+                        if (packageName.equals(EnumInfo.homeTab.SUGGEST_ACTIVITY.getValue())) {
+                            info.setExi4(Constant.sort_apps);
                             info.setExi1(1);
+                            DbUtils.insertCard(info);
+                            Xutils.tShort("已添加，并收藏~");
+                        } else {
+                            if (like) {
+                                info.setExi1(0);
+                            } else {
+                                info.setExi1(1);
+                            }
+                            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
+                            DbUtils.updateCard(info);
                         }
-                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
-                        DbUtils.updateCard(info);
                         break;
                     case 1:
                         if (info.getType() == EnumInfo.cType.WX.getValue() || info.getType() == EnumInfo.cType.QQ.getValue() || info.getType() == EnumInfo.cType.URL.getValue() || info.getType() == EnumInfo.cType.CMD.getValue() || info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
                             talkUI(info, 0, "修改", "", "");
                         } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
-                            initActivity(info);
+                            initActivity(info, position);
                         }
                         fillArray();
                         break;

@@ -165,7 +165,7 @@ public class EnumInfo {
      *主页TAB枚举
      */
     public enum homeTab {
-        BAT_STOP(0, "bat_stop", "冷冻室"), APPS(1, "enable", "应用"), LIKE(2, "like", "收藏"), ALL(3, "all", "所有");
+        SUGGEST_ACTIVITY(-1, "suggest_activity", "建议活动"),  BAT_STOP(0, "bat_stop", "冷冻室"), APPS(1, "enable", "应用"), LIKE(2, "like", "收藏"), ALL(3, "all", "所有");
         private String value;
         private int position;
         public String strName;

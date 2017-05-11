@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
+import com.zncm.dminter.mmhelper.SPHelper;
 import com.zncm.dminter.mmhelper.WatchingAccessibilityService;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
@@ -120,7 +121,7 @@ public class FloatBallView extends LinearLayout {
                             public void run() {
                                 if (isLongTouch()) {
                                     mIsLongTouch = true;
-                                    mVibrator.vibrate(mPattern, -1);
+//                                    mVibrator.vibrate(mPattern, -1);
                                 }
                             }
                         }, LONG_CLICK_LIMIT);
@@ -136,6 +137,8 @@ public class FloatBallView extends LinearLayout {
                             mBigBallX = mImgBigBall.getX();
                             mBigBallY = mImgBigBall.getY();
                             mCurrentMode = MODE_MOVE;
+                            SPHelper.setBigBallX(ctx, (int) mBigBallX);
+                            SPHelper.setBigBallY(ctx, (int) mBigBallY);
                         } else {
                             doGesture(event);
                         }
@@ -201,7 +204,7 @@ public class FloatBallView extends LinearLayout {
      * 移除悬浮球
      */
     private void toRemove() {
-        mVibrator.vibrate(mPattern, -1);
+//        mVibrator.vibrate(mPattern, -1);
         FloatWindowManager.removeBallView(getContext());
 
         Intent intent = new Intent(this.ctx, OpenInentActivity.class);
@@ -214,7 +217,7 @@ public class FloatBallView extends LinearLayout {
     private void screenCap() {
         FloatWindowManager.removeBallView(getContext());
         new ScreenCap().execute();
-        mVibrator.vibrate(mPattern, -1);
+//        mVibrator.vibrate(mPattern, -1);
 
     }
 

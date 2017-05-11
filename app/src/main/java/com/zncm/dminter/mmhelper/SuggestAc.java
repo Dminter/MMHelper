@@ -55,17 +55,12 @@ public class SuggestAc extends MaterialSettings {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ctx = this;
+        /**
+         *本地有才建议
+         * 微信，支付宝，QQ,淘宝，网易云音乐，微博，哔哩哔哩，京东，高德地图，知乎，有道云笔记，
+         */
+        items.put(zfb, "支付宝-微信，支付宝，QQ,淘宝，网易云音乐，微博，哔哩哔哩，京东，高德地图，知乎，有道云笔记，");
         items.put(wx, "微信");
-        items.put("com.eg.android.AlipayGphone", "支付宝");
-
-//        addItem(new TextItem(this.ctx, "").setTitle("使用手册").setOnclick(new TextItem.OnClickListener() {
-//            public void onClick(TextItem textItem) {
-//                startActivity(new Intent(AboutAc.this.ctx, HelpAc.class));
-//            }
-//        }));
-//        addItem(new DividerItem(this.ctx));
-
-
         if (items != null && items.size() > 0) {
             for (Map.Entry<String, String> entry : items.entrySet()
                     ) {
