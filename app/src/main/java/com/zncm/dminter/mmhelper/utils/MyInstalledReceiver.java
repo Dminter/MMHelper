@@ -33,6 +33,12 @@ public class MyInstalledReceiver extends BroadcastReceiver {
             PkInfo pk = DbUtils.getPkOne(pkgName,false);
             if (pk != null) {
                 pk.setExi1(EnumInfo.pkStatus.NORMAL.getValue());
+                /**
+                 *升级APP如果原先是冻结状态，再次冻结
+                 */
+                if (pk.getStatus()==EnumInfo.appStatus.DISABLED.getValue()){
+                    Xutils.exec("pm disable " + pk.getPackageName());
+                }
                 DbUtils.updatePkInfo(pk);
             } else {
                 String description = "";

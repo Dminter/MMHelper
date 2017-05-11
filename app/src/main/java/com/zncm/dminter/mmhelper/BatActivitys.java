@@ -163,6 +163,7 @@ public class BatActivitys extends BaseActivity {
 
                 if (type == EnumInfo.typeShortcut.THREE_MORE.getValue() || type == EnumInfo.typeShortcut.THREE_LESS.getValue()) {
                     apps = tmpApp;
+
                 } else if (type == EnumInfo.typeShortcut.ALL_MORE.getValue() || type == EnumInfo.typeShortcut.ALL_LESS.getValue()) {
                     apps = tmpAppSys;
                 }
@@ -199,13 +200,22 @@ public class BatActivitys extends BaseActivity {
 
                 if ((type == EnumInfo.typeShortcut.ALL_LESS.getValue()) || (type == EnumInfo.typeShortcut.THREE_LESS.getValue())) {
                     try {
-                        infos = getPackageManager().getPackageInfo(appInfo.packageName, PackageManager.GET_ACTIVITIES).activities;
-                        infos = appInfo.activities;
-                        if (infos != null && infos.length > 0) {
-                            for (int i = 0; i < infos.length; i++) {
-                                acList.add(infos[i].name);
+                        List<PackageInfo> apps = packageManager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
+
+                        for (PackageInfo info:apps
+                             ) {
+                            if (info!=null&&Xutils.isNotEmptyOrNull(info.packageName)&&Xutils.isNotEmptyOrNull(appInfo.packageName)&&appInfo.packageName.equals(info.packageName)){
+                                infos  =info.activities;
+                                if (infos != null && infos.length > 0) {
+                                    for (int i = 0; i < infos.length; i++) {
+                                        acList.add(infos[i].name);
+                                    }
+                                }
+                                break;
                             }
                         }
+//                        infos = getPackageManager().getPackageInfo(appInfo.packageName, PackageManager.GET_ACTIVITIES).activities;
+//                        infos = appInfo.activities;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
