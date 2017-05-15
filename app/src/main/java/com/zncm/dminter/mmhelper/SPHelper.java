@@ -36,6 +36,15 @@ public class SPHelper {
     public static void setIsHS(Context context, boolean is_hs) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean("is_hs", is_hs).commit();
+
+    }public static boolean isAutoNight(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("is_auto_night", false);
+    }
+
+    public static void setIsAutoNight(Context context, boolean is_auto_night) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean("is_auto_night", is_auto_night).commit();
     }
 
     public static boolean isAutoStop(Context context) {
@@ -102,7 +111,17 @@ public class SPHelper {
     //主题配色
 
     public static int getThemeColor(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt("theme_color", -11751600);
+
+        if (isNightMode(context)){
+            /**
+             *主题色，黑色
+             */
+            return -13092808;
+        }else {
+            return PreferenceManager.getDefaultSharedPreferences(context).getInt("theme_color", -11751600);
+        }
+
+
     }
 
 

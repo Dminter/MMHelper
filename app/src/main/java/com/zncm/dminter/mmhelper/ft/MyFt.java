@@ -217,7 +217,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     new MyFt.BatStopTask().execute(EnumInfo.typeBatStop.DISABLE_LESS.getValue());
                 } else if (packageName.equals(EnumInfo.homeTab.ALL.getValue())) {
                     String[] items = {"采集活动", "添加活动", "微信聊天", "QQ聊天", "书签", "Shell", "快捷方式"};
-                    new MaterialDialog.Builder(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
+                    Xutils.themeMaterialDialog(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
 
                         @Override
                         public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
@@ -279,7 +279,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             items.add(tmp.getName());
                         }
                     }
-                    new MaterialDialog.Builder(ctx).title("添加到冷冻室").items(items).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                    Xutils.themeMaterialDialog(ctx).title("添加到冷冻室").items(items).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                         @Override
                         public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
                             for (int i = 0; i < which.length; i++) {
@@ -366,7 +366,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             }
         }
 
-        new MaterialDialog.Builder(ctx)
+        Xutils.themeMaterialDialog(ctx)
                 .title(title)
                 .customView(wxView, false)
                 .positiveText("好")
@@ -401,7 +401,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     openSetting(ctx);
                     return;
                 }
-                new MaterialDialog.Builder(ctx)
+                Xutils.themeMaterialDialog(ctx)
                         .title("开启无障碍")
                         .content(R.string.dialog_enable_accessibility_msg)
                         .positiveText("好")
@@ -500,7 +500,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             final ShellUtils.CommandResult result = ShellUtils.execCommand(cmd, true);
             if (result != null) {
                 if (Xutils.isNotEmptyOrNull(result.successMsg)) {
-                    MaterialDialog dialog = new MaterialDialog.Builder(activity).title(cmd).content(result.successMsg).positiveText("知").neutralText("复制").onAny(new MaterialDialog.SingleButtonCallback() {
+                    MaterialDialog dialog = Xutils.themeMaterialDialog(activity).title(cmd).content(result.successMsg).positiveText("知").neutralText("复制").onAny(new MaterialDialog.SingleButtonCallback() {
 
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -513,7 +513,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     BottomSheetDlg.checkSysDlg(activity, dialog);
                     dialog.show();
                 } else {
-                    Xutils.tShort("找不到该命令~");
+                    /**
+                     *命令没有返回值，正常
+                     */
+//                    Xutils.tShort("找不到该命令~");
                 }
 
             } else {
@@ -631,7 +634,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         } else if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                             tmps = DbUtils.getPkInfosBatStop(1);
                         }
-                        StringBuffer stringBuffer = new StringBuffer();
+//                        StringBuffer stringBuffer = new StringBuffer();
                         for (PkInfo tmp : tmps
                                 ) {
                             CardInfo info = new CardInfo();
@@ -641,18 +644,18 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             info.setType(EnumInfo.cType.START_APP.getValue());
                             info.setDisabled(tmp.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
                             cardInfos.add(info);
-                            stringBuffer.append(info.getPackageName()).append(",").append(info.getTitle());
+//                            stringBuffer.append(info.getPackageName()).append(",").append(info.getTitle());
                         }
-                        Xutils.debug(stringBuffer.toString());
+//                        Xutils.debug(stringBuffer.toString());
                     } else {
                         cardInfos = DbUtils.getCardInfos(packageName);
                         if (packageName.equals(EnumInfo.homeTab.LIKE.getValue())){
-                            StringBuffer stringBuffer = new StringBuffer();
-                            for (CardInfo tmp:cardInfos
-                                 ) {
-                                stringBuffer.append(tmp.getPackageName()).append(",").append(tmp.getClassName()).append(",").append(tmp.getTitle()).append("\n");
-                            }
-                            Xutils.debug("LIKE:"+stringBuffer.toString());
+//                            StringBuffer stringBuffer = new StringBuffer();
+//                            for (CardInfo tmp:cardInfos
+//                                 ) {
+//                                stringBuffer.append(tmp.getPackageName()).append(",").append(tmp.getClassName()).append(",").append(tmp.getTitle()).append("\n");
+//                            }
+//                            Xutils.debug("LIKE:"+stringBuffer.toString());
                         }
 
 
@@ -702,7 +705,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 className.setText(info.getClassName());
             }
         }
-        dialog = new MaterialDialog.Builder(ctx)
+        dialog = Xutils.themeMaterialDialog(ctx)
                 .title("配置活动")
                 .customView(view, false)
                 .positiveText("好")
@@ -845,7 +848,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             }
 
                         }
-                        new MaterialDialog.Builder(ctx)
+                        Xutils.themeMaterialDialog(ctx)
                                 .items(fzStr)
                                 .itemsCallback(new MaterialDialog.ListCallback() {
                                     @Override
@@ -871,7 +874,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                 items.add(tmp.getTitle());
                             }
                         }
-                        new MaterialDialog.Builder(ctx).title("批量删除活动").items(items).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                        Xutils.themeMaterialDialog(ctx).title("批量删除活动").items(items).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                             @Override
                             public boolean onSelection(MaterialDialog dialog, final Integer[] which, CharSequence[] text) {
                                 final StringBuffer names = new StringBuffer();
@@ -884,7 +887,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                     }
                                 }
 
-                                new MaterialDialog.Builder(ctx).title("确定删除").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+                                Xutils.themeMaterialDialog(ctx).title("确定删除").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
                                     public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which2) {
                                         if (which2 == DialogAction.POSITIVE) {
                                             for (int i = 0; i < which.length; i++) {

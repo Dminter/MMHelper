@@ -21,6 +21,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.astuetz.PagerSlidingTabStrip;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
@@ -389,10 +391,10 @@ public class Xutils {
 
     public static void initIndicatorTheme(PagerSlidingTabStrip indicator) {
         Context context = MyApplication.getInstance().ctx;
-        indicator.setIndicatorColor(context.getResources().getColor(R.color.material_light_white));
+        indicator.setIndicatorColor(context.getResources().getColor(R.color.white));
         indicator.setBackgroundColor(SPHelper.getThemeColor(context));
         indicator.setDividerColor(SPHelper.getThemeColor(context));
-        indicator.setTextColor(context.getResources().getColor(R.color.material_light_white));
+        indicator.setTextColor(context.getResources().getColor(R.color.white));
         indicator.setUnderlineHeight(dip2px(2.0F));
         indicator.setIndicatorHeight(dip2px(2.0F));
     }
@@ -543,8 +545,16 @@ public class Xutils {
     }
 
 
+    /**
+     * 对话框主题
+     */
+    public static MaterialDialog.Builder themeMaterialDialog(Context context) {
+        return new MaterialDialog.Builder(context).theme(SPHelper.isNightMode(context) ? Theme.DARK : Theme.LIGHT);
+    }
+
+
     public static Drawable initIconWhite(Iconify.IconValue iconValue) {
-        return new IconDrawable(MyApplication.getInstance().ctx, iconValue).colorRes(R.color.material_light_white).sizeDp(24);
+        return new IconDrawable(MyApplication.getInstance().ctx, iconValue).colorRes(R.color.white).sizeDp(24);
     }
 
 
@@ -576,6 +586,13 @@ public class Xutils {
             return null;
         }
         return new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date(inputDate));
+    }
+
+    /**
+     *获取24小时制 小时
+     */
+    public static int getHour() {
+        return Integer.parseInt(new SimpleDateFormat("HH").format(new Date()));
     }
 
 

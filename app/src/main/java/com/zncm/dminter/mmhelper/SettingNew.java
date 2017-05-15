@@ -119,7 +119,7 @@ public class SettingNew extends MaterialSettings {
                 if (Xutils.isNotEmptyOrNull(fzInfo)) {
                     editText.setText(fzInfo);
                 }
-                new MaterialDialog.Builder(ctx).title("分组-英文逗号分隔").customView(editText, false).positiveText("好").negativeText("不").onAny(new MaterialDialog.SingleButtonCallback() {
+                Xutils.themeMaterialDialog(ctx).title("分组-英文逗号分隔").customView(editText, false).positiveText("好").negativeText("不").onAny(new MaterialDialog.SingleButtonCallback() {
                     public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which) {
                         if (which == DialogAction.POSITIVE) {
                             String fz = editText.getText().toString();
@@ -156,7 +156,7 @@ public class SettingNew extends MaterialSettings {
                                                                                     }
                                                                                 }
                                                                             }
-                                                                            new MaterialDialog.Builder(ctx).title("添加应用").items(appNames).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                                                                            Xutils.themeMaterialDialog(ctx).title("添加应用").items(appNames).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                                                                                 @Override
                                                                                 public boolean onSelection(MaterialDialog dialog, final Integer[] which, CharSequence[] text) {
                                                                                     final StringBuffer names = new StringBuffer();
@@ -167,7 +167,7 @@ public class SettingNew extends MaterialSettings {
                                                                                         }
                                                                                     }
 
-                                                                                    new MaterialDialog.Builder(ctx).title("确定添加应用").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+                                                                                    Xutils.themeMaterialDialog(ctx).title("确定添加应用").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
                                                                                         public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which2) {
                                                                                             if (which2 == DialogAction.POSITIVE) {
                                                                                                 for (int i = 0; i < which.length; i++) {
@@ -221,7 +221,7 @@ public class SettingNew extends MaterialSettings {
         addItem(new DividerItem(ctx));
         addItem(new TextItem(ctx, "").setTitle("系统应用->冷冻室【慎重】").setOnclick(new TextItem.OnClickListener() {
                                                                                public void onClick(TextItem textItem) {
-                                                                                   new MaterialDialog.Builder(ctx).title("系统应用->冷冻室【慎重】").content("注意：冻结系统应用可能会导致系统崩溃，无法开机，切忌盲目冻结，以免造成严重后果！！~")
+                                                                                   Xutils.themeMaterialDialog(ctx).title("系统应用->冷冻室【慎重】").content("注意：冻结系统应用可能会导致系统崩溃，无法开机，切忌盲目冻结，以免造成严重后果！！~")
                                                                                            .positiveText("确定").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
 
 
@@ -249,7 +249,7 @@ public class SettingNew extends MaterialSettings {
                                                                                                                                                        }
 
 
-                                                                                                                                                       new MaterialDialog.Builder(ctx).title("系统应用->冷冻室").items(appNames).theme(Theme.LIGHT).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                                                                                                                                                       Xutils.themeMaterialDialog(ctx).title("系统应用->冷冻室").items(appNames).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
                                                                                                                                                            @Override
                                                                                                                                                            public boolean onSelection(MaterialDialog dialog, final Integer[] which, CharSequence[] text) {
                                                                                                                                                                final StringBuffer names = new StringBuffer();
@@ -260,7 +260,7 @@ public class SettingNew extends MaterialSettings {
                                                                                                                                                                    }
                                                                                                                                                                }
 
-                                                                                                                                                               new MaterialDialog.Builder(ctx).title("确定添加到冷冻室").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+                                                                                                                                                               Xutils.themeMaterialDialog(ctx).title("确定添加到冷冻室").content(names.toString()).positiveText("确定").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
                                                                                                                                                                    public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which2) {
                                                                                                                                                                        if (which2 == DialogAction.POSITIVE) {
                                                                                                                                                                            for (int i = 0; i < which.length; i++) {
@@ -332,7 +332,7 @@ public class SettingNew extends MaterialSettings {
                     }
                     items.add(j + "");
                 }
-                new MaterialDialog.Builder(ctx).title("抽屉网格大小-列数").items(items).theme(Theme.LIGHT).itemsCallbackSingleChoice(i, new MaterialDialog.ListCallbackSingleChoice() {
+                Xutils.themeMaterialDialog(ctx).title("抽屉网格大小-列数").items(items).itemsCallbackSingleChoice(i, new MaterialDialog.ListCallbackSingleChoice() {
 
                     @Override
                     public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
@@ -384,7 +384,7 @@ public class SettingNew extends MaterialSettings {
             @Override
             public void onClick(TextItem textItem) {
 
-                new MaterialDialog.Builder(ctx).title("初始化应用列表").content("应用列表和排序将会重建~")
+                Xutils.themeMaterialDialog(ctx).title("初始化应用列表").content("应用列表和排序将会重建~")
                         .positiveText("确定").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
 
 
@@ -437,6 +437,18 @@ public class SettingNew extends MaterialSettings {
                 startActivity(new Intent(ctx, AboutAc.class));
             }
         }));
+
+
+
+        addItem(new DividerItem(ctx));
+        addItem(new CheckboxItem(this, "").setTitle("自动开启夜间模式").setSubtitle("开始时间18:00，结束时间6:00").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                SPHelper.setIsAutoNight(ctx, b);
+                isNeedUpdate = true;
+            }
+        }).setDefaultValue(SPHelper.isAutoNight(ctx)));
 
 
         addItem(new DividerItem(ctx));
@@ -496,7 +508,7 @@ public class SettingNew extends MaterialSettings {
                     if (typeT9 < items.length + 1) {
                         items[typeT9 - 1] = items[typeT9 - 1] + "   ✔";
                     }
-                    new MaterialDialog.Builder(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
+                    Xutils.themeMaterialDialog(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
 
                         @Override
                         public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
@@ -572,7 +584,7 @@ public class SettingNew extends MaterialSettings {
             }
         }));
         addItem(new DividerItem(ctx));
-        addItem(new CheckboxItem(this, "").setTitle("悬浮球").setSubtitle("点击【返回】，上【最近任务】，左【收藏的活动】，下【桌面】，右【采集活动】，长按【拖动位置】，长下拉【隐藏到通知栏】，长下拉【截屏】").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+        addItem(new CheckboxItem(this, "").setTitle("悬浮球").setSubtitle("点击【返回】，上【最近任务】，左【收藏的活动】，下【桌面】，右【采集活动】，长按【拖动位置】，长下拉【隐藏到通知栏】，长上拉【截屏】").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
                 if (checkNotPro()) {
@@ -710,13 +722,13 @@ public class SettingNew extends MaterialSettings {
 
 
     private void goPro() {
-        new MaterialDialog.Builder(ctx).title("解锁Pro版，仅需5元！").content("Pro版更多彰显的是情怀~").positiveText("支付宝购买").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+        Xutils.themeMaterialDialog(ctx).title("解锁Pro版，仅需5元！").content("Pro版更多彰显的是情怀~").positiveText("支付宝购买").neutralText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
 
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 if (which == DialogAction.POSITIVE) {
 
-                    new MaterialDialog.Builder(ctx).title("支付宝购买，仅需5.0元！").content("购买后请获取订单号【点击支付宝订单详情-》创建时间-》长按复制订单号-》输入订单号-》完成购买】注：重装或换机需重新购买，价格为0.01元").positiveText("购买").negativeText("取消").neutralText("输入订单号").onAny(new MaterialDialog.SingleButtonCallback() {
+                    Xutils.themeMaterialDialog(ctx).title("支付宝购买，仅需5.0元！").content("购买后请获取订单号【点击支付宝订单详情-》创建时间-》长按复制订单号-》输入订单号-》完成购买】注：重装或换机需重新购买，价格为0.01元").positiveText("购买").negativeText("取消").neutralText("输入订单号").onAny(new MaterialDialog.SingleButtonCallback() {
 
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -725,7 +737,7 @@ public class SettingNew extends MaterialSettings {
 
                                 final EditText editText = new EditText(ctx);
                                 editText.setTextColor(getResources().getColor(R.color.colorPrimary));
-                                new MaterialDialog.Builder(ctx).title("输入订单号").customView(editText, false).positiveText("好").negativeText("不").neutralText("打开支付宝").onAny(new MaterialDialog.SingleButtonCallback() {
+                                Xutils.themeMaterialDialog(ctx).title("输入订单号").customView(editText, false).positiveText("好").negativeText("不").neutralText("打开支付宝").onAny(new MaterialDialog.SingleButtonCallback() {
                                     public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which) {
                                         if (which == DialogAction.NEUTRAL) {
                                             Xutils.startAppByPackageName(ctx, MyPackageInfo.pk_zfb, 3);

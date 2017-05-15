@@ -261,6 +261,8 @@ public class T9SearchActivity extends BaseActivity {
         if (SPHelper.isT9Clear(ctx)) {
             clearSearch();
         }
+
+
     }
 
 

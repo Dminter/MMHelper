@@ -19,7 +19,7 @@
         <item name="colorSwitchThumbNormal">@color/material_red_400</item>
         <item name="android:colorForeground">@color/material_yellow_400</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="md_dark_theme">false</item>
+<!--        <item name="md_dark_theme">false</item>-->
     </style>
 
 
@@ -38,7 +38,7 @@
         <item name="colorSwitchThumbNormal">@color/material_red_400</item>
         <item name="android:colorForeground">@color/material_yellow_400</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="md_dark_theme">false</item>
+       <!-- <item name="md_dark_theme">false</item>-->
     </style>
 
 

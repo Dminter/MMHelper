@@ -284,6 +284,7 @@
     <color name="material_light_black">#000000</color>
     <!-- White -->
     <color name="material_light_white">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
 
 
 </resources>

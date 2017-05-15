@@ -27,7 +27,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             toolbar.setTitle("");
-            toolbar.setTitleTextColor(getResources().getColor(R.color.material_light_white));
+            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
             setSupportActionBar(toolbar);
             toolbar.setNavigationIcon(null);
             Xutils.initBarTheme(this, toolbar);

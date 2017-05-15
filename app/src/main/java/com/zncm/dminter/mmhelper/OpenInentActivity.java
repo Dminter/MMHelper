@@ -96,7 +96,7 @@ public class OpenInentActivity extends AppCompatActivity {
                     ) {
                 items.add(info.getTitle());
             }
-            new MaterialDialog.Builder(this)
+            Xutils.themeMaterialDialog(ctx)
                     .title("添加已收藏的活动到桌面")
                     .items(items)
                     .itemsCallback(new MaterialDialog.ListCallback() {

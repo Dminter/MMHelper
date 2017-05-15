@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 建议活动的grid
+ * 建议活动的grid+cmd
  */
 public class SuggestInfoActivity extends BaseActivity {
     Activity ctx;
@@ -81,23 +81,25 @@ public class SuggestInfoActivity extends BaseActivity {
             cardInfos.addAll(wxCard);
         } else if (SuggestAc.zfb.equals(pkName)) {
             ArrayList<CardInfo> zfbCard = new ArrayList<>();
-//            com.eg.android.AlipayGphone,com.alipay.android.phone.wealth.tally.activitys.TallyMainActivity_,记账本
-//            com.eg.android.AlipayGphone,com.alipay.mobile.stock.ui.MainActivity,股票
-//            com.eg.android.AlipayGphone,com.alipay.mobile.pubsvc.ui.PPServiceActivity,生活号
-//            com.eg.android.AlipayGphone,com.alipay.mobile.transferapp.ui.TransferHomeActivity_,转账
-//            com.eg.android.AlipayGphone,com.alipay.mobile.alipassapp.ui.list.activity.v2.OffersEntryActivity,卡包
-//            com.eg.android.AlipayGphone,com.alipay.mobile.bill.list.ui.BillListActivity_,账单
-//            com.eg.android.AlipayGphone,com.alipay.mobile.payee.ui.PayeeQRActivity_,收钱
-//            com.eg.android.AlipayGphone,com.alipay.mobile.security.accountmanager.AccountInfo.ui.SecurityAccountQrCodeActivity_,我的二维码
-//            com.eg.android.AlipayGphone,com.alipay.mobile.contactsapp.ui.AddFriendActivity_,添加朋友
-//            com.eg.android.AlipayGphone,com.alipay.mobile.socialcontactsdk.contact.ui.ContactMainPageActivity,通讯录
-//            com.eg.android.AlipayGphone,com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity,搜索
-//            com.eg.android.AlipayGphone,com.alipay.android.phone.voiceassistant.ui.VoiceAssistantActivity,语音搜索
-//            com.eg.android.AlipayGphone,com.alipay.android.phone.personalapp.favorite.activity.FavoriteNewHomeActivity,我的收藏
-//            com.eg.android.AlipayGphone,com.alipay.mobile.bill.list.ui.BillSearchActivity_,账单搜索
-//            com.eg.android.AlipayGphone,com.alipay.mobile.fund.ui.FundMainNewActivity_,余额宝
-//            com.eg.android.AlipayGphone,com.alipay.mobile.onsitepay9.payer.OspTabHostActivity,付款码
-//            com.eg.android.AlipayGphone,com.alipay.mobile.scan.as.main.MainCaptureActivity,扫一扫
+            /**
+             *   com.eg.android.AlipayGphone,com.alipay.android.phone.wealth.tally.activitys.TallyMainActivity_,记账本
+             com.eg.android.AlipayGphone,com.alipay.mobile.stock.ui.MainActivity,股票
+             com.eg.android.AlipayGphone,com.alipay.mobile.pubsvc.ui.PPServiceActivity,生活号
+             com.eg.android.AlipayGphone,com.alipay.mobile.transferapp.ui.TransferHomeActivity_,转账
+             com.eg.android.AlipayGphone,com.alipay.mobile.alipassapp.ui.list.activity.v2.OffersEntryActivity,卡包
+             com.eg.android.AlipayGphone,com.alipay.mobile.bill.list.ui.BillListActivity_,账单
+             com.eg.android.AlipayGphone,com.alipay.mobile.payee.ui.PayeeQRActivity_,收钱
+             com.eg.android.AlipayGphone,com.alipay.mobile.security.accountmanager.AccountInfo.ui.SecurityAccountQrCodeActivity_,我的二维码
+             com.eg.android.AlipayGphone,com.alipay.mobile.contactsapp.ui.AddFriendActivity_,添加朋友
+             com.eg.android.AlipayGphone,com.alipay.mobile.socialcontactsdk.contact.ui.ContactMainPageActivity,通讯录
+             com.eg.android.AlipayGphone,com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity,搜索
+             com.eg.android.AlipayGphone,com.alipay.android.phone.voiceassistant.ui.VoiceAssistantActivity,语音搜索
+             com.eg.android.AlipayGphone,com.alipay.android.phone.personalapp.favorite.activity.FavoriteNewHomeActivity,我的收藏
+             com.eg.android.AlipayGphone,com.alipay.mobile.bill.list.ui.BillSearchActivity_,账单搜索
+             com.eg.android.AlipayGphone,com.alipay.mobile.fund.ui.FundMainNewActivity_,余额宝
+             com.eg.android.AlipayGphone,com.alipay.mobile.onsitepay9.payer.OspTabHostActivity,付款码
+             com.eg.android.AlipayGphone,com.alipay.mobile.scan.as.main.MainCaptureActivity,扫一扫
+             */
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.wealth.tally.activitys.TallyMainActivity_", "记账本"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.stock.ui.MainActivity", "股票"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.pubsvc.ui.PPServiceActivity", "生活号"));
@@ -263,18 +265,45 @@ public class SuggestInfoActivity extends BaseActivity {
             card.add(new CardInfo(SuggestAc.douban, "com.douban.frodo.search.activity.CaptureActivity", "扫描"));
             card.add(new CardInfo(SuggestAc.douban, "com.douban.frodo.MainActivity", "豆瓣"));
             cardInfos.addAll(card);
+        }else if (SuggestAc.cmd.equals(pkName)) {
+            /**
+             cmd
+             */
+            ArrayList<CardInfo> card = new ArrayList<>();
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "cat /data/misc/wifi/*.conf", "WiFi 密码"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "reboot", "重启手机"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "input keyevent 3", "HOME 键"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "input keyevent 187", "切换应用"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "input keyevent 26", "电源键"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "input keyevent 223", "熄灭屏幕"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "pm list packages -3", "已安装的第三方app"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "am start -n com.tencent.mm/.ui.LauncherUI", "微信"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "ifconfig", "IP 地址"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "getprop ro.product.model", "型号"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "dumpsys battery", "电池状况"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "wm size", "屏幕分辨率"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "wm density", "屏幕密度"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "dumpsys window displays", "显示屏参数"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "settings get secure android_id", "android_id"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "getprop ro.build.version.release", "Android 系统版本"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "cat /sys/class/net/wlan0/address", "Mac 地址"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "cat /proc/cpuinfo", "CPU 信息"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "cat /proc/meminfo", "内存信息"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "cat /system/build.prop", "更多硬件与系统属性"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "reboot recovery", "重启到 Recovery 模式"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "reboot bootloader", "重启到 Fastboot 模式"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true", "开启飞行模式"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false", "关闭飞行模式"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc data enable", "打开数据连接"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc data disable", "关闭数据连接"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc wifi enable", "开启wifi连接"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc wifi disable", "关闭wifi连接"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "df", "磁盘空间占用"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "date", "系统时间"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "netstat", "查看网络状态"));
+
+            cardInfos.addAll(card);
         }
-
-
-      
-      
-    
-   
-
-
-      
-
-        
 
         if (Xutils.listNotNull(cardInfos) && fragment != null && fragment.cardAdapter != null) {
             fragment.cardInfos = new ArrayList();

@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 
+import com.zncm.dminter.mmhelper.utils.Xutils;
+
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,18 +51,20 @@ public class WatchingService extends Service {
 		@Override
 		public void run() {
 			List<RunningTaskInfo> rtis = mActivityManager.getRunningTasks(1);
-			String act = rtis.get(0).topActivity.getPackageName() + "\n"
-					+ rtis.get(0).topActivity.getClassName();
-			if (!act.equals(text)) {
-				text = act;
-				if (SPHelper.isAcFloat(WatchingService.this)) {
-					mHandler.post(new Runnable() {
-						@Override
-						public void run() {
-							TasksWindow.show(WatchingService.this, text);
-						}
-					});
-				}
+            if (Xutils.listNotNull(rtis)) {
+                String act = rtis.get(0).topActivity.getPackageName() + "\n"
+                        + rtis.get(0).topActivity.getClassName();
+                if (!act.equals(text)) {
+                    text = act;
+                    if (SPHelper.isAcFloat(WatchingService.this)) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                TasksWindow.show(WatchingService.this, text);
+                            }
+                        });
+                    }
+                }
 			}
 		}
 	}
@@ -71,7 +75,6 @@ public class WatchingService extends Service {
 	    Intent restartServiceIntent = new Intent(getApplicationContext(),
 	            this.getClass());
 	    restartServiceIntent.setPackage(getPackageName());
-
 	    PendingIntent restartServicePendingIntent = PendingIntent.getService(
 	            getApplicationContext(), 1, restartServiceIntent,
 	            PendingIntent.FLAG_ONE_SHOT);

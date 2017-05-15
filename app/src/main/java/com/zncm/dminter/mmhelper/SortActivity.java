@@ -44,7 +44,7 @@ public class SortActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitleTextColor(getResources().getColor(R.color.material_light_white));
+            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
             setSupportActionBar(toolbar);
             Xutils.initBarTheme(ctx, toolbar);
         }
@@ -122,7 +122,7 @@ public class SortActivity extends AppCompatActivity {
         if (item.getTitle().equals("back")) {
             finish();
         } else if (item.getTitle().equals("done")) {
-            progressDlg = new MaterialDialog.Builder(this)
+            progressDlg = Xutils.themeMaterialDialog(ctx)
                     .title("排序中...")
                     .show();
             SortTask sortTask = new SortTask();

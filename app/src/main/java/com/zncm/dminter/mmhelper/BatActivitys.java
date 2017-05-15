@@ -130,7 +130,7 @@ public class BatActivitys extends BaseActivity {
     }
 
     private void loadData() {
-        progressDlg = new MaterialDialog.Builder(this).title("请稍后...").show();
+        progressDlg = Xutils.themeMaterialDialog(ctx).title("请稍后...").show();
         new MyGetAppsTask().execute();
     }
 
@@ -161,10 +161,10 @@ public class BatActivitys extends BaseActivity {
                 }
 
 
-                if (type == EnumInfo.typeShortcut.THREE_MORE.getValue() || type == EnumInfo.typeShortcut.THREE_LESS.getValue()) {
+                if (type == EnumInfo.typeShortcut.THREE_MORE.getValue() ) {
                     apps = tmpApp;
 
-                } else if (type == EnumInfo.typeShortcut.ALL_MORE.getValue() || type == EnumInfo.typeShortcut.ALL_LESS.getValue()) {
+                } else if (type == EnumInfo.typeShortcut.ALL_MORE.getValue()) {
                     apps = tmpAppSys;
                 }
             } catch (Exception e) {
@@ -197,34 +197,33 @@ public class BatActivitys extends BaseActivity {
                 activitys = new ArrayList<>();
                 ActivityInfo[] infos;
                 ArrayList<String> acList = new ArrayList<String>();
-
-                if ((type == EnumInfo.typeShortcut.ALL_LESS.getValue()) || (type == EnumInfo.typeShortcut.THREE_LESS.getValue())) {
-                    try {
-                        List<PackageInfo> apps = packageManager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
-
-                        for (PackageInfo info:apps
-                             ) {
-                            if (info!=null&&Xutils.isNotEmptyOrNull(info.packageName)&&Xutils.isNotEmptyOrNull(appInfo.packageName)&&appInfo.packageName.equals(info.packageName)){
-                                infos  =info.activities;
-                                if (infos != null && infos.length > 0) {
-                                    for (int i = 0; i < infos.length; i++) {
-                                        acList.add(infos[i].name);
-                                    }
-                                }
-                                break;
-                            }
-                        }
-//                        infos = getPackageManager().getPackageInfo(appInfo.packageName, PackageManager.GET_ACTIVITIES).activities;
-//                        infos = appInfo.activities;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                } else if ((type == EnumInfo.typeShortcut.ALL_MORE.getValue()) || (type == EnumInfo.typeShortcut.THREE_MORE.getValue())) {
+//                if ((type == EnumInfo.typeShortcut.ALL_LESS.getValue()) || (type == EnumInfo.typeShortcut.THREE_LESS.getValue())) {
+//                    try {
+//                        List<PackageInfo> apps = packageManager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
+//
+//                        for (PackageInfo info:apps
+//                                ) {
+//                            if (info!=null&&Xutils.isNotEmptyOrNull(info.packageName)&&Xutils.isNotEmptyOrNull(appInfo.packageName)&&appInfo.packageName.equals(info.packageName)){
+//                                infos  =info.activities;
+//                                if (infos != null && infos.length > 0) {
+//                                    for (int i = 0; i < infos.length; i++) {
+//                                        acList.add(infos[i].name);
+//                                    }
+//                                }
+//                                break;
+//                            }
+//                        }
+////                        infos = getPackageManager().getPackageInfo(appInfo.packageName, PackageManager.GET_ACTIVITIES).activities;
+////                        infos = appInfo.activities;
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                } else
+                 if ((type == EnumInfo.typeShortcut.ALL_MORE.getValue()) || (type == EnumInfo.typeShortcut.THREE_MORE.getValue())) {
                     acList = (ArrayList<String>) ApkInfoUtils.getActivitiesByPackageName(ctx, appInfo.packageName);
                 }
                 if (Xutils.listNotNull(acList)) {
-
                     for (String className : acList
                             ) {
                         activitys.add(new MyAppInfo(appInfo.packageName, className));
@@ -293,9 +292,8 @@ public class BatActivitys extends BaseActivity {
             finish();
         } else if (item.getTitle().equals("filter")) {
             try {
-                String[] items = new String[]{EnumInfo.typeShortcut.THREE_MORE.getStrName(), EnumInfo.typeShortcut.THREE_LESS.getStrName(), EnumInfo.typeShortcut.ALL_MORE.getStrName(), EnumInfo.typeShortcut.ALL_LESS.getStrName()};
-                new MaterialDialog.Builder(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
-
+                String[] items = new String[]{EnumInfo.typeShortcut.THREE_MORE.getStrName(), EnumInfo.typeShortcut.ALL_MORE.getStrName()};
+                Xutils.themeMaterialDialog(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
                         type = (position + 1);

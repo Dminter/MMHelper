@@ -18,6 +18,8 @@ import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
 import com.zncm.dminter.mmhelper.SPHelper;
+import com.zncm.dminter.mmhelper.ShortcutActionActivity;
+import com.zncm.dminter.mmhelper.T9SearchActivity;
 import com.zncm.dminter.mmhelper.WatchingAccessibilityService;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
@@ -46,7 +48,7 @@ public class FloatBallView extends LinearLayout {
 
     private float mTouchSlop;
     private final static long LONG_CLICK_LIMIT = 300;
-    private final static long REMOVE_LIMIT = 1500;
+    private final static long REMOVE_LIMIT = 1000;
     private final static long CLICK_LIMIT = 200;
 
     private int mStatusBarHeight;
@@ -264,6 +266,17 @@ public class FloatBallView extends LinearLayout {
                 mCurrentMode = MODE_RIGHT;
                 mImgBigBall.setX(mBigBallX + OFFSET);
                 mImgBigBall.setY(mBigBallY);
+
+//                postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (mCurrentMode == MODE_RIGHT && mIsTouching) {
+//                            ShortcutActionActivity.lockScreen(ctx);
+//                            mCurrentMode = MODE_GONE;
+//                        }
+//                    }
+//                }, REMOVE_LIMIT);
+
             } else {
                 if (mCurrentMode == MODE_LEFT) {
                     return;
@@ -271,6 +284,16 @@ public class FloatBallView extends LinearLayout {
                 mCurrentMode = MODE_LEFT;
                 mImgBigBall.setX(mBigBallX - OFFSET);
                 mImgBigBall.setY(mBigBallY);
+
+//                postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (mCurrentMode == MODE_LEFT && mIsTouching) {
+//                            t9Search();
+//                            mCurrentMode = MODE_GONE;
+//                        }
+//                    }
+//                }, REMOVE_LIMIT);
             }
         } else {
             if (offsetY > 0) {
@@ -310,6 +333,10 @@ public class FloatBallView extends LinearLayout {
 
             }
         }
+    }
+
+    private void t9Search() {
+        ctx.startActivity(new Intent(ctx, T9SearchActivity.class));
     }
 
     /**

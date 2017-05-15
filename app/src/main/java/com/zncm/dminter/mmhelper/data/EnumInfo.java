@@ -10,8 +10,9 @@ public class EnumInfo {
      * 批量添加活动的枚举
      */
     public enum typeShortcut {
-        //三方+少，三方+多，全部+少，全部+多
-        THREE_MORE(1, "应用全部活动"), THREE_LESS(2, "应用注册活动"), ALL_MORE(3, "系统全部活动"), ALL_LESS(4, "系统注册活动");
+        //三方+少，三方+多，全部+少，全部+多 【less的活动有bug】
+        THREE_MORE(1, "安装的应用"),  ALL_MORE(2 ,"系统应用");
+//        THREE_MORE(1, "应用全部活动"), THREE_LESS(2, "应用注册活动"), ALL_MORE(3, "系统全部活动"), ALL_LESS(4, "系统注册活动");
         private int value;
         public String strName;
 

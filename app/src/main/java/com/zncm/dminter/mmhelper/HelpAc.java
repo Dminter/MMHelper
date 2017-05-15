@@ -62,7 +62,7 @@ public class HelpAc extends MaterialSettings {
 
 
     private void showAnswer(String title, String content) {
-        new MaterialDialog.Builder(this)
+        Xutils.themeMaterialDialog(ctx)
                 .title(title)
                 .content(content)
                 .positiveText("知")

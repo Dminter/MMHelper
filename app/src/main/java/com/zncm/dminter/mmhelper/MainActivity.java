@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setTitleTextColor(getResources().getColor(R.color.material_light_white));
+            toolbar.setTitleTextColor(getResources().getColor(R.color.white));
             if (MyApplication.isPay) {
                 toolbar.setTitle(getResources().getString(R.string.app_name) + "Pro");
             }
@@ -286,6 +286,28 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             MyFt.updateServiceStatus(ctx);
         }
         initBallService(ctx);
+        if (SPHelper.isAutoNight(ctx)) {
+            int hour = Xutils.getHour();
+            boolean flag = false;
+            boolean isNightMode = SPHelper.isNightMode(ctx);
+
+            if (hour >= 6 && hour < 18 ) {
+                if (isNightMode){
+                    flag = true;
+                }
+                SPHelper.setIsNightMode(ctx, false);
+            } else {
+                if (!isNightMode){
+                    flag = true;
+                }
+                SPHelper.setIsNightMode(ctx, true);
+            }
+
+            if (flag){
+                initActicity();
+            }
+
+        }
 
     }
 
@@ -437,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             }
         }
 
-        new MaterialDialog.Builder(ctx)
+        Xutils.themeMaterialDialog(ctx)
                 .title("配置活动")
                 .customView(view, false)
                 .positiveText("好")
@@ -478,6 +500,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         }
         sub.add(0, 4, 0, "主题配色");
         sub.add(0, 3, 0, "打赏");
+        sub.add(0, 5, 0, "建议活动");
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return super.onCreateOptionsMenu(menu);
     }
@@ -498,6 +521,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                 startActivity(new Intent(ctx, SettingNew.class));
                 break;
             case 2:
+                SPHelper.setIsAutoNight(ctx,false);
                 SPHelper.setIsNightMode(ctx, !SPHelper.isNightMode(ctx));
                 //切换模式，重启界面生效
                 finish();
@@ -515,6 +539,9 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                         .preselect(SPHelper.getThemeColor(ctx))
                         .dynamicButtonColor(true)
                         .show();
+                break;
+            case 5:
+                startActivity(new Intent(ctx, SuggestAc.class));
                 break;
         }
 

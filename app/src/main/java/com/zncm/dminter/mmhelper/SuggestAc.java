@@ -54,6 +54,13 @@ public class SuggestAc extends MaterialSettings {
     public static final String coolapk = "com.coolapk.market";
     public static final String douban = "com.douban.frodo";
 
+
+
+
+
+
+    public static final String cmd = "CMD";
+
     Activity ctx;
 
 
@@ -73,6 +80,7 @@ public class SuggestAc extends MaterialSettings {
 //        items.put(wx, "微信");
 //        items.put(wc, "");
 
+        items.put(cmd, "Shell");
 
         if (Xutils.hasInstalledApp(ctx, wx)) {
             items.put(wx, "微信");
@@ -113,6 +121,9 @@ public class SuggestAc extends MaterialSettings {
         if (Xutils.hasInstalledApp(ctx, bili)) {
             items.put(bili, "哔哩哔哩");
         }
+
+
+
         if (items != null && items.size() > 0) {
             for (Map.Entry<String, String> entry : items.entrySet()
                     ) {

@@ -81,7 +81,7 @@ public class AboutAc extends MaterialSettings {
     }
 
     private void thank() {
-        new MaterialDialog.Builder(this).title("特别感谢").content(" compile fileTree(include: ['*.jar'], dir: 'libs')\n" +
+        Xutils.themeMaterialDialog(ctx).title("特别感谢").content(" compile fileTree(include: ['*.jar'], dir: 'libs')\n" +
                 "    compile 'com.android.support:appcompat-v7:24.0.1'\n" +
                 "    compile 'com.android.support:design:22.2.0'\n" +
                 "    compile 'com.android.support:cardview-v7:21.0.2'\n" +
