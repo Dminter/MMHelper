@@ -21,7 +21,6 @@ public class TasksWindow {
     public static void init(final Context context) {
         sWindowManager = (WindowManager) context.getApplicationContext()
                 .getSystemService(Context.WINDOW_SERVICE);
-
         sWindowParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT, 2005, 0x18,
@@ -42,6 +41,7 @@ public class TasksWindow {
         }
         TextView textView = (TextView) sView.findViewById(R.id.text);
         try {
+            textView.setTextColor(SPHelper.getThemeColor(context));
             textView.setText(text);
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
