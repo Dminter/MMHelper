@@ -372,7 +372,7 @@ public class SettingNew extends MaterialSettings {
             }
         }));
         addItem(new DividerItem(ctx));
-        addItem(new TextItem(this, "").setTitle("全部添加到桌面").setSubtitle("为全部应用创建桌面快捷方式，便于冷冻后打开").setOnclick(new TextItem.OnClickListener() {
+        addItem(new TextItem(this, "").setTitle("全部应用添加到桌面").setSubtitle("为全部应用创建桌面快捷方式，便于冷冻后打开").setOnclick(new TextItem.OnClickListener() {
             @Override
             public void onClick(TextItem textItem) {
                 Xutils.tShort("正在创建桌面快捷方式...");
@@ -467,6 +467,7 @@ public class SettingNew extends MaterialSettings {
 
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                isNeedUpdate = true;
                 SPHelper.setIsAutoStop(ctx, b);
             }
         }).setDefaultValue(SPHelper.isAutoStop(ctx)));
@@ -481,7 +482,13 @@ public class SettingNew extends MaterialSettings {
                 SPHelper.setIsAcFloat(ctx, b);
                 if (b) {
                     if (!SettingsCompat.canDrawOverlays(ctx)) {
-                        startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                        try {
+                            startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                        }catch (Exception e){
+                            Xutils.tShort("请先开启悬浮窗~");
+                            e.printStackTrace();
+                        }
+
                     }
                     MyFt.getActivityDlg(ctx);
                 } else {
@@ -820,7 +827,7 @@ public class SettingNew extends MaterialSettings {
 
     public void showFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("text/xml");
+        intent.setType("txt/xml");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
             startActivityForResult(Intent.createChooser(intent, "选择文件导入"), 103);

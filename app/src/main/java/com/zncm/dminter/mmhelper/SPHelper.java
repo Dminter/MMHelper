@@ -96,7 +96,7 @@ public class SPHelper {
 
     public static boolean isT9Auto(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean("t9_auto", false);
+        return sp.getBoolean("t9_auto", true);
     }
 
     public static void setT9Clear(Context context, boolean t9_clear) {
@@ -105,7 +105,7 @@ public class SPHelper {
 
     public static boolean isT9Clear(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean("t9_clear", false);
+        return sp.getBoolean("t9_clear", true);
     }
 
     //主题配色

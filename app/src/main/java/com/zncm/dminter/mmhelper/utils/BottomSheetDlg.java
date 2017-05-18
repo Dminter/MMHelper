@@ -90,11 +90,14 @@ public abstract class BottomSheetDlg {
 
     public static void checkSysDlg(Context activity, Dialog dialog) {
         if ((activity instanceof OpenInentActivity)) {
-            if (!SettingsCompat.canDrawOverlays(activity)) {
-                activity.startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
-            } else {
-                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            try {
+                if (!SettingsCompat.canDrawOverlays(activity)) {
+                    activity.startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
     }
 

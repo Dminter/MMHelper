@@ -164,6 +164,12 @@ public class Xutils {
     public static String exec(String command) {
         // execute a shell command, returning output in a string
         try {
+
+            if (Xutils.isNotEmptyOrNull(command)&&command.contains("pm disable com.zncm.dminter.mmhelper")){
+                Xutils.debug("---->>>不冻结自己。");
+                return "";
+            }
+
             Runtime rt = Runtime.getRuntime();
             Process process = rt.exec("su");
 //            Process process = rt.exec("sh");
