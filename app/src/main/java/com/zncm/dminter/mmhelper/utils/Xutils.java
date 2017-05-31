@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
@@ -23,7 +25,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.astuetz.PagerSlidingTabStrip;
 import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.Constant;
@@ -395,15 +396,16 @@ public class Xutils {
     }
 
 
-    public static void initIndicatorTheme(PagerSlidingTabStrip indicator) {
-        Context context = MyApplication.getInstance().ctx;
-        indicator.setIndicatorColor(context.getResources().getColor(R.color.white));
-        indicator.setBackgroundColor(SPHelper.getThemeColor(context));
-        indicator.setDividerColor(SPHelper.getThemeColor(context));
-        indicator.setTextColor(context.getResources().getColor(R.color.white));
-        indicator.setUnderlineHeight(dip2px(2.0F));
-        indicator.setIndicatorHeight(dip2px(2.0F));
+    /**
+     * tab 样式统一初始化
+     */
+    public static void initTabLayout(Context ctx, TabLayout mTabLayout) {
+        mTabLayout.setBackgroundColor(SPHelper.getThemeColor(ctx));
+        mTabLayout.setSelectedTabIndicatorColor(ctx.getResources().getColor(R.color.white));
+        mTabLayout.setTabTextColors(ColorStateList.valueOf(ctx.getResources().getColor(R.color.white)));
     }
+
+
 
     public static ApplicationInfo getAppInfo(String pName) {
         ApplicationInfo info;

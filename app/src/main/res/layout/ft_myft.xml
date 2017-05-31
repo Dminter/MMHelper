@@ -27,14 +27,14 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
 
-        <com.software.shell.fab.ActionButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            app:image="@mipmap/add"
             android:layout_marginBottom="10dp"
+            android:src="@mipmap/add"
             android:layout_marginRight="10dp" />
     </RelativeLayout>
 </LinearLayout>

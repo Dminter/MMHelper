@@ -37,7 +37,20 @@ public class SPHelper {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean("is_hs", is_hs).commit();
 
-    }public static boolean isAutoNight(Context context) {
+    }
+    public static boolean isAppIcon(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean("is_app_icon", true);
+    }
+
+    public static void setIsAppIcon(Context context, boolean is_app_icon) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean("is_app_icon", is_app_icon).commit();
+
+    }
+
+
+    public static boolean isAutoNight(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean("is_auto_night", false);
     }

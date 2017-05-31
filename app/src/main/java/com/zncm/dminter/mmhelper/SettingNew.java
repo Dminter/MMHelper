@@ -441,6 +441,18 @@ public class SettingNew extends MaterialSettings {
 
 
         addItem(new DividerItem(ctx));
+        addItem(new CheckboxItem(this, "").setTitle("应用图标").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
+                SPHelper.setIsAppIcon(ctx, b);
+                isNeedUpdate = true;
+            }
+        }).setDefaultValue(SPHelper.isAppIcon(ctx)));
+
+
+
+        addItem(new DividerItem(ctx));
         addItem(new CheckboxItem(this, "").setTitle("自动开启夜间模式").setSubtitle("开始时间18:00，结束时间6:00").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
 
             @Override

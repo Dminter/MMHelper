@@ -10,6 +10,7 @@
         android:id="@+id/card_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+
         android:layout_gravity="center"
         android:foreground="@drawable/card_foreground"
         card_view:cardCornerRadius="0.0dip">
@@ -20,6 +21,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:minHeight="55dp"
             android:background="@color/bg_color"
             android:orientation="vertical">
 

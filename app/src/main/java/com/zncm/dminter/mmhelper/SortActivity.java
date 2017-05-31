@@ -2,6 +2,7 @@ package com.zncm.dminter.mmhelper;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.astuetz.PagerSlidingTabStrip;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
@@ -59,9 +59,9 @@ public class SortActivity extends AppCompatActivity {
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setCurrentItem(0);
 
-        PagerSlidingTabStrip indicator = (PagerSlidingTabStrip) findViewById(R.id.indicator);
-        Xutils.initIndicatorTheme(indicator);
-        indicator.setViewPager(mViewPager);
+        TabLayout    mTabLayout = (TabLayout)findViewById(R.id.mTabLayout);
+        Xutils.initTabLayout(ctx,mTabLayout);
+        mTabLayout.setupWithViewPager(mViewPager);
 
     }
 

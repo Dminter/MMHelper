@@ -3,9 +3,11 @@ package com.zncm.dminter.mmhelper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -25,7 +27,6 @@ import android.widget.LinearLayout;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
-import com.astuetz.PagerSlidingTabStrip;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     //    MaterialDialog progressDlg;
     private LinearLayout topView;
     ScreenListener screenListener;
+
+    TabLayout mTabLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ctx = this;
@@ -107,15 +111,15 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         mViewPager.setAdapter(adapter);
         mViewPager.setOffscreenPageLimit(count);
         mViewPager.setCurrentItem(SPHelper.getCurTab(ctx));
-        
-        
 
-        
-        
-        
-        PagerSlidingTabStrip indicator = (PagerSlidingTabStrip) findViewById(R.id.indicator);
-        Xutils.initIndicatorTheme(indicator);
-        indicator.setViewPager(mViewPager);
+
+        /**
+         *使用support TabLayout 代替 PagerSlidingTabStrip
+         */
+        mTabLayout = (TabLayout)findViewById(R.id.mTabLayout);
+        Xutils.initTabLayout(ctx,mTabLayout);
+        mTabLayout.setupWithViewPager(mViewPager);
+
         ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
         if (!Xutils.listNotNull(tmps)) {
             DbUtils.cardUpdate();
@@ -131,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
         if (SPHelper.isHS(ctx)) {
             toolbar.setVisibility(View.GONE);
-            indicator.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Xutils.dip2px(2)));
+            mTabLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Xutils.dip2px(2)));
             mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Xutils.dip2px(300)));
         }
 
@@ -163,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
         EventBus.getDefault().register(this);
     }
+
 
 
     public static void initBallService(Context ctx) {
@@ -225,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             } else {
                 title = fzInfos.get(position - baseTab).getName();
             }
+
             return title;
         }
 

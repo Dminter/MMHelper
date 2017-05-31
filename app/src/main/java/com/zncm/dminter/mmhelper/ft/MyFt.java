@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -30,8 +32,6 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
-import com.software.shell.fab.ActionButton;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MainActivity;
 import com.zncm.dminter.mmhelper.MyApplication;
@@ -55,6 +55,7 @@ import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.dragrecyclerview.CallbackWrap;
 import com.zncm.dminter.mmhelper.dragrecyclerview.OnTouchListener;
 import com.zncm.dminter.mmhelper.utils.BottomSheetDlg;
+import com.zncm.dminter.mmhelper.utils.ColorGenerator;
 import com.zncm.dminter.mmhelper.utils.ShellUtils;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
@@ -77,8 +78,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     public ArrayList<FzInfo> pkInfos = new ArrayList<>();
     private GetDate getDate;
     public CardAdapter cardAdapter;
-    public ActionButton actionButton;
+    public FloatingActionButton actionButton;
     boolean isSort = false;
+    boolean isAppIcon = false;
 
     Dialog dialog;
     @Override
@@ -98,11 +100,12 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 SPHelper.getThemeColor(ctx)
         );
         mListView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        actionButton = (ActionButton) view.findViewById(R.id.action_button);
+        actionButton = (FloatingActionButton) view.findViewById(R.id.action_button);
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             packageName = bundle.getString("packageName");
         }
+        isAppIcon = SPHelper.isAppIcon(ctx);
         layoutManager = new GridLayoutManager(getActivity(), SPHelper.getGridColumns(this.ctx));
         mListView.setLayoutManager(layoutManager);
         cardAdapter = new CardAdapter(ctx) {
@@ -161,13 +164,23 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         }
                     }
                 }
-                Bitmap bitmap = bytes2Bimap(info.getImg());
-                if (bitmap != null) {
-                    holder.image.setImageBitmap(bitmap);
+
+
+                if (isAppIcon) {
+                    holder.image.setVisibility(View.VISIBLE);
+                    Bitmap bitmap = bytes2Bimap(info.getImg());
+                    if (bitmap != null) {
+                        holder.image.setImageBitmap(bitmap);
+                    }
+                } else {
+                    holder.image.setVisibility(View.GONE);
+                    int bgColor = ColorGenerator.MATERIAL.getColor(!Xutils.isEmptyOrNull(info.getPackageName()) ? info.getPackageName() : "");
+                    if (bgColor != 0) {
+                        holder.llBg.setBackgroundColor(bgColor);
+                        titleColor = getResources().getColor(R.color.material_light_white);
+                    }
                 }
-//                if (bgColor != 0) {
-//                    holder.llBg.setBackgroundColor(bgColor);
-//                }
+
                 if (titleColor != 0) {
                     holder.title.setTextColor(titleColor);
                 }
@@ -197,16 +210,15 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         };
         mListView.setAdapter(cardAdapter);
         fillArray();
-
-        actionButton.setButtonColor(SPHelper.getThemeColor(ctx));
+        actionButton.setBackgroundTintList(ColorStateList.valueOf(SPHelper.getThemeColor(ctx)));
 
         if ((packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) || (packageName.equals(EnumInfo.homeTab.ALL.getValue()))) {
-            actionButton.show();
+            actionButton.setVisibility(View.VISIBLE);
             if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                 actionButton.setImageResource(R.mipmap.ic_dj);
             }
         } else {
-            actionButton.hide();
+            actionButton.setVisibility(View.GONE);
         }
 
         actionButton.setOnClickListener(new View.OnClickListener() {
@@ -318,8 +330,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             }
         });
 
+
+
         if (SPHelper.isHS(ctx)) {
-            actionButton.show();
+            actionButton.setVisibility(View.VISIBLE);
             actionButton.setImageResource(R.mipmap.ic_setting);
             actionButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View paramAnonymousView) {
@@ -991,10 +1005,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         map7.put("text", "shortcut");
         map7.put("key", "-7");
         list.add(map7);
-//        Map<String, Object> map8 = new HashMap<>();
-//        map8.put("text", "卸载");
-//        map8.put("key", "-8");
-//        list.add(map8);
+        Map<String, Object> map8 = new HashMap<>();
+        map8.put("text", "卸载");
+        map8.put("key", "-8");
+        list.add(map8);
         new BottomSheetDlg(ctx, list, false) {
             @Override
             public void onGridItemClickListener(int position) {
@@ -1058,11 +1072,11 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     case 6:
                         Xutils.sendToDesktop(ctx, info, true);
                         break;
-//                    case 7:
-//                        Xutils.unstallApp(ctx, info.getPackageName());
-//                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
-//                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
-//                        break;
+                    case 7:
+                        Xutils.unstallApp(ctx, info.getPackageName());
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
+                        break;
 
                 }
 
