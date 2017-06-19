@@ -21,7 +21,6 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.kenumir.materialsettings.MaterialSettings;
 import com.kenumir.materialsettings.items.CheckboxItem;
 import com.kenumir.materialsettings.items.DividerItem;
@@ -54,25 +53,20 @@ import ezy.assist.compat.SettingsCompat;
 
 /**
  * Created by jiaomx on 2017/4/10.
+ * 设置
  */
 public class SettingNew extends MaterialSettings {
 
-    private static SettingNew instance;
-    Activity ctx;
+    private Activity ctx;
     private String fzInfo;
     private boolean isNeedUpdate = false;
 
-
-    CheckboxItem checkboxItemBall;
-    CheckboxItem checkboxItemFloat;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ctx = this;
         Xutils.verifyStoragePermissions(this);
         fzInfo = SPHelper.getFzInfo(this);
-
-
         addItem(new TextItem(ctx, "").setTitle("建议活动").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 startActivity(new Intent(ctx, SuggestAc.class));
@@ -357,12 +351,6 @@ public class SettingNew extends MaterialSettings {
         }));
 
 
-
-
-
-
-
-
         addItem(new DividerItem(ctx));
         addItem(new TextItem(this, "").setTitle("全部解冻").setSubtitle("卸载本软件前请先解冻，若无法直接卸载，请先到设备管理器取消激活").setOnclick(new TextItem.OnClickListener() {
             @Override
@@ -417,7 +405,6 @@ public class SettingNew extends MaterialSettings {
         }
 
 
-
         addItem(new DividerItem(ctx));
         addItem(new TextItem(ctx, "").setTitle("导入配置").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
@@ -439,7 +426,6 @@ public class SettingNew extends MaterialSettings {
         }));
 
 
-
         addItem(new DividerItem(ctx));
         addItem(new CheckboxItem(this, "").setTitle("应用图标").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
 
@@ -449,7 +435,6 @@ public class SettingNew extends MaterialSettings {
                 isNeedUpdate = true;
             }
         }).setDefaultValue(SPHelper.isAppIcon(ctx)));
-
 
 
         addItem(new DividerItem(ctx));
@@ -490,13 +475,12 @@ public class SettingNew extends MaterialSettings {
 
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
-                checkboxItemFloat = checkboxItem;
                 SPHelper.setIsAcFloat(ctx, b);
                 if (b) {
                     if (!SettingsCompat.canDrawOverlays(ctx)) {
                         try {
                             startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Xutils.tShort("请先开启悬浮窗~");
                             e.printStackTrace();
                         }
@@ -510,13 +494,6 @@ public class SettingNew extends MaterialSettings {
             }
         }).setDefaultValue(SPHelper.isAcFloat(ctx)));
 
-
-        
-        
-        
-        
-        
-        
 
         addItem(new HeaderItem(this).setTitle("T9搜索"));
         addItem(new TextItem(ctx, "").setTitle("搜索范围").setSubtitle(EnumInfo.typeT9.getTypeT9(SPHelper.getTypeT9(ctx)).getStrName()).setOnclick(new TextItem.OnClickListener() {
@@ -561,14 +538,6 @@ public class SettingNew extends MaterialSettings {
         }).setDefaultValue(SPHelper.isT9Clear(ctx)));
 
 
-
-
-
-
-
-
-
-
         addItem(new HeaderItem(this).setTitle("Pro"));
 
         addItem(new TextItem(this, "").setTitle("排序").setOnclick(new TextItem.OnClickListener() {
@@ -609,9 +578,7 @@ public class SettingNew extends MaterialSettings {
                 if (checkNotPro()) {
                     return;
                 }
-                checkboxItemBall = checkboxItem;
                 SPHelper.setIsFloatBall(ctx, b);
-//                Intent localIntent = new Intent(ctx, FloatBallService.class);
                 if (b) {
                     if (!SettingsCompat.canDrawOverlays(ctx)) {
                         startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
@@ -623,7 +590,6 @@ public class SettingNew extends MaterialSettings {
                 }
             }
         }).setDefaultValue(SPHelper.isFloatBall(ctx)));
-
 
 
     }
@@ -831,6 +797,7 @@ public class SettingNew extends MaterialSettings {
 
         return true;
     }
+
     @Override
     public StorageInterface initStorageInterface() {
         return null;

@@ -124,7 +124,6 @@ public class SPHelper {
     //主题配色
 
     public static int getThemeColor(Context context) {
-
         if (isNightMode(context)){
             /**
              *主题色，黑色

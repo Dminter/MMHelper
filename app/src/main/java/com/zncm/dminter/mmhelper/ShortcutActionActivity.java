@@ -18,11 +18,12 @@ import ezy.assist.compat.SettingsCompat;
 
 /**
  * Created by dminter on 2016/7/26.
+ * 快捷方式相应
  */
 
 public class ShortcutActionActivity extends Activity {
-    String action = Constant.SA_T9;
-    Activity ctx;
+    private String action = Constant.SA_T9;
+    private Activity ctx;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,14 +53,11 @@ public class ShortcutActionActivity extends Activity {
                     OpenInentActivity.initLikes(ctx);
                 }
             }
-//            MyApplication.getInstance().isOpenInent = true;
-
         } else {
             SettingNew.shortCutAdd(ctx, Constant.SA_BATSTOP, "全部冷冻");
             SettingNew.shortCutAdd(ctx, Constant.SA_T9, "T9搜索");
             SettingNew.shortCutAdd(ctx, Constant.SA_LOCK_SCREEN, "锁屏");
         }
-
     }
 
 
@@ -67,14 +65,14 @@ public class ShortcutActionActivity extends Activity {
         try {
             DevicePolicyManager devicePolicy = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
             if (devicePolicy.isAdminActive(new ComponentName(context, ScreenOffAdminReceiver.class))) {
-            devicePolicy.lockNow();
-            return;
+                devicePolicy.lockNow();
+                return;
             } else {
                 Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
                 intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(context, ScreenOffAdminReceiver.class));
                 context.startActivity(intent);
                 Xutils.tLong("请在设备管理器授权~");
-        }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

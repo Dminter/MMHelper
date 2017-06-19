@@ -25,7 +25,6 @@ public class SuggestInfoActivity extends BaseActivity {
     String pkName;
 
     private void allInit() {
-
         /**
          *wx
          *
@@ -49,14 +48,10 @@ public class SuggestInfoActivity extends BaseActivity {
          com.tencent.mm,com.tencent.mm.plugin.offline.ui.WalletOfflineCoinPurseUI,付款码
          com.tencent.mm,com.tencent.mm.plugin.scanner.ui.BaseScanUI,扫一扫
          */
-
         /**
          *String packageName, String className, String appName
          */
-
-
         cardInfos = new ArrayList<>();
-
         if (SuggestAc.wx.equals(pkName)) {
             ArrayList<CardInfo> wxCard = new ArrayList<>();
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.card.ui.CardHomePageUI", "卡包"));
@@ -301,10 +296,8 @@ public class SuggestInfoActivity extends BaseActivity {
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "df", "磁盘空间占用"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "date", "系统时间"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "netstat", "查看网络状态"));
-
             cardInfos.addAll(card);
         }
-
         if (Xutils.listNotNull(cardInfos) && fragment != null && fragment.cardAdapter != null) {
             fragment.cardInfos = new ArrayList();
             fragment.cardInfos.addAll(cardInfos);
@@ -332,8 +325,6 @@ public class SuggestInfoActivity extends BaseActivity {
         if (Xutils.isEmptyOrNull(pkName)) {
             return;
         }
-
-
     }
 
     @Override
@@ -353,16 +344,13 @@ public class SuggestInfoActivity extends BaseActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item == null || item.getTitle() == null) {
             return false;
         }
-
         if (item.getTitle().equals("back")) {
             finish();
 
         }
-
         return true;
     }
 

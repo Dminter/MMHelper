@@ -38,10 +38,7 @@ import java.util.Map;
  * com.tencent.mm,com.tencent.mm.plugin.scanner.ui.BaseScanUI,扫一扫 com.tencent.mm,com.tencent.mm.plugin.favorite.ui.FavoriteIndexUI,收藏
  * com.tencent.mm,com.tencent.mm.plugin.sns.ui.SnsTimeLineUI,朋友圈
  */
-
 public class SuggestAc extends MaterialSettings {
-
-
     public static final String wx = "com.tencent.mm";
     public static final String zfb = "com.eg.android.AlipayGphone";
     public static final String wc = "com.wacai365";
@@ -53,18 +50,9 @@ public class SuggestAc extends MaterialSettings {
     public static final String cloudmusic = "com.netease.cloudmusic";
     public static final String coolapk = "com.coolapk.market";
     public static final String douban = "com.douban.frodo";
-
-
-
-
-
-
     public static final String cmd = "CMD";
-
-    Activity ctx;
-
-
-    LinkedHashMap<String, String> items = new LinkedHashMap<>();
+    private Activity ctx;
+    private LinkedHashMap<String, String> items = new LinkedHashMap<>();
 
 
     @Override
@@ -75,11 +63,6 @@ public class SuggestAc extends MaterialSettings {
          *本地有才建议
          * 微信，支付宝，QQ,，网易云音乐，微博，哔哩哔哩，京东，高德地图，知乎，有道云笔记，
          */
-
-//        items.put(zfb, "支付宝-微信，支付宝，QQ,淘宝，，微博，，，高德地图，知乎，，");
-//        items.put(wx, "微信");
-//        items.put(wc, "");
-
         items.put(cmd, "Shell");
 
         if (Xutils.hasInstalledApp(ctx, wx)) {
@@ -101,29 +84,21 @@ public class SuggestAc extends MaterialSettings {
         if (Xutils.hasInstalledApp(ctx, jingdong)) {
             items.put(jingdong, "京东");
         }
-
-
         if (Xutils.hasInstalledApp(ctx, dianping)) {
             items.put(dianping, "大众点评");
         }
-
-
         if (Xutils.hasInstalledApp(ctx, wc)) {
             items.put(wc, "挖财");
         }
         if (Xutils.hasInstalledApp(ctx, youdaonote)) {
             items.put(youdaonote, "有道云笔记");
         }
-
         if (Xutils.hasInstalledApp(ctx, douban)) {
             items.put(douban, "豆瓣");
         }
         if (Xutils.hasInstalledApp(ctx, bili)) {
             items.put(bili, "哔哩哔哩");
         }
-
-
-
         if (items != null && items.size() > 0) {
             for (Map.Entry<String, String> entry : items.entrySet()
                     ) {
@@ -155,16 +130,12 @@ public class SuggestAc extends MaterialSettings {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-
-
         if (item == null || item.getTitle() == null) {
             return false;
         }
-
         if (item.getTitle().equals("back")) {
             backDo();
         }
-
         return true;
     }
 

@@ -25,17 +25,19 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ *命令
+ */
 public class ShellBatActivity extends BaseActivity {
 
-    Activity ctx;
-    Spinner cmdSpinner;
-    Button btnPre;
-    Button btnAdd;
-    Button btnAddLike;
-    Button btnAddDesk;
-    EditText editText;
-
-    String cmd;
+    private Activity ctx;
+    private Spinner cmdSpinner;
+    private Button btnPre;
+    private Button btnAdd;
+    private Button btnAddLike;
+    private Button btnAddDesk;
+    private EditText editText;
+    private String cmd;
 
 
     @Override
@@ -48,7 +50,6 @@ public class ShellBatActivity extends BaseActivity {
             finish();
             return;
         }
-
         editText = (EditText) findViewById(R.id.editText);
         cmdSpinner = (Spinner) findViewById(R.id.cmdSpinner);
         btnPre = (Button) findViewById(R.id.btnPre);
@@ -109,8 +110,6 @@ public class ShellBatActivity extends BaseActivity {
                 }
             }
         });
-
-
         initData();
     }
 
@@ -120,10 +119,6 @@ public class ShellBatActivity extends BaseActivity {
         if (cmds == null || cmds.length == 0) {
             return;
         }
-
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(ctx,
-//                R.array.cmd_array, android.R.layout.simple_spinner_item);
-
         List<Map<String, Object>> data_list = new ArrayList<Map<String, Object>>();
         String[] from = {"text"};
         int[] to = {R.id.text};
@@ -145,7 +140,6 @@ public class ShellBatActivity extends BaseActivity {
             data_list.add(map);
         }
         SimpleAdapter adapter = new SimpleAdapter(ctx, data_list, R.layout.item_batshell, from, to);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         cmdSpinner.setAdapter(adapter);
         cmdSpinner.setVisibility(View.VISIBLE);
         cmdSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -180,16 +174,12 @@ public class ShellBatActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-
-
         if (item == null || item.getTitle() == null) {
             return false;
         }
-
         if (item.getTitle().equals("back")) {
             finish();
         }
-
         return true;
     }
 

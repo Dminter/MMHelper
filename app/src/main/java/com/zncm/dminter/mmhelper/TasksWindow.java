@@ -11,7 +11,9 @@ import android.widget.TextView;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.utils.Xutils;
-
+/**
+ *活动名称
+ */
 public class TasksWindow {
 
     private static WindowManager.LayoutParams sWindowParams;

@@ -38,14 +38,14 @@ public class T9SearchActivity extends BaseActivity {
     };
 
     private static String[] charBtns = {"1", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ", "清除", "0", "DEL"};
-    //    private static ArrayList<CardInfo> initList = new ArrayList();
-    Activity ctx;
+    private Activity ctx;
     private ArrayList<CardInfo> currentList = new ArrayList();
-    EditText editText;
-    MyFt fragment;
+    private  EditText editText;
+    private  MyFt fragment;
     private boolean isT9 = true;
-    TableLayout keyboardTable;
+    private  TableLayout keyboardTable;
     private String searchString = new String();
+    int type = EnumInfo.typeT9.APP.getValue();
 
 
     private TextWatcher textWatcher = new TextWatcher() {
@@ -73,10 +73,9 @@ public class T9SearchActivity extends BaseActivity {
 
 
     };
-    int type = EnumInfo.typeT9.APP.getValue();
+
 
     private void allInit() {
-
         if (type == EnumInfo.typeT9.ACTIVITY.getValue()) {
             initAc();
         } else if (type == EnumInfo.typeT9.APP.getValue()) {
@@ -123,7 +122,6 @@ public class T9SearchActivity extends BaseActivity {
     private void initApp() {
         ArrayList<CardInfo> cardInfos = DbUtils.getPkInfosToCard();
         if (Xutils.listNotNull(cardInfos)) {
-
             for (CardInfo info : cardInfos
                     ) {
                 if ((info != null) && (Xutils.isEmptyOrNull(info.getEx3()))) {
@@ -185,7 +183,6 @@ public class T9SearchActivity extends BaseActivity {
         bundle.putString("packageName", EnumInfo.homeTab.APPS.getValue());
         fragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
-
         keyboardTable = ((TableLayout) findViewById(R.id.keyboardTable));
         editText = ((EditText) findViewById(R.id.editText));
         editText.addTextChangedListener(textWatcher);

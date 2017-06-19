@@ -26,15 +26,17 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
+/**
+ * 排序
+ */
 public class SortActivity extends AppCompatActivity {
     private MyPagerAdapter adapter;
     private ViewPager mViewPager;
     private Toolbar toolbar;
     private SortActivity ctx;
     public HashMap<Integer, MyFt> fragments = new HashMap();
-    String titles[] = new String[]{EnumInfo.homeTab.APPS.getStrName(), EnumInfo.homeTab.LIKE.getStrName()};
-    MaterialDialog progressDlg;
+    private String titles[] = new String[]{EnumInfo.homeTab.APPS.getStrName(), EnumInfo.homeTab.LIKE.getStrName()};
+    private MaterialDialog progressDlg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +60,15 @@ public class SortActivity extends AppCompatActivity {
         mViewPager.setAdapter(adapter);
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setCurrentItem(0);
-
-        TabLayout    mTabLayout = (TabLayout)findViewById(R.id.mTabLayout);
-        Xutils.initTabLayout(ctx,mTabLayout);
+        TabLayout mTabLayout = (TabLayout) findViewById(R.id.mTabLayout);
+        Xutils.initTabLayout(ctx, mTabLayout);
         mTabLayout.setupWithViewPager(mViewPager);
-
     }
 
 
     public class MyPagerAdapter extends FragmentPagerAdapter {
         MyFt fragment = null;
         Bundle bundle = null;
-
 
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -113,8 +112,6 @@ public class SortActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-
-
         if (item == null || item.getTitle() == null) {
             return false;
         }
