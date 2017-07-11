@@ -18,7 +18,6 @@ import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
 import com.zncm.dminter.mmhelper.SPHelper;
-import com.zncm.dminter.mmhelper.ShortcutActionActivity;
 import com.zncm.dminter.mmhelper.T9SearchActivity;
 import com.zncm.dminter.mmhelper.WatchingAccessibilityService;
 import com.zncm.dminter.mmhelper.data.CardInfo;
@@ -29,34 +28,26 @@ import com.zncm.dminter.mmhelper.utils.NotiHelper;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
 import java.lang.reflect.Field;
+
 public class FloatBallView extends LinearLayout {
     private ImageView mImgBall;
     private ImageView mImgBigBall;
     private ImageView mImgBg;
-
     private WindowManager mWindowManager;
-
     private WindowManager.LayoutParams mLayoutParams;
-
     private long mLastDownTime;
     private float mLastDownX;
     private float mLastDownY;
-
     private boolean mIsLongTouch;
-
     private boolean mIsTouching;
-
     private float mTouchSlop;
     private final static long LONG_CLICK_LIMIT = 300;
     private final static long REMOVE_LIMIT = 1000;
     private final static long CLICK_LIMIT = 200;
-
     private int mStatusBarHeight;
-
-        private FloatBallService mBallService;
-    WatchingAccessibilityService mService;
+    private FloatBallService mBallService;
+    private WatchingAccessibilityService mService;
     private int mCurrentMode;
-
     private final static int MODE_NONE = 0x000;
     private final static int MODE_DOWN = 0x001;
     private final static int MODE_UP = 0x002;
@@ -64,12 +55,9 @@ public class FloatBallView extends LinearLayout {
     private final static int MODE_RIGHT = 0x004;
     private final static int MODE_MOVE = 0x005;
     private final static int MODE_GONE = 0x006;
-
     private final static int OFFSET = 30;
-
     private float mBigBallX;
     private float mBigBallY;
-
     private int mOffsetToParent;
     private int mOffsetToParentY;
     private Vibrator mVibrator;
@@ -90,14 +78,11 @@ public class FloatBallView extends LinearLayout {
         mImgBall = (ImageView) findViewById(R.id.img_ball);
         mImgBigBall = (ImageView) findViewById(R.id.img_big_ball);
         mImgBg = (ImageView) findViewById(R.id.img_bg);
-
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mCurrentMode = MODE_NONE;
-
         mStatusBarHeight = getStatusBarHeight();
         mOffsetToParent = dip2px(25);
         mOffsetToParentY = mStatusBarHeight + mOffsetToParent;
-
         mImgBigBall.post(new Runnable() {
             @Override
             public void run() {
@@ -105,7 +90,6 @@ public class FloatBallView extends LinearLayout {
                 mBigBallY = mImgBigBall.getY();
             }
         });
-
         mImgBg.setOnTouchListener(new OnTouchListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -123,7 +107,6 @@ public class FloatBallView extends LinearLayout {
                             public void run() {
                                 if (isLongTouch()) {
                                     mIsLongTouch = true;
-//                                    mVibrator.vibrate(mPattern, -1);
                                 }
                             }
                         }, LONG_CLICK_LIMIT);
@@ -191,7 +174,6 @@ public class FloatBallView extends LinearLayout {
         protected Void doInBackground(Void... params) {
             try {
                 MyFt.clickCard(ctx, new CardInfo(EnumInfo.cType.CMD.getValue(), "screencap -p " + MyPath.getPathFolder(null) + Xutils.getFileSaveTime() + ".png", ""));
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -210,32 +192,20 @@ public class FloatBallView extends LinearLayout {
      * 移除悬浮球
      */
     private void toRemove() {
-//        mVibrator.vibrate(mPattern, -1);
         FloatWindowManager.removeBallView(getContext());
-
         Intent intent = new Intent(this.ctx, OpenInentActivity.class);
         intent.putExtra("pkName", Constant.OPENINENT_BALL);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         NotiHelper.noti("悬浮球", "", "", intent, true, false, Constant.n_id);
-
     }
 
     private void screenCap() {
         FloatWindowManager.removeBallView(getContext());
         new ScreenCap().execute();
-//        mVibrator.vibrate(mPattern, -1);
-
     }
-
-
-//    new ScreenCap().execute();
-
 
     /**
      * 判断是否是轻微滑动
-     *
-     * @param event
-     * @return
      */
     private boolean isTouchSlop(MotionEvent event) {
         float x = event.getX();
@@ -248,8 +218,6 @@ public class FloatBallView extends LinearLayout {
 
     /**
      * 判断手势（左右滑动、上拉下拉)）
-     *
-     * @param event
      */
     private void doGesture(MotionEvent event) {
         float offsetX = event.getX() - mLastDownX;
@@ -266,17 +234,6 @@ public class FloatBallView extends LinearLayout {
                 mCurrentMode = MODE_RIGHT;
                 mImgBigBall.setX(mBigBallX + OFFSET);
                 mImgBigBall.setY(mBigBallY);
-
-//                postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (mCurrentMode == MODE_RIGHT && mIsTouching) {
-//                            ShortcutActionActivity.lockScreen(ctx);
-//                            mCurrentMode = MODE_GONE;
-//                        }
-//                    }
-//                }, REMOVE_LIMIT);
-
             } else {
                 if (mCurrentMode == MODE_LEFT) {
                     return;
@@ -284,16 +241,6 @@ public class FloatBallView extends LinearLayout {
                 mCurrentMode = MODE_LEFT;
                 mImgBigBall.setX(mBigBallX - OFFSET);
                 mImgBigBall.setY(mBigBallY);
-
-//                postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (mCurrentMode == MODE_LEFT && mIsTouching) {
-//                            t9Search();
-//                            mCurrentMode = MODE_GONE;
-//                        }
-//                    }
-//                }, REMOVE_LIMIT);
             }
         } else {
             if (offsetY > 0) {
@@ -320,7 +267,6 @@ public class FloatBallView extends LinearLayout {
                 mCurrentMode = MODE_UP;
                 mImgBigBall.setX(mBigBallX);
                 mImgBigBall.setY(mBigBallY - OFFSET);
-
                 postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -381,9 +327,6 @@ public class FloatBallView extends LinearLayout {
 
     /**
      * 判断是否是单击
-     *
-     * @param event
-     * @return
      */
     private boolean isClick(MotionEvent event) {
         float offsetX = Math.abs(event.getX() - mLastDownX);
@@ -399,8 +342,6 @@ public class FloatBallView extends LinearLayout {
 
     /**
      * 获取通知栏高度
-     *
-     * @return
      */
     private int getStatusBarHeight() {
         int statusBarHeight = 0;

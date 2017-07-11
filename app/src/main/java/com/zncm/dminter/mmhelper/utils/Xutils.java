@@ -548,7 +548,7 @@ public class Xutils {
 
     public static byte[] bitmap2Bytes(Bitmap bm) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        bm.compress(Bitmap.CompressFormat.PNG, 10, baos);
         return baos.toByteArray();
     }
 

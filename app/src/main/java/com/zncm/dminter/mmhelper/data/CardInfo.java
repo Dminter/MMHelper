@@ -51,7 +51,6 @@ public class CardInfo {
     @DatabaseField
     private String ex5;
 
-
     @DatabaseField
     private int exi1; //1收藏
     @DatabaseField

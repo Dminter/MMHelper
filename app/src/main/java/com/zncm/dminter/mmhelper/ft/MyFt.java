@@ -79,10 +79,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     private GetDate getDate;
     public CardAdapter cardAdapter;
     public FloatingActionButton actionButton;
-    boolean isSort = false;
-    boolean isAppIcon = false;
+    private boolean isSort = false;
+    private boolean isAppIcon = false;
+    private Dialog dialog;
 
-    Dialog dialog;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.ft_myft, container, false);
@@ -164,8 +164,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         }
                     }
                 }
-
-
                 if (isAppIcon) {
                     holder.image.setVisibility(View.VISIBLE);
                     Bitmap bitmap = bytes2Bimap(info.getImg());
@@ -180,7 +178,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         titleColor = getResources().getColor(R.color.material_light_white);
                     }
                 }
-
                 if (titleColor != 0) {
                     holder.title.setTextColor(titleColor);
                 }
@@ -211,7 +208,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         mListView.setAdapter(cardAdapter);
         fillArray();
         actionButton.setBackgroundTintList(ColorStateList.valueOf(SPHelper.getThemeColor(ctx)));
-
         if ((packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) || (packageName.equals(EnumInfo.homeTab.ALL.getValue()))) {
             actionButton.setVisibility(View.VISIBLE);
             if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
@@ -220,7 +216,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         } else {
             actionButton.setVisibility(View.GONE);
         }
-
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -233,8 +228,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
                         @Override
                         public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-
-
                             switch (position) {
                                 case 0:
                                     if (ctx instanceof MainActivity) {
@@ -264,15 +257,9 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                     talkUI(null, EnumInfo.cType.SHORT_CUT_SYS.getValue(), "快捷方式", "快捷方式名称", "#Intent;action=com.tencent.mm.action.BIZSHORTCUT...;end");
                                     break;
                             }
-
-
                         }
                     }).show();
-
-
                 }
-
-
             }
         });
 
@@ -281,11 +268,8 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             public boolean onLongClick(View v) {
                 if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                     ArrayList<String> items = new ArrayList();
-
                     final ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(0);
-
                     if (Xutils.listNotNull(pkInfos)) {
-
                         for (PkInfo tmp : pkInfos
                                 ) {
                             items.add(tmp.getName());
@@ -331,7 +315,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         });
 
 
-
         if (SPHelper.isHS(ctx)) {
             actionButton.setVisibility(View.VISIBLE);
             actionButton.setImageResource(R.mipmap.ic_setting);
@@ -342,8 +325,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             });
             actionButton.setOnLongClickListener(null);
         }
-
-
         if (ctx instanceof SortActivity) {
             isSort = true;
             final ItemTouchHelper helper = new ItemTouchHelper(new CallbackWrap(cardAdapter));
@@ -379,7 +360,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 wx.setText(info.getCmd());
             }
         }
-
         Xutils.themeMaterialDialog(ctx)
                 .title(title)
                 .customView(wxView, false)
@@ -400,7 +380,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             fillArray();
                         }
                         dialog.dismiss();
-//                        fillArray();
                     }
                 })
                 .show();
@@ -464,6 +443,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             activity.startService(new Intent(activity, WatchingService.class));
         }
     }
+
     private Bitmap bytes2Bimap(byte[] b) {
         if (b == null) {
             return null;
@@ -482,7 +462,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageURI);
         activity.startActivity(intent);
     }
-
 
 
     public static void clickCard(final Context activity, CardInfo info) {
@@ -527,10 +506,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     BottomSheetDlg.checkSysDlg(activity, dialog);
                     dialog.show();
                 } else {
-                    /**
-                     *命令没有返回值，正常
-                     */
-//                    Xutils.tShort("找不到该命令~");
                 }
 
             } else {
@@ -568,8 +543,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     e1.printStackTrace();
                     Xutils.tShort("快捷方式错误~");
                 }
-
-//                e.printStackTrace();
             }
         }
         if (ret == AndroidCommand.noRoot) {
@@ -648,7 +621,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         } else if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                             tmps = DbUtils.getPkInfosBatStop(1);
                         }
-//                        StringBuffer stringBuffer = new StringBuffer();
                         for (PkInfo tmp : tmps
                                 ) {
                             CardInfo info = new CardInfo();
@@ -658,18 +630,11 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             info.setType(EnumInfo.cType.START_APP.getValue());
                             info.setDisabled(tmp.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
                             cardInfos.add(info);
-//                            stringBuffer.append(info.getPackageName()).append(",").append(info.getTitle());
                         }
-//                        Xutils.debug(stringBuffer.toString());
                     } else {
                         cardInfos = DbUtils.getCardInfos(packageName);
-                        if (packageName.equals(EnumInfo.homeTab.LIKE.getValue())){
-//                            StringBuffer stringBuffer = new StringBuffer();
-//                            for (CardInfo tmp:cardInfos
-//                                 ) {
-//                                stringBuffer.append(tmp.getPackageName()).append(",").append(tmp.getClassName()).append(",").append(tmp.getTitle()).append("\n");
-//                            }
-//                            Xutils.debug("LIKE:"+stringBuffer.toString());
+                        if (packageName.equals(EnumInfo.homeTab.LIKE.getValue())) {
+
                         }
 
 
@@ -763,6 +728,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             initAppCard(info, position);
         }
     }
+
     private void initAppCard(final CardInfo info, final int position) {
 
         final ArrayList<Map<String, Object>> list = new ArrayList<>();
@@ -895,8 +861,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                 for (int i = 0; i < which.length; i++) {
                                     CardInfo cardInfo = (CardInfo) cardInfos.get(which[i]);
                                     if (cardInfo != null) {
-//                                        cardInfo.setExb2(1);
-//                                        DbUtils.updatePkInfo(cardInfo);
                                         names.append(cardInfo.getTitle()).append("，");
                                     }
                                 }
@@ -1097,157 +1061,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
     }
 
-
-//    private void longClick(final CardInfo info, final int position) {
-//        if (info != null) {
-//            if (info.getType() == EnumInfo.cType.START_APP.getValue()) {
-//                String title[] = new String[]{"停用", "应用信息", "删除"};
-//                new MaterialDialog.Builder(getActivity())
-//                        .items(title)
-//                        .itemsCallback(new MaterialDialog.ListCallback() {
-//                            @Override
-//                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-//                                switch (which) {
-//                                    case 0:
-//                                        Xutils.exec(Constant.common_pm_d_p + info.getPackageName());
-//                                        info.setDisabled(true);
-//                                        cardInfos.set(position, info);
-//                                        mListView.getAdapter().notifyDataSetChanged();
-//                                        PkInfo pk = DbUtils.getPkOne(info.getPackageName());
-//                                        if (pk != null && pk.getStatus() == EnumInfo.appStatus.ENABLE.getValue()) {
-//                                            pk.setStatus(EnumInfo.appStatus.DISABLED.getValue());
-//                                            DbUtils.updatePkInfo(pk);
-//                                        }
-//                                        break;
-//                                    case 1:
-//                                        appInfo(info.getPackageName());
-//                                        break;
-//                                    case 2:
-//                                        pk = DbUtils.getPkOne(info.getPackageName());
-//                                        if (pk != null) {
-//                                            DbUtils.deletePk(pk);
-//                                        }
-//                                        cardInfos.remove(position);
-//                                        mListView.getAdapter().notifyDataSetChanged();
-//                                        break;
-//                                }
-//                            }
-//                        })
-//                        .show();
-//
-//
-//                return;
-//            }
-//            final boolean like = info.getExi1() == 1;
-//            final int index = info.getExi2();
-//            String title[] = new String[]{like ? "取消收藏" : "收藏", "修改", "删除", index > 0 ? "取消置顶" : "置顶", "添加到桌面", "分组"};
-//
-//            try {
-//                new MaterialDialog.Builder(getActivity())
-//                        .items(title)
-//                        .itemsCallback(new MaterialDialog.ListCallback() {
-//                            @Override
-//                            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-////                                Toast.makeText(Activity.this, which + ": " + text + ", ID = " + view.getId(), Toast.LENGTH_SHORT).show();
-//                                switch (which) {
-//                                    case 0:
-//                                        if (like) {
-//                                            info.setExi1(0);
-//                                        } else {
-//                                            info.setExi1(1);
-//
-//                                            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
-//
-//                                        }
-//                                        DbUtils.updateCard(info);
-//
-//                                        break;
-//                                    case 1:
-//                                        if (info.getType() == EnumInfo.cType.WX.getValue() || info.getType() == EnumInfo.cType.QQ.getValue() || info.getType() == EnumInfo.cType.URL.getValue()) {
-//                                            if (ctx instanceof MainActivity) {
-//                                                MainActivity tmp = (MainActivity) ctx;
-//                                                tmp.talkUI(info, 0, "修改", "", "");
-//                                            }
-//                                        } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
-//                                            initActivity(info);
-//                                        }
-//                                        break;
-//                                    case 2:
-////                                            final CardInfo info = cardInfos.get(position);
-//                                        info.setStatus(EnumInfo.cStatus.DELETE.getValue());
-//                                        DbUtils.updateCard(info);
-//                                        cardInfos.remove(position);
-//                                        new SnackBar.Builder(ctx)
-//                                                .withOnClickListener(new SnackBar.OnMessageClickListener() {
-//                                                    @Override
-//                                                    public void onMessageClick(Parcelable token) {
-//                                                        info.setStatus(EnumInfo.cStatus.NORMAL.getValue());
-//                                                        DbUtils.updateCard(info);
-//                                                        fillArray();
-//                                                    }
-//                                                })
-//                                                .withMessage("移除这张活动卡!")
-//                                                .withActionMessage("撤销")
-//                                                .withStyle(SnackBar.Style.DEFAULT)
-//                                                .withBackgroundColorId(R.color.material_purple_200)
-//                                                .withDuration(SnackBar.LONG_SNACK)
-//                                                .show();
-//                                        break;
-//                                    case 3:
-//                                        if (index > 0) {
-//                                            info.setExi2(0);
-//                                        } else {
-//                                            info.setExi2(DbUtils.getMaxIndex() + 1);
-//                                        }
-//                                        DbUtils.updateCard(info);
-//                                        break;
-//                                    case 4:
-//                                        sendToDesk(ctx, info);
-//                                        break;
-//                                    case 5:
-//
-//
-//                                        final ArrayList<String> fzStr = new ArrayList<String>();
-//                                        if (!Xutils.listNotNull(pkInfos)) {
-//                                            return;
-//                                        }
-//
-//                                        for (FzInfo tmp : pkInfos
-//                                                ) {
-//                                            if (Xutils.isNotEmptyOrNull(tmp.getName())) {
-//                                                fzStr.add(tmp.getName());
-//                                            }
-//
-//                                        }
-//
-//                                        new MaterialDialog.Builder(ctx)
-//                                                .items(fzStr)
-//                                                .itemsCallback(new MaterialDialog.ListCallback() {
-//                                                    @Override
-//                                                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-//                                                        info.setExi3(which + 1);
-//                                                        DbUtils.updateCard(info);
-//                                                        Xutils.snTip(ctx, "已添加☞" + fzStr.get(which));
-//                                                    }
-//                                                })
-//                                                .show();
-//                                        break;
-//
-//
-//                                }
-//
-//                                fillArray();
-//                            }
-//                        })
-//                        .show();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//    }
-
-
     //批量冻结冷冻室里面的APP 冷冻已经解冻的，冷冻全部处于冷冻室里的，解冻全部
     public static class BatStopTask
             extends AsyncTask<Integer, Void, Void> {
@@ -1292,8 +1105,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
         }
     }
-
-
 
 
     @Override

@@ -10,6 +10,4 @@ public class MyPackageInfo {
     public static final String pk_qq = "com.tencent.mobileqq";//QQ
     public static final String pk_wx_ChattingUI = "com.tencent.mm.ui.chatting.ChattingUI";//微信聊天
     public static final String pk_zfb = "com.eg.android.AlipayGphone";//支付宝
-
-
 }

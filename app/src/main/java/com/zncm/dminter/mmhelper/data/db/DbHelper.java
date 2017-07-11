@@ -42,8 +42,6 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
-//            String updateDb = "alter table CardInfo add `ccc` INTEGER ; ";
-//            db.execSQL(updateDb);
             if (oldVersion < 7) {
                 cardInfoDao.executeRaw("ALTER TABLE `CardInfo` ADD COLUMN img BLOB ;");
             }

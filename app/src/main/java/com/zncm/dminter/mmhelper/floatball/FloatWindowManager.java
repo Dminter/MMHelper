@@ -10,9 +10,7 @@ import com.zncm.dminter.mmhelper.WatchingAccessibilityService;
 
 public class FloatWindowManager {
     public static FloatBallView mBallView;
-
     private static WindowManager mWindowManager;
-
 
     public static void addBallView(FloatBallService context) {
         if (mBallView == null) {

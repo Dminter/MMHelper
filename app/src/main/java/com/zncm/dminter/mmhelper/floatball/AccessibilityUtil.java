@@ -29,7 +29,6 @@ public class AccessibilityUtil {
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public static void doGetActivity(AccessibilityService service) {
-//        if (WatchingAccessibilityService.getInstance() != null) {
             final String pName = WatchingAccessibilityService.getInstance().packageName;
             final String cName = WatchingAccessibilityService.getInstance().className;
             if (Xutils.isEmptyOrNull(pName) || Xutils.isEmptyOrNull(cName)) {
@@ -42,13 +41,6 @@ public class AccessibilityUtil {
             CardInfo card = new CardInfo(pName, cName, title);
             DbUtils.insertCard(card);
             Xutils.tShort("已添加 " + title);
-//        }
-
-//        service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
-//        AccessibilityEvent accessibilityEvent = service.performGlobalAction(AccessibilityService.)
-//        Xutils.debug("RootInActiveWindow：" + service.getWindows().get() + " " + service.getApplicationInfo().className + " " + service.getApplicationInfo().name);
-//        TasksWindow.show(service, service.getPackageName() + "\n" + service.getClassName());
-
     }
 
     /**

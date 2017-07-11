@@ -179,11 +179,7 @@ public class DbUtils {
         init();
         ArrayList<CardInfo> cardInfos = new ArrayList();
         try {
-//            QueryBuilder builder = pkDao.queryBuilder();
-//            builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
-//            builder.groupBy("packageName");
-//            builder.orderBy("name", true).limit(Constant.MAX_DB_QUERY);
-//            List<PkInfo> pkInfos = pkDao.query(builder.prepare());
+
             List<PkInfo> pkInfos = getPkInfos(null,true);
             if (Xutils.listNotNull(pkInfos)) {
                 for (PkInfo tmp : pkInfos
@@ -429,7 +425,6 @@ public class DbUtils {
                 if (packageName.equals(EnumInfo.homeTab.LIKE.getValue())) {
                     builder.where().eq("status", Integer.valueOf(EnumInfo.cStatus.NORMAL.getValue())).and().eq("exi1", 1);
                     builder.orderBy("exi4", true);
-//                    builder.orderBy("exi2", false);
                     builder.orderBy("time", false).limit(limit);
                 } else if (packageName.equals(EnumInfo.homeTab.ALL.getValue())) {
                     builder.where().eq("status", EnumInfo.cStatus.NORMAL.getValue());
@@ -496,11 +491,9 @@ public class DbUtils {
                 } else {
                     builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
                 }
-//                builder.groupBy("packageName");
                 builder.orderBy("exb3", true).orderBy("ex4", false).orderBy("ex2", true).limit(Constant.MAX_DB_QUERY);
             } else {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
-                    //.and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()))
                     builder.where().eq("packageName", pkgName);
                 } else {
                     builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
