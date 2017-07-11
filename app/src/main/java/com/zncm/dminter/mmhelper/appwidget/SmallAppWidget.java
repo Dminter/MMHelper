@@ -69,6 +69,7 @@ public class SmallAppWidget extends AppWidgetProvider {
         } else {
             remoteViews.setInt(textView, "setBackgroundColor", mColorGenerator.getColor("cmd"));
         }
+
         Intent intent = new Intent(context, OpenInentActivity.class);
         if (Xutils.isNotEmptyOrNull(cardInfo.getPackageName())) {
             intent.putExtra("pkName", cardInfo.getPackageName());
