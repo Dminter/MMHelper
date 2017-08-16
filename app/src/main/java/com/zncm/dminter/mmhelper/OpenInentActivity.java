@@ -32,12 +32,12 @@ public class OpenInentActivity extends AppCompatActivity {
     private String pkName = "";
     private String className = "";
     private int cardId = -1;
-    Intent startIntent;
-    String packageName = "com.zncm.dminter.mmhelper";
-    String name = "com.zncm.dminter.mmhelper.OpenInentActivity";
+    private   Intent startIntent;
+    private   String packageName = "com.zncm.dminter.mmhelper";
+    private   String name = "com.zncm.dminter.mmhelper.OpenInentActivity";
     public final static String INSTALL_SHORTCUT_ACTION = "com.android.launcher.action.INSTALL_SHORTCUT";
-    Activity ctx;
-    boolean isShotcut = false;
+    private   Activity ctx;
+    private  boolean isShotcut = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +49,6 @@ public class OpenInentActivity extends AppCompatActivity {
             className = bundle.getString("className");
             cardId = bundle.getInt("cardId", 0);
             isShotcut = bundle.getBoolean("isShotcut", false);
-
-
             if ((Xutils.isNotEmptyOrNull(pkName)) && (pkName.equals(Constant.OPENINENT_LIKE))) {
                 initLikes(ctx);
             } else if ((Xutils.isNotEmptyOrNull(pkName)) && (pkName.equals(Constant.OPENINENT_BALL))) {
@@ -82,10 +80,6 @@ public class OpenInentActivity extends AppCompatActivity {
 
                 }
             }
-
-
-//            MyApplication.getInstance().isOpenInent = true;
-
         } else {
             final ArrayList<CardInfo> tmps = DbUtils.getCardInfos(EnumInfo.homeTab.LIKE.getValue());
             if (!Xutils.listNotNull(tmps)) {
@@ -245,12 +239,6 @@ public class OpenInentActivity extends AppCompatActivity {
 
 
     }
-
-
-
-
-
-
 
     private void onDone(CardInfo info) {
         Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);

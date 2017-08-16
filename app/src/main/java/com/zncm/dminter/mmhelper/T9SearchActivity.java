@@ -25,9 +25,8 @@ import java.util.ArrayList;
 
 import cn.tinkling.t9.T9Matcher;
 import cn.tinkling.t9.T9Utils;
-
 /**
- * Created by jiaomx on 2017/4/10.
+ *T9搜索
  */
 public class T9SearchActivity extends BaseActivity {
     private static int[] buttonIds = {
@@ -36,7 +35,6 @@ public class T9SearchActivity extends BaseActivity {
             R.id.Button7, R.id.Button8, R.id.Button9,
             R.id.ButtonClr, R.id.ButtonLaunch, R.id.ButtonBack
     };
-
     private static String[] charBtns = {"1", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ", "清除", "0", "DEL"};
     private Activity ctx;
     private ArrayList<CardInfo> currentList = new ArrayList();
@@ -46,8 +44,6 @@ public class T9SearchActivity extends BaseActivity {
     private  TableLayout keyboardTable;
     private String searchString = new String();
     int type = EnumInfo.typeT9.APP.getValue();
-
-
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {

@@ -18,6 +18,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -56,6 +57,52 @@ import java.util.Random;
  */
 
 public class Xutils {
+
+    public static String getApplicationNameByPackageName(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        String applicationName = null;
+        try {
+            applicationName = packageManager.getApplicationLabel(packageManager.getApplicationInfo(
+                    packageName, PackageManager.GET_META_DATA)).toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return applicationName;
+    }
+
+    public static String getCurrentActivity() {
+        try {
+            String request = exec("dumpsys activity | grep \"mFocusedActivity\"");
+            if (!TextUtils.isEmpty(request)) {
+                String pkgName = "";
+                String className = "";
+                String mFocusedActivity = request;
+                if (mFocusedActivity.contains("mFocusedActivity")) {
+                    mFocusedActivity = mFocusedActivity.substring(mFocusedActivity.indexOf("{") + 1, mFocusedActivity.indexOf("}"));
+                    /**
+                     *f70e135 u0 com.zncm.dminter.mmhelper/.SettingNew t15741
+                     */
+                    if (mFocusedActivity.contains(" ")) {
+                        String arr[] = mFocusedActivity.split(" ");
+                        if (arr != null && arr.length > 0 && arr.length == 4) {
+                            mFocusedActivity = arr[2];
+                            if (mFocusedActivity.contains("/")) {
+                                arr = mFocusedActivity.split("/");
+                                if (arr != null && arr.length > 0 && arr.length == 2) {
+                                    pkgName = arr[0];
+                                    className = arr[1];
+                                    return pkgName+"\n"+(pkgName + className);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "获取失败";
+    }
 
     public static int cmdWxUserExe(String cmd) {
         String str = "com.tencent.mm.ui.chatting.ChattingUI -e Chat_User ";
@@ -167,7 +214,6 @@ public class Xutils {
         try {
 
             if (Xutils.isNotEmptyOrNull(command)&&command.contains("pm disable com.zncm.dminter.mmhelper")){
-                Xutils.debug("---->>>不冻结自己。");
                 return "";
             }
 

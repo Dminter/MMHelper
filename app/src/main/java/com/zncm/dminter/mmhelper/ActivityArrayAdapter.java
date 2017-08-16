@@ -20,7 +20,7 @@ import java.util.List;
  * Created by jiaomx on 2017/4/12.
  */
 public class ActivityArrayAdapter extends CustomizableArrayAdapter<MyAppInfo> {
-    PackageManager packageManager;
+  private   PackageManager packageManager;
 
     public ActivityArrayAdapter(Context context, List<MyAppInfo> list) {
         super(context, new ArrayList<MyAppInfo>());

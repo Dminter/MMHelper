@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.kenumir.materialsettings.MaterialSettings;
 import com.kenumir.materialsettings.items.DividerItem;
 import com.kenumir.materialsettings.items.TextItem;
@@ -19,9 +18,7 @@ import com.zncm.dminter.mmhelper.utils.Xutils;
  */
 
 public class HelpAc extends MaterialSettings {
-
-    Activity ctx;
-
+    private Activity ctx;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

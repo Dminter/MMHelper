@@ -15,7 +15,6 @@ public class MyApplication extends Application {
     public static MyApplication instance;
     public static ArrayList<FzInfo> fzInfos = new ArrayList<>();
     public static boolean isPay = false;
-
     public static ArrayList<CardInfo> t9List = new ArrayList();
 
 

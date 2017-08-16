@@ -14,11 +14,8 @@ public class WatchingAccessibilityService extends AccessibilityService {
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (SPHelper.isAcFloat(this)) {
-            TasksWindow.show(this, event.getPackageName() + "\n" + event.getClassName());
-        }
-        packageName = (String) event.getPackageName();
-        className = (String) event.getClassName();
+//        packageName = (String) event.getPackageName();
+//        className = (String) event.getClassName();
     }
 
     @Override
@@ -34,7 +31,6 @@ public class WatchingAccessibilityService extends AccessibilityService {
     @Override
     public boolean onUnbind(Intent intent) {
         sInstance = null;
-        TasksWindow.dismiss(this);
         return super.onUnbind(intent);
     }
 

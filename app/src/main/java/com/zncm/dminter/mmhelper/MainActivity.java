@@ -60,11 +60,9 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     public ArrayList<FzInfo> fzInfos = new ArrayList<>();
     private MainActivity ctx;
     public HashMap<Integer, MyFt> fragments = new HashMap();
-    //    MaterialDialog progressDlg;
     private LinearLayout topView;
-    ScreenListener screenListener;
-
-    TabLayout mTabLayout;
+    private  ScreenListener screenListener;
+    private  TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,6 +164,13 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
 
         EventBus.getDefault().register(this);
+
+
+
+        if (SPHelper.isAcFloat(ctx)) {
+            startService(new Intent(ctx, WatchingService.class));
+        }
+
     }
 
 
@@ -179,16 +184,6 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                     ballView.setVisibility(View.VISIBLE);
                 } else {
                     ctx.startService(new Intent(ctx, FloatBallService.class));
-//                    WatchingAccessibilityService mService = null;
-//                    if (WatchingAccessibilityService.getInstance() != null) {
-//                        mService = WatchingAccessibilityService.getInstance();
-//                    } else {
-////                        MyFt.getActivityDlg(ctx);
-////                        return;
-//                    }
-//                    if (mService != null) {
-//                        FloatWindowManager.addBallView(mService);
-//                    }
                 }
             }
         } catch (Exception e) {
@@ -198,9 +193,6 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
 
     private void initApps() {
-//        progressDlg = new MaterialDialog.Builder(this)
-//                .title("数据初始化中...")
-//                .show();
         DataInitHelper.MyTask task = new DataInitHelper.MyTask();
         task.execute();
     }
@@ -360,32 +352,6 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                 }
             }
         }
-
-//        if (type == EnumInfo.RefreshEnum.FZ.getValue()) {
-//            initActicity();
-//        }
-//        if (fragments.size() == 0) {
-//            initActicity();
-//        }
-//
-//
-//        if (type == EnumInfo.RefreshEnum.APPS.getValue() || type == EnumInfo.RefreshEnum.APPSINIT.getValue()) {
-//            if (type == EnumInfo.RefreshEnum.APPSINIT.getValue()) {
-//                if (progressDlg.isShowing()) {
-//                    progressDlg.dismiss();
-//                }
-//            }
-//            MyFt tmp = (MyFt) fragments.get(0);
-//            tmp.onRefresh();
-//        }
-//        if (type == EnumInfo.RefreshEnum.LIKE.getValue()) {
-//            MyFt tmp = (MyFt) fragments.get(1);
-//            tmp.onRefresh();
-//        }
-//        if (type == EnumInfo.RefreshEnum.ALL.getValue()) {
-//            MyFt tmp = (MyFt) fragments.get(2);
-//            tmp.onRefresh();
-//        }
     }
 
     private void initActicity() {
@@ -393,105 +359,6 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-
-
-//
-//    @Override
-//    public boolean onNavigationItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-////            case R.id.action_enable:
-////                Intent intent = new Intent(ctx, QTActivity.class);
-////                intent.putExtra("homeTab", EnumInfo.homeTab.ENABLE.getPosition());
-////                startActivity(intent);
-////                break;
-////
-////            case R.id.action_disabled:
-////                Intent intent2 = new Intent(ctx, QTActivity.class);
-////                intent2.putExtra("homeTab", EnumInfo.homeTab.DISABLED.getPosition());
-////                startActivity(intent2);
-////                break;
-//
-//            case R.id.action_add_wxtalk:
-//                talkUI(null, EnumInfo.cType.WX.getValue(), "微信-直接聊天", "朋友姓名", "朋友微信号");
-//
-//                break;
-//
-//            case R.id.action_add_url:
-//
-//                talkUI(null, EnumInfo.cType.URL.getValue(), "书签-直达网页or应用页面", "标题", "http://");
-//
-//                break;
-//            case R.id.action_add_qqtalk:
-//
-//                talkUI(null, EnumInfo.cType.QQ.getValue(), "QQ-直接聊天", "好友姓名", "好友QQ号");
-//
-//                break;
-//            case R.id.action_add_openactivity:
-//                initActivity(null);
-//                break;
-//            case R.id.action_toactivity:
-//                startActivity(new Intent(ctx, SettingActivity.class));
-//                break;
-//            case R.id.action_share:
-//                Xutils.sendTo(ctx, Constant.share_content);
-//                break;
-//            case R.id.action_init:
-//                initApps();
-//                break;
-//
-//        }
-//        drawer.closeDrawer(GravityCompat.START);
-//        return true;
-//    }
-
-
-    private void initActivity(final CardInfo info) {
-        View view = LayoutInflater.from(ctx).inflate(
-                R.layout.view_card, null);
-        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 400));
-        final EditText activityName = (EditText) view.findViewById(R.id.activityName);
-        final EditText packageName = (EditText) view.findViewById(R.id.packageName);
-        final EditText className = (EditText) view.findViewById(R.id.className);
-
-        if (info != null) {
-            if (Xutils.isNotEmptyOrNull(info.getTitle())) {
-                activityName.setText(info.getTitle());
-            }
-            if (Xutils.isNotEmptyOrNull(info.getPackageName())) {
-                packageName.setText(info.getPackageName());
-            }
-            if (Xutils.isNotEmptyOrNull(info.getClassName())) {
-                className.setText(info.getClassName());
-            }
-        }
-
-        Xutils.themeMaterialDialog(ctx)
-                .title("配置活动")
-                .customView(view, false)
-                .positiveText("好")
-                .negativeText("不")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        String acName = activityName.getText().toString();
-                        String pName = packageName.getText().toString();
-                        String cName = className.getText().toString();
-                        if (info != null) {
-                            info.setTitle(acName);
-                            info.setPackageName(pName);
-                            info.setClassName(cName);
-                            DbUtils.updateCard(info);
-                        } else {
-                            CardInfo card = new CardInfo(pName, cName, acName);
-                            DbUtils.insertCard(card);
-                        }
-                        dialog.dismiss();
-                    }
-                })
-                .show();
-    }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

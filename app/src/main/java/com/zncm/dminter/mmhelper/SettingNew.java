@@ -471,24 +471,15 @@ public class SettingNew extends MaterialSettings {
 
 
         addItem(new DividerItem(ctx));
-        addItem(new CheckboxItem(this, "").setTitle("采集活动悬浮窗【左上角】").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
+        addItem(new CheckboxItem(this, "").setTitle("采集活动悬浮窗").setSubtitle("点击包名【采集】，长按包名【复制】，长按边缘拖动，通知栏可关闭悬浮窗").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {
                 SPHelper.setIsAcFloat(ctx, b);
                 if (b) {
-                    if (!SettingsCompat.canDrawOverlays(ctx)) {
-                        try {
-                            startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
-                        } catch (Exception e) {
-                            Xutils.tShort("请先开启悬浮窗~");
-                            e.printStackTrace();
-                        }
-
-                    }
-                    MyFt.getActivityDlg(ctx);
+                    MyFt.openAcFloat(ctx);
                 } else {
-                    TasksWindow.dismiss(ctx);
+                    WatchingService.dismiss(ctx);
                 }
 
             }
@@ -850,29 +841,4 @@ public class SettingNew extends MaterialSettings {
         }
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        if (SettingsCompat.canDrawOverlays(ctx)) {
-//            SPHelper.setIsAcFloat(ctx, true);
-//            SPHelper.setIsFloatBall(ctx, true);
-//
-//            if (checkboxItemBall != null) {
-//                checkboxItemBall.setDefaultValue(true);
-//            }
-//            if (checkboxItemFloat != null) {
-//                checkboxItemFloat.setDefaultValue(true);
-//            }
-//        } else {
-//            SPHelper.setIsAcFloat(ctx, false);
-//            SPHelper.setIsFloatBall(ctx, false);
-//            if (checkboxItemBall != null) {
-//                checkboxItemBall.setDefaultValue(false);
-//            }
-//            if (checkboxItemFloat != null) {
-//                checkboxItemFloat.setDefaultValue(false);
-//            }
-//        }
-//
-//    }
 }

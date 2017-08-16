@@ -20,7 +20,7 @@ public class SPHelper {
 
     public static boolean isAcFloat(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean("ac_float", true);
+        return sp.getBoolean("ac_float", false);
     }
 
     public static void setIsAcFloat(Context context, boolean ac_float) {

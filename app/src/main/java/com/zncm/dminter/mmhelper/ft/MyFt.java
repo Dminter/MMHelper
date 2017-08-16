@@ -231,11 +231,8 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             switch (position) {
                                 case 0:
                                     if (ctx instanceof MainActivity) {
-                                        SPHelper.setIsAcFloat(ctx, true);
-                                        if (!SettingsCompat.canDrawOverlays(ctx)) {
-                                            startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
-                                        }
-                                        MyFt.getActivityDlg(ctx);
+                                        openAcFloat(ctx);
+//                                        MyFt.getActivityDlg(ctx);
                                     }
                                     break;
                                 case 1:
@@ -343,6 +340,19 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
     }
 
+    public static void openAcFloat(Context ctx) {
+        SPHelper.setIsAcFloat(ctx, true);
+        if (!SettingsCompat.canDrawOverlays(ctx)) {
+            try {
+                ctx.startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
+            } catch (Exception e) {
+                Xutils.tShort("请先开启悬浮窗~");
+                e.printStackTrace();
+            }
+        }
+        ctx.startService(new Intent(ctx, WatchingService.class));
+    }
+
     public void talkUI(final CardInfo info, final int type, String title, String hint1, String hint2) {
         View wxView = LayoutInflater.from(ctx).inflate(
                 R.layout.view_card, null);
@@ -442,6 +452,8 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         if (serviceEnabled) {
             activity.startService(new Intent(activity, WatchingService.class));
         }
+
+
     }
 
     private Bitmap bytes2Bimap(byte[] b) {

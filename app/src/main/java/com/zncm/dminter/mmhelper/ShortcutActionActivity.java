@@ -40,17 +40,16 @@ public class ShortcutActionActivity extends Activity {
                     startActivity(new Intent(ctx, T9SearchActivity.class));
                     finish();
                 } else if (action.equals(Constant.SA_GET_ACTIVITY)) {
-                    SPHelper.setIsAcFloat(ctx, true);
-                    if (!SettingsCompat.canDrawOverlays(ctx)) {
-                        startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
-                    }
-                    MyFt.getActivityDlg(ctx);
+                    MyFt.openAcFloat(ctx);
                     finish();
                 } else if (action.equals(Constant.SA_LOCK_SCREEN)) {
                     lockScreen(ctx);
                     finish();
                 } else if (action.equals(Constant.OPENINENT_LIKE)) {
                     OpenInentActivity.initLikes(ctx);
+                } else if (action.equals(Constant.SA_GET_ACTIVITY_STOP)) {
+                    WatchingService.dismiss(ctx);
+                    finish();
                 }
             }
         } else {
