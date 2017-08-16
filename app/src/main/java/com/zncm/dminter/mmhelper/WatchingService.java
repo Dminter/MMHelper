@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,10 +29,38 @@ import java.util.TimerTask;
 
 public class WatchingService extends Service {
 
-    private Handler mHandler = new Handler();
-    private static Timer timer;
+
     public static FloatWindow mFloatWindow;
     static TextView textView;
+    private  static final int TIME_SEC = -1;
+
+    private static Context ctx;
+
+    public static Handler  handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case -1:
+                    if (SPHelper.isAcFloat(ctx)) {
+                        WatchingService.show(ctx, Xutils.getCurrentActivity());
+                    }
+                    break;
+            }
+
+        }
+    };
+
+    private final static Runnable mTicker = new Runnable() {
+        public void run() {
+            long now = SystemClock.uptimeMillis();
+            long next = now + (1000 - now % 1000);
+            Message message = new Message();
+            message.what = TIME_SEC;
+            handler.sendMessage(message);
+            handler.postAtTime(mTicker, next);
+        }
+    };
 
     public static void show(final Context context, final String text) {
         try {
@@ -68,8 +97,7 @@ public class WatchingService extends Service {
 
     public static void dismiss(Context context) {
         SPHelper.setIsAcFloat(context, false);
-        timer.cancel();
-        timer = null;
+        handler.removeCallbacks(mTicker);
         mFloatWindow.hide();
         NotiHelper.clearNoti(context, Constant.n_id_ac);
     }
@@ -125,6 +153,7 @@ public class WatchingService extends Service {
     public void onCreate() {
         super.onCreate();
         showFloatView(this);
+        ctx =this;
 
     }
 
@@ -139,8 +168,10 @@ public class WatchingService extends Service {
         intentCopy.putExtra("action", Constant.SA_GET_ACTIVITY_STOP);
         intentCopy.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         NotiHelper.noti("点击关闭活动采集悬浮窗", "", "", intentCopy, true, false, Constant.n_id_ac);
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new RefreshTask(), 0, 500);
+        if (mTicker != null) {
+            handler.removeCallbacks(mTicker);
+        }
+        mTicker.run();
         if (mFloatWindow != null) {
             mFloatWindow.show();
         }
@@ -152,12 +183,7 @@ public class WatchingService extends Service {
         @Override
         public void run() {
             if (SPHelper.isAcFloat(WatchingService.this)) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        WatchingService.show(WatchingService.this, Xutils.getCurrentActivity());
-                    }
-                });
+                WatchingService.show(WatchingService.this, Xutils.getCurrentActivity());
             }
         }
     }

@@ -111,7 +111,7 @@ public class SuggestInfoActivity extends BaseActivity {
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.bill.list.ui.BillSearchActivity_", "账单搜索"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.fund.ui.FundMainNewActivity_", "余额宝"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.onsitepay9.payer.OspTabHostActivity", "付款码"));
-            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.scan.as.main.MainCaptureActivity", "扫一扫"));
+//            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.scan.as.main.MainCaptureActivity", "扫一扫"));
             cardInfos.addAll(zfbCard);
         }else if (SuggestAc.tb.equals(pkName)) {
             /**

@@ -35,6 +35,7 @@ public class ShellUtils {
      * @see ShellUtils#execCommand(String[], boolean, boolean)
      */
     public static CommandResult execCommand(String command, boolean isRoot) {
+//        Xutils.debug("command::"+command);
         return execCommand(new String[] {command}, isRoot, true);
     }
 

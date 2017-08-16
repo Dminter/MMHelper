@@ -4,7 +4,6 @@
 收藏|com.tencent.mm|com.tencent.mm.plugin.favorite.ui.FavoriteIndexUI
 扫一扫|com.tencent.mm|com.tencent.mm.plugin.scanner.ui.BaseScanUI
 付款码|com.tencent.mm|com.tencent.mm.plugin.offline.ui.WalletOfflineCoinPurseUI
-扫一扫|com.eg.android.AlipayGphone|com.alipay.mobile.scan.as.main.MainCaptureActivity
 付款码|com.eg.android.AlipayGphone|com.alipay.mobile.onsitepay9.payer.OspTabHostActivity
 余额宝|com.eg.android.AlipayGphone|com.alipay.mobile.fund.ui.FundMainNewActivity_
 QQ|com.tencent.mobileqq|com.tencent.mobileqq.activity.SplashActivity

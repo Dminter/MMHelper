@@ -121,10 +121,11 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
         if (!Xutils.listNotNull(tmps)) {
             DbUtils.cardUpdate();
-            DbUtils.cardXm();
             List<String> list = Xutils.importTxt(this, R.raw.init_2016_08_09_13_36);
             DbUtils.importCardFromTxt(list, true);
         }
+        DbUtils.cardXm();
+        DbUtils.cardzfbsys();
 
         ArrayList<PkInfo> pkInfos = DbUtils.getPkInfos(null);
         if (!Xutils.listNotNull(pkInfos)) {

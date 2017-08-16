@@ -248,7 +248,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                     talkUI(null, EnumInfo.cType.URL.getValue(), "书签-直达网页or应用页面", "标题", "http://");
                                     break;
                                 case 5:
-                                    talkUI(null, EnumInfo.cType.CMD.getValue(), "Shell命令", "Shell名称", "reboot");
+                                    talkUI(null, EnumInfo.cType.CMD.getValue(), "Shell命令", "Shell名称", Constant.zfb_sys);
                                     break;
                                 case 6:
                                     talkUI(null, EnumInfo.cType.SHORT_CUT_SYS.getValue(), "快捷方式", "快捷方式名称", "#Intent;action=com.tencent.mm.action.BIZSHORTCUT...;end");
@@ -502,6 +502,42 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             Xutils.startAppByPackageName(activity, info.getPackageName(), Constant.attempt);
         } else if (info.getType() == EnumInfo.cType.CMD.getValue()) {
             String cmd = info.getCmd();
+            if (cmd.contains(";")||cmd.startsWith("am")){
+                try {
+                    String arr[] = cmd.split(";");
+                    if (arr!=null&&arr.length>0){
+                        for (String tmp:arr
+                             ) {
+                            try {
+                               ret=Xutils.cmdExe(tmp);
+                                if (ret == AndroidCommand.appDisable) {
+                                    if (Xutils.isNotEmptyOrNull(tmp)&&tmp.contains("/")) {
+                                        String arrs[] = cmd.split("/");
+                                        if (arrs!=null&&arrs.length>0&&arrs.length==2){
+                                            String pkgName = arrs[0];
+                                            pkgName = pkgName.substring(pkgName.lastIndexOf(" ")+1,pkgName.length());
+                                            if (Xutils.isNotEmptyOrNull(pkgName)) {
+                                                info.setPackageName(pkgName);
+                                                DbUtils.updateCard(info);
+                                                Xutils.exec("pm enable " + pkgName);
+                                                appNewStatus(info);
+                                                Xutils.cmdExe(tmp);
+                                            }
+                                        }
+                                    }
+                                }
+                            } catch (Exception e) {
+                               e.printStackTrace();
+                            }
+
+
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                return;
+            }
             final ShellUtils.CommandResult result = ShellUtils.execCommand(cmd, true);
             if (result != null) {
                 if (Xutils.isNotEmptyOrNull(result.successMsg)) {

@@ -91,7 +91,10 @@ public class Xutils {
                                 if (arr != null && arr.length > 0 && arr.length == 2) {
                                     pkgName = arr[0];
                                     className = arr[1];
-                                    return pkgName+"\n"+(pkgName + className);
+                                    if (className.startsWith(".")){
+                                        className = pkgName+className;
+                                    }
+                                    return pkgName+"\n"+className;
                                 }
                             }
                         }

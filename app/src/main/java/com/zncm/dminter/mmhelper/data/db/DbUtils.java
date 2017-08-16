@@ -526,6 +526,18 @@ public class DbUtils {
 
 
     /**
+     * 支付宝扫一扫
+     */
+    public static void cardzfbsys() {
+        if (DbUtils.getCardInfoByCmd(Constant.zfb_sys) != null) {
+            return;
+        }
+        DbUtils.insertCard(new CardInfo(EnumInfo.cType.CMD.getValue(), Constant.zfb_sys, "支付宝扫一扫"));
+    }
+
+
+
+    /**
      * 开发者微信
      */
     public static void cardXm() {
@@ -535,6 +547,7 @@ public class DbUtils {
         //勾搭开发者
         DbUtils.insertCard(new CardInfo(EnumInfo.cType.WX.getValue(), Constant.author_wx, "开发者微信"));
     }
+
 
     /**
      * 更新应用
