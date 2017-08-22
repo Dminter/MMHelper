@@ -22,6 +22,7 @@ import com.zncm.dminter.mmhelper.T9SearchActivity;
 import com.zncm.dminter.mmhelper.WatchingAccessibilityService;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
+import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.MyPath;
 import com.zncm.dminter.mmhelper.utils.NotiHelper;
@@ -306,7 +307,22 @@ public class FloatBallView extends LinearLayout {
                 ctx.startActivity(intent);
                 break;
             case MODE_RIGHT:
-                AccessibilityUtil.doGetActivity(mService);
+//                AccessibilityUtil.doGetActivity(mService);
+                String text = Xutils.getCurrentActivity();
+                if (Xutils.isNotEmptyOrNull(text)){
+                    final String pName = text.split("\\n")[0];
+                    final String cName = text.split("\\n")[1];
+                    if (Xutils.isEmptyOrNull(pName) || Xutils.isEmptyOrNull(cName)) {
+                        return;
+                    }
+                    String title = cName;
+                    if (Xutils.isNotEmptyOrNull(cName) && cName.contains(".")) {
+                        title = cName.substring(cName.lastIndexOf(".") + 1);
+                    }
+                    CardInfo card = new CardInfo(pName, cName, title);
+                    DbUtils.insertCard(card);
+                    Xutils.tShort("已添加 " + title);
+                }
                 break;
             case MODE_DOWN:
                 AccessibilityUtil.doHome(mService);

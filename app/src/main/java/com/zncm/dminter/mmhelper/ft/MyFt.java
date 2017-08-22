@@ -502,20 +502,20 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             Xutils.startAppByPackageName(activity, info.getPackageName(), Constant.attempt);
         } else if (info.getType() == EnumInfo.cType.CMD.getValue()) {
             String cmd = info.getCmd();
-            if (cmd.contains(";")||cmd.startsWith("am")){
+            if (cmd.contains(";") || cmd.startsWith("am")) {
                 try {
                     String arr[] = cmd.split(";");
-                    if (arr!=null&&arr.length>0){
-                        for (String tmp:arr
-                             ) {
+                    if (arr != null && arr.length > 0) {
+                        for (String tmp : arr
+                                ) {
                             try {
-                               ret=Xutils.cmdExe(tmp);
+                                ret = Xutils.cmdExe(tmp);
                                 if (ret == AndroidCommand.appDisable) {
-                                    if (Xutils.isNotEmptyOrNull(tmp)&&tmp.contains("/")) {
+                                    if (Xutils.isNotEmptyOrNull(tmp) && tmp.contains("/")) {
                                         String arrs[] = cmd.split("/");
-                                        if (arrs!=null&&arrs.length>0&&arrs.length==2){
+                                        if (arrs != null && arrs.length > 0 && arrs.length == 2) {
                                             String pkgName = arrs[0];
-                                            pkgName = pkgName.substring(pkgName.lastIndexOf(" ")+1,pkgName.length());
+                                            pkgName = pkgName.substring(pkgName.lastIndexOf(" ") + 1, pkgName.length());
                                             if (Xutils.isNotEmptyOrNull(pkgName)) {
                                                 info.setPackageName(pkgName);
                                                 DbUtils.updateCard(info);
@@ -527,13 +527,13 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                     }
                                 }
                             } catch (Exception e) {
-                               e.printStackTrace();
+                                e.printStackTrace();
                             }
 
 
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return;
@@ -569,6 +569,14 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     if (Xutils.isNotEmptyOrNull(cmd)) {
                         if (cmd.contains("component")) {
                             pkgName = cmd.substring(1 + (cmd.indexOf("component") + "component".length()), cmd.length());
+                            /**
+                             *兼容支付宝
+                             * alipays://platformapi/startapp?appId=10000007&sourceId=shortcut&source=shortcut#Intent;
+                             * component=com.eg.android.AlipayGphone/com.alipay.mobile.quinox.LauncherActivity.alias;B.directly=true;B.fromDesktop=true;end
+                             */
+                            if (cmd.contains("/")) {
+                                pkgName = pkgName.substring(0, pkgName.indexOf("/"));
+                            }
                         } else if (cmd.contains("package")) {
                             pkgName = cmd.substring(1 + (cmd.indexOf("package") + "package".length()), cmd.length());
                             if (pkgName.contains(";")) {

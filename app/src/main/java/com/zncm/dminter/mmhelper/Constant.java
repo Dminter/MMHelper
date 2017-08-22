@@ -55,4 +55,23 @@ public class Constant {
     public static final String app_is_disable_error = "Error type 3";
     public static final String share_content = "快速打开活动  http://www.coolapk.com/apk/com.zncm.dminter.mmhelper";
 
+
+
+
+    /**
+     *支付宝快捷方式
+     */
+    /**
+     *付款码
+     */
+    public static String zfb_fkm = "alipayss://platformapi/startapp?appId=20000056&source=shortcut#Intent;component=com.eg.android.AlipayGphone/.FastStartActivity;B.directly=true;B.fromDesktop=true;end";
+    /**
+     *扫一扫
+     */
+    public static String zfb_sys_short = "alipays://platformapi/startapp?appId=10000007&sourceId=shortcut&source=shortcut#Intent;component=com.eg.android.AlipayGphone/com.alipay.mobile.quinox.LauncherActivity.alias;B.directly=true;B.fromDesktop=true;end";
+    /**
+     *收款码
+     */
+    public static String zfb_skm = "alipays://platformapi/startapp?appId=20000123&sourceId=shortcut&source=shortcut#Intent;component=com.eg.android.AlipayGphone/com.alipay.mobile.quinox.LauncherActivity.alias;B.directly=true;B.fromDesktop=true;end";
+
 }

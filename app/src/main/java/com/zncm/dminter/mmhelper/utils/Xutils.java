@@ -108,10 +108,7 @@ public class Xutils {
     }
 
     public static int cmdWxUserExe(String cmd) {
-        String str = "com.tencent.mm.ui.chatting.ChattingUI -e Chat_User ";
-        if (isNewWx()) {
-            str = "com.tencent.mm.ui.chatting.En_5b8fbb1e -e Chat_User ";
-        }
+        String  str = "com.tencent.mm.ui.chatting.En_5b8fbb1e -e Chat_User ";
         return cmdExe("am start -n com.tencent.mm/" + str + cmd);
     }
 
@@ -259,7 +256,7 @@ public class Xutils {
         String commands = cmdEnd;
         int ret = AndroidCommand.noRoot;
         if (Xutils.isNotEmptyOrNull(commands)) {
-            if (commands.contains("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI") && isNewWx()) {
+            if (commands.contains("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI") ) {
                 commands = commands.replace("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI", "com.tencent.mm.plugin.sns.ui.En_424b8e16");
             }
             ret = AndroidCommand.execRooted(commands);

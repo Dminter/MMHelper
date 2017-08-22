@@ -526,14 +526,29 @@ public class DbUtils {
 
 
     /**
-     * 支付宝扫一扫
+     * 支付宝快捷方式合集
      */
-    public static void cardzfbsys() {
+    public static void cardzfball() {
         if (DbUtils.getCardInfoByCmd(Constant.zfb_sys) != null) {
             return;
         }
-        DbUtils.insertCard(new CardInfo(EnumInfo.cType.CMD.getValue(), Constant.zfb_sys, "支付宝扫一扫"));
+        DbUtils.insertCard(new CardInfo(EnumInfo.cType.SHORT_CUT_SYS.getValue(), Constant.zfb_sys_short, "扫一扫"));
+        DbUtils.insertCard(new CardInfo(EnumInfo.cType.SHORT_CUT_SYS.getValue(), Constant.zfb_fkm, "付款码"));
+        DbUtils.insertCard(new CardInfo(EnumInfo.cType.SHORT_CUT_SYS.getValue(), Constant.zfb_skm, "收款码"));
     }
+
+
+    /**
+     * 新增card
+     */
+    public static void cardNew(CardInfo cardInfo) {
+        if (DbUtils.getCardInfoByCmd(cardInfo.getCmd()) != null) {
+            return;
+        }
+        DbUtils.insertCard(cardInfo);
+    }
+
+
 
 
 

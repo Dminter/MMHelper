@@ -3,7 +3,6 @@ package com.zncm.dminter.mmhelper;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
@@ -15,17 +14,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.data.CardInfo;
@@ -125,7 +120,11 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             DbUtils.importCardFromTxt(list, true);
         }
         DbUtils.cardXm();
-        DbUtils.cardzfbsys();
+        DbUtils.cardzfball();
+
+
+
+
 
         ArrayList<PkInfo> pkInfos = DbUtils.getPkInfos(null);
         if (!Xutils.listNotNull(pkInfos)) {
