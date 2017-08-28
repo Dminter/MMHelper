@@ -341,6 +341,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     }
 
     public static void openAcFloat(Context ctx) {
+        if (WatchingAccessibilityService.getInstance() == null) {
+            MyFt.getActivityDlg(ctx);
+            return;
+        }
         SPHelper.setIsAcFloat(ctx, true);
         if (!SettingsCompat.canDrawOverlays(ctx)) {
             try {
@@ -787,15 +791,28 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
     private void initAppCard(final CardInfo info, final int position) {
 
+
+        /**
+         *建议的活动【收藏+发送到桌面】
+         */
         final ArrayList<Map<String, Object>> list = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
+
         final boolean like = info.getExi1() == 1;
         final boolean top = info.getExi2() > 0;
-        map.put("text", like ? "取消收藏" : "收藏");
-        map.put("key", "-1");
-        list.add(map);
-
-        if (!packageName.equals(EnumInfo.homeTab.SUGGEST_ACTIVITY.getValue())) {
+        if (packageName.equals(EnumInfo.homeTab.SUGGEST_ACTIVITY.getValue())) {
+            Map<String, Object> mapa = new HashMap<>();
+            mapa.put("text", like ? "取消收藏" : "收藏");
+            mapa.put("key", "a");
+            list.add(mapa);
+            Map<String, Object> mapb = new HashMap<>();
+            mapb.put("text", "添加到桌面");
+            mapb.put("key", "-b");
+            list.add(mapb);
+        } else {
+            Map<String, Object> map = new HashMap<>();
+            map.put("text", like ? "取消收藏" : "收藏");
+            map.put("key", "-1");
+            list.add(map);
             Map<String, Object> map2 = new HashMap<>();
             map2.put("text", "修改");
             map2.put("key", "-2");
@@ -822,6 +839,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             list.add(map7);
         }
 
+
         new BottomSheetDlg(ctx, list, false) {
             @Override
             public void onGridItemClickListener(final int pos) {
@@ -844,12 +862,16 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         }
                         break;
                     case 1:
-                        if (info.getType() == EnumInfo.cType.WX.getValue() || info.getType() == EnumInfo.cType.QQ.getValue() || info.getType() == EnumInfo.cType.URL.getValue() || info.getType() == EnumInfo.cType.CMD.getValue() || info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
-                            talkUI(info, 0, "修改", "", "");
-                        } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
-                            initActivity(info, position);
+                        if (packageName.equals(EnumInfo.homeTab.SUGGEST_ACTIVITY.getValue())) {
+                            Xutils.sendToDesktop(ctx, info);
+                        }else {
+                            if (info.getType() == EnumInfo.cType.WX.getValue() || info.getType() == EnumInfo.cType.QQ.getValue() || info.getType() == EnumInfo.cType.URL.getValue() || info.getType() == EnumInfo.cType.CMD.getValue() || info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
+                                talkUI(info, 0, "修改", "", "");
+                            } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
+                                initActivity(info, position);
+                            }
+                            fillArray();
                         }
-                        fillArray();
                         break;
                     case 2:
                         info.setStatus(EnumInfo.cStatus.DELETE.getValue());

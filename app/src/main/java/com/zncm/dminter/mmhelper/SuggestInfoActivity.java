@@ -96,7 +96,6 @@ public class SuggestInfoActivity extends BaseActivity {
              com.eg.android.AlipayGphone,com.alipay.mobile.scan.as.main.MainCaptureActivity,扫一扫
              */
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.wealth.tally.activitys.TallyMainActivity_", "记账本"));
-            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.stock.ui.MainActivity", "股票"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.pubsvc.ui.PPServiceActivity", "生活号"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.transferapp.ui.TransferHomeActivity_", "转账"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.alipassapp.ui.list.activity.v2.OffersEntryActivity", "卡包"));
@@ -106,7 +105,6 @@ public class SuggestInfoActivity extends BaseActivity {
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.contactsapp.ui.AddFriendActivity_", "添加朋友"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.socialcontactsdk.contact.ui.ContactMainPageActivity", "通讯录"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity", "搜索"));
-            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.voiceassistant.ui.VoiceAssistantActivity", "语音搜索"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.personalapp.favorite.activity.FavoriteNewHomeActivity", "我的收藏"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.bill.list.ui.BillSearchActivity_", "账单搜索"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.fund.ui.FundMainNewActivity_", "余额宝"));
@@ -159,28 +157,23 @@ public class SuggestInfoActivity extends BaseActivity {
             cardInfos.addAll(card);
         }else if (SuggestAc.dianping.equals(pkName)) {
             /**
-             com.dianping.v1,com.dianping.search.suggest.SearchSuggestActivity,搜索
              com.dianping.v1,com.dianping.search.history.HistoryActivity,浏览历史
              com.dianping.v1,com.dianping.user.favorite.FavoriteBaseActivity,我的收藏
              com.dianping.v1,com.dianping.v1.NovaMainActivity,大众点评
              */
             ArrayList<CardInfo> card = new ArrayList<>();
-            card.add(new CardInfo(SuggestAc.dianping, "com.dianping.search.suggest.SearchSuggestActivity", "搜索"));
             card.add(new CardInfo(SuggestAc.dianping, "com.dianping.search.history.HistoryActivity", "浏览历史"));
-            card.add(new CardInfo(SuggestAc.dianping, "com.dianping.user.favorite.FavoriteBaseActivity", "我的收藏"));
             card.add(new CardInfo(SuggestAc.dianping, "com.dianping.v1.NovaMainActivity", "大众点评"));
             cardInfos.addAll(card);
         }else if (SuggestAc.bili.equals(pkName)) {
             /**
              tv.danmaku.bili,tv.danmaku.bili.MainActivity,哔哩哔哩
              tv.danmaku.bili,tv.danmaku.bili.ui.rank.RankPagerActivity,排行榜
-             tv.danmaku.bili,tv.danmaku.bili.ui.qrcode.QRcodeCaptureActivity,扫一扫
              tv.danmaku.bili,tv.danmaku.bili.ui.videodownload.VideoDownloadListActivity,我的下载
              */
             ArrayList<CardInfo> card = new ArrayList<>();
             card.add(new CardInfo(SuggestAc.bili, "tv.danmaku.bili.MainActivity", "哔哩哔哩"));
             card.add(new CardInfo(SuggestAc.bili, "tv.danmaku.bili.ui.rank.RankPagerActivity", "排行榜"));
-            card.add(new CardInfo(SuggestAc.bili, "tv.danmaku.bili.ui.qrcode.QRcodeCaptureActivity", "扫一扫"));
             card.add(new CardInfo(SuggestAc.bili, "tv.danmaku.bili.ui.videodownload.VideoDownloadListActivity", "我的下载"));
             cardInfos.addAll(card);
         }else if (SuggestAc.jingdong.equals(pkName)) {
@@ -287,15 +280,15 @@ public class SuggestInfoActivity extends BaseActivity {
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "cat /system/build.prop", "更多硬件与系统属性"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "reboot recovery", "重启到 Recovery 模式"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "reboot bootloader", "重启到 Fastboot 模式"));
-            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true", "开启飞行模式"));
-            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false", "关闭飞行模式"));
+//            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true", "开启飞行模式"));
+//            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false", "关闭飞行模式"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc data enable", "打开数据连接"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc data disable", "关闭数据连接"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc wifi enable", "开启wifi连接"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc wifi disable", "关闭wifi连接"));
-            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "df", "磁盘空间占用"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "df -H", "磁盘空间占用"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "date", "系统时间"));
-            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "netstat", "查看网络状态"));
+//            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "netstat", "查看网络状态"));
             cardInfos.addAll(card);
         }
         if (Xutils.listNotNull(cardInfos) && fragment != null && fragment.cardAdapter != null) {

@@ -23,27 +23,6 @@ public class AccessibilityUtil {
     }
 
     /**
-     * 下拉打开通知栏
-     *
-     * @param service
-     */
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public static void doGetActivity(AccessibilityService service) {
-            final String pName = WatchingAccessibilityService.getInstance().packageName;
-            final String cName = WatchingAccessibilityService.getInstance().className;
-            if (Xutils.isEmptyOrNull(pName) || Xutils.isEmptyOrNull(cName)) {
-                return;
-            }
-            String title = cName;
-            if (Xutils.isNotEmptyOrNull(cName) && cName.contains(".")) {
-                title = cName.substring(cName.lastIndexOf("."));
-            }
-            CardInfo card = new CardInfo(pName, cName, title);
-            DbUtils.insertCard(card);
-            Xutils.tShort("已添加 " + title);
-    }
-
-    /**
      * 上拉返回桌面
      *
      * @param service

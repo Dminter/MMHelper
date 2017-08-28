@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools"
            xmlns:android="urn:oasis:names:tc:xliff:document:1.2">
-    <color name="colorPrimary">#4CAF50</color>
-    <color name="colorPrimaryDark">#4CAF50</color>
-    <color name="colorAccent">@color/material_amber_accent_700</color>
+    <color name="colorPrimary">@color/material_green_500</color>
+    <color name="colorPrimaryDark">@color/material_green_600</color>
+    <color name="colorAccent">@color/material_green_700</color>
     <color name="bg_color">#ffffff</color>
     <color name="material_red_50">#FFEBEE</color>
     <color name="material_red_100">#FFCDD2</color>

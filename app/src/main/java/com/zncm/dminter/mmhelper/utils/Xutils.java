@@ -91,24 +91,26 @@ public class Xutils {
                                 if (arr != null && arr.length > 0 && arr.length == 2) {
                                     pkgName = arr[0];
                                     className = arr[1];
-                                    if (className.startsWith(".")){
-                                        className = pkgName+className;
+                                    if (className.startsWith(".")) {
+                                        className = pkgName + className;
                                     }
-                                    return pkgName+"\n"+className;
+                                    String pkgClass = pkgName + "\n" + className;
+                                    Xutils.debug("getCurrentActivity:" + pkgClass);
+                                    return pkgClass;
                                 }
                             }
                         }
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "获取失败";
     }
 
     public static int cmdWxUserExe(String cmd) {
-        String  str = "com.tencent.mm.ui.chatting.En_5b8fbb1e -e Chat_User ";
+        String str = "com.tencent.mm.ui.chatting.En_5b8fbb1e -e Chat_User ";
         return cmdExe("am start -n com.tencent.mm/" + str + cmd);
     }
 
@@ -149,8 +151,8 @@ public class Xutils {
         }
         return null;
     }
-    public static void initBarTheme(Activity activity, Toolbar toolbar)
-    {
+
+    public static void initBarTheme(Activity activity, Toolbar toolbar) {
         toolbar.setBackgroundColor(SPHelper.getThemeColor(activity));
         if (!SPHelper.isHS(activity)) {
             StatusBarCompat.setStatusBarColor(activity, SPHelper.getThemeColor(activity));
@@ -169,6 +171,7 @@ public class Xutils {
     public static String getTimeTodayYMD() {
         return new SimpleDateFormat("yyyyMMdd").format(new Date());
     }
+
     //获取应用主界面
     public static String getLaunchClassNameByPkName(Context context, String pkgName) {
         Intent intent = isExit(context, pkgName);
@@ -213,7 +216,7 @@ public class Xutils {
         // execute a shell command, returning output in a string
         try {
 
-            if (Xutils.isNotEmptyOrNull(command)&&command.contains("pm disable com.zncm.dminter.mmhelper")){
+            if (Xutils.isNotEmptyOrNull(command) && command.contains("pm disable com.zncm.dminter.mmhelper")) {
                 return "";
             }
 
@@ -246,7 +249,6 @@ public class Xutils {
     }
 
 
-
     public static void copyText(Context ctx, String text) {
         ClipboardManager cbm = (ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
         cbm.setText(text);
@@ -256,7 +258,7 @@ public class Xutils {
         String commands = cmdEnd;
         int ret = AndroidCommand.noRoot;
         if (Xutils.isNotEmptyOrNull(commands)) {
-            if (commands.contains("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI") ) {
+            if (commands.contains("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI")) {
                 commands = commands.replace("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI", "com.tencent.mm.plugin.sns.ui.En_424b8e16");
             }
             ret = AndroidCommand.execRooted(commands);
@@ -379,9 +381,6 @@ public class Xutils {
 
     /**
      * 通过packagename启动应用
-     *
-     * @param context
-     * @param packagename
      */
     public static void startAppByPackageName(Context context, String packagename, int attempt) {
         try {
@@ -391,7 +390,7 @@ public class Xutils {
             exec(Constant.common_pm_e_p + packagename);
             if (attempt > 0) {
                 startAppByPackageName(context, packagename, --attempt);
-            }else {
+            } else {
                 Xutils.tShort(Constant.no_open);
             }
         }
@@ -452,7 +451,6 @@ public class Xutils {
     }
 
 
-
     public static ApplicationInfo getAppInfo(String pName) {
         ApplicationInfo info;
         try {
@@ -496,11 +494,10 @@ public class Xutils {
     }
 
 
-
     /**
-     *是否安装了xxx应用
+     * 是否安装了xxx应用
      */
-    public static boolean hasInstalledApp(Context context,String pkgName) {
+    public static boolean hasInstalledApp(Context context, String pkgName) {
         PackageManager pm = context.getPackageManager();
         try {
             PackageInfo info = pm.getPackageInfo(pkgName, 0);
@@ -643,7 +640,7 @@ public class Xutils {
     }
 
     /**
-     *获取24小时制 小时
+     * 获取24小时制 小时
      */
     public static int getHour() {
         return Integer.parseInt(new SimpleDateFormat("HH").format(new Date()));

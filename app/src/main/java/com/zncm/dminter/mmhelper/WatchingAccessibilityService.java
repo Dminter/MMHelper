@@ -5,17 +5,21 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.zncm.dminter.mmhelper.utils.Xutils;
+
 
 public class WatchingAccessibilityService extends AccessibilityService {
     private static WatchingAccessibilityService sInstance;
-    public String packageName;
-    public String className;
 
     @SuppressLint("NewApi")
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-//        packageName = (String) event.getPackageName();
-//        className = (String) event.getClassName();
+        /**
+         *界面切换才会刷新，而不是之前的轮询1秒会导致卡顿
+         */
+        if (SPHelper.isAcFloat(this)) {
+            WatchingService.show(this, Xutils.getCurrentActivity());
+        }
     }
 
     @Override

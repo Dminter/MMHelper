@@ -24,43 +24,12 @@ import com.zncm.dminter.mmhelper.floatball.FloatWindow;
 import com.zncm.dminter.mmhelper.utils.NotiHelper;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class WatchingService extends Service {
 
 
     public static FloatWindow mFloatWindow;
     static TextView textView;
-    private  static final int TIME_SEC = -1;
-
-    private static Context ctx;
-
-    public static Handler  handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case -1:
-                    if (SPHelper.isAcFloat(ctx)) {
-                        WatchingService.show(ctx, Xutils.getCurrentActivity());
-                    }
-                    break;
-            }
-
-        }
-    };
-
-    private final static Runnable mTicker = new Runnable() {
-        public void run() {
-            long now = SystemClock.uptimeMillis();
-            long next = now + (1000 - now % 1000);
-            Message message = new Message();
-            message.what = TIME_SEC;
-            handler.sendMessage(message);
-            handler.postAtTime(mTicker, next);
-        }
-    };
 
     public static void show(final Context context, final String text) {
         try {
@@ -97,7 +66,6 @@ public class WatchingService extends Service {
 
     public static void dismiss(Context context) {
         SPHelper.setIsAcFloat(context, false);
-        handler.removeCallbacks(mTicker);
         mFloatWindow.hide();
         NotiHelper.clearNoti(context, Constant.n_id_ac);
     }
@@ -116,11 +84,6 @@ public class WatchingService extends Service {
         View view = LayoutInflater.from(context).inflate(R.layout.window_tasks,
                 null);
         textView = (TextView) view.findViewById(R.id.text);
-//        view.setSystemUiVisibility(
-//                view.getSystemUiVisibility()
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//        );
         mFloatWindow = new FloatWindow(context);
         mFloatWindow
                 .init(view)
@@ -153,8 +116,6 @@ public class WatchingService extends Service {
     public void onCreate() {
         super.onCreate();
         showFloatView(this);
-        ctx =this;
-
     }
 
     @Override
@@ -168,41 +129,11 @@ public class WatchingService extends Service {
         intentCopy.putExtra("action", Constant.SA_GET_ACTIVITY_STOP);
         intentCopy.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         NotiHelper.noti("点击关闭活动采集悬浮窗", "", "", intentCopy, true, false, Constant.n_id_ac);
-        if (mTicker != null) {
-            handler.removeCallbacks(mTicker);
-        }
-        mTicker.run();
         if (mFloatWindow != null) {
             mFloatWindow.show();
         }
         return super.onStartCommand(intent, flags, startId);
     }
 
-    class RefreshTask extends TimerTask {
-
-        @Override
-        public void run() {
-            if (SPHelper.isAcFloat(WatchingService.this)) {
-                WatchingService.show(WatchingService.this, Xutils.getCurrentActivity());
-            }
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        Intent restartServiceIntent = new Intent(getApplicationContext(),
-                this.getClass());
-        restartServiceIntent.setPackage(getPackageName());
-        PendingIntent restartServicePendingIntent = PendingIntent.getService(
-                getApplicationContext(), 1, restartServiceIntent,
-                PendingIntent.FLAG_ONE_SHOT);
-        AlarmManager alarmService = (AlarmManager) getApplicationContext()
-                .getSystemService(Context.ALARM_SERVICE);
-        alarmService.set(AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + 500,
-                restartServicePendingIntent);
-        super.onTaskRemoved(rootIntent);
-    }
 
 }
