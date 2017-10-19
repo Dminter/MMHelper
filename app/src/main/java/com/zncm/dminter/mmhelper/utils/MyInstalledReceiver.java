@@ -56,7 +56,7 @@ public class MyInstalledReceiver extends BroadcastReceiver {
                 DbUtils.insertPkInfo(tmp);
                 }
             Log.i("homer", "安装了 :" + pkgName);
-            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+            DataInitHelper.refApps(EnumInfo.RefreshEnum.APPS.getValue());
         }
 
         if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {
@@ -66,7 +66,7 @@ public class MyInstalledReceiver extends BroadcastReceiver {
                 DbUtils.updatePkInfo(pk);
             }
             Log.i("homer", "卸载了 :" + pkgName);
-            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+            DataInitHelper.refApps(EnumInfo.RefreshEnum.APPS.getValue());
         }
 
         if (intent.getAction().equals("android.intent.action.ACTION_PACKAGE_REPLACED")) {
@@ -76,7 +76,7 @@ public class MyInstalledReceiver extends BroadcastReceiver {
                 DbUtils.updatePkInfo(pk);
             }
             Log.i("homer", "重装 :" + pkgName);
-            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+            DataInitHelper.refApps(EnumInfo.RefreshEnum.APPS.getValue());
         }
     }
 }  

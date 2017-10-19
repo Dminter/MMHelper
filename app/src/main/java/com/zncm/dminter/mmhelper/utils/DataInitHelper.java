@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
 
 import com.zncm.dminter.mmhelper.MyApplication;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
@@ -37,9 +38,20 @@ public class DataInitHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+            refApps(EnumInfo.RefreshEnum.APPS.getValue());
+
         }
     }
+
+    public static void refApps(final int type) {
+        new Handler().postAtTime(new Runnable() {
+            @Override
+            public void run() {
+                EventBus.getDefault().post(new RefreshEvent(type));
+            }
+        },1000);
+    }
+
     private static void initPkInfo() {
         PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
         List<PackageInfo> packages = pm.getInstalledPackages(0);

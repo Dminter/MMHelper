@@ -67,11 +67,11 @@ public class SettingNew extends MaterialSettings {
         ctx = this;
         Xutils.verifyStoragePermissions(this);
         fzInfo = SPHelper.getFzInfo(this);
-        addItem(new TextItem(ctx, "").setTitle("建议活动").setOnclick(new TextItem.OnClickListener() {
-            public void onClick(TextItem textItem) {
-                startActivity(new Intent(ctx, SuggestAc.class));
-            }
-        }));
+//        addItem(new TextItem(ctx, "").setTitle("建议活动").setOnclick(new TextItem.OnClickListener() {
+//            public void onClick(TextItem textItem) {
+//                startActivity(new Intent(ctx, SuggestAc.class));
+//            }
+//        }));
 
         addItem(new HeaderItem(this).setTitle("创建快捷方式"));
         addItem(new TextItem(ctx, "").setTitle("全部冷冻").setOnclick(new TextItem.OnClickListener() {
@@ -211,7 +211,17 @@ public class SettingNew extends MaterialSettings {
                                                                 }
 
                 ));
+        addItem(new DividerItem(ctx));
+        addItem(new TextItem(ctx, "").setTitle("添加建议活动").setSubtitle("仅会添加已安装且未添加过的活动").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                /**
+                 *添加建议活动
+                 */
+                InitSuggestActivity initSuggestActivity = new InitSuggestActivity();
+                initSuggestActivity.execute();
 
+            }
+        }));
         addItem(new DividerItem(ctx));
         addItem(new TextItem(ctx, "").setTitle("系统应用->冷冻室【慎重】").setOnclick(new TextItem.OnClickListener() {
                                                                                public void onClick(TextItem textItem) {
@@ -640,6 +650,31 @@ public class SettingNew extends MaterialSettings {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Xutils.tShort("全部桌面快捷方式已创建完成~");
+        }
+    }
+
+
+
+    class InitSuggestActivity extends AsyncTask<Void, Void, Void>
+
+    {
+
+        protected Void doInBackground(Void... params) {
+            try {
+                MainActivity.initBaseCard(false);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Xutils.tShort("添加完毕，请尽情享用~");
+            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.ALL.getValue()));
+            backDo();
         }
     }
 

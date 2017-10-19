@@ -180,7 +180,7 @@ public class DbUtils {
         ArrayList<CardInfo> cardInfos = new ArrayList();
         try {
 
-            List<PkInfo> pkInfos = getPkInfos(null,true);
+            List<PkInfo> pkInfos = getPkInfos(null, true);
             if (Xutils.listNotNull(pkInfos)) {
                 for (PkInfo tmp : pkInfos
                         ) {
@@ -279,7 +279,7 @@ public class DbUtils {
         init();
         try {
             if (cardInfo != null) {
-                if (cardInfo.getExi4()==0){
+                if (cardInfo.getExi4() == 0) {
                     cardInfo.setExi4(Constant.sort_apps);
                 }
                 if (!Xutils.isNotEmptyOrNull(cardInfo.getTitle())) {
@@ -309,12 +309,12 @@ public class DbUtils {
                 if (Xutils.isEmptyOrNull(pkInfo.getPackageName())) {
                     return;
                 }
-                if (pkInfo.getExb3()==0){
+                if (pkInfo.getExb3() == 0) {
                     pkInfo.setExb3(Constant.sort_apps);
                 }
                 PkInfo tmp = getPkOne(pkInfo.getPackageName());
                 if (tmp != null) {
-                    if (tmp.getExb3()==0){
+                    if (tmp.getExb3() == 0) {
                         tmp.setExb3(Constant.sort_apps);
                     }
                     tmp.setStatus(pkInfo.getStatus());
@@ -529,7 +529,9 @@ public class DbUtils {
      * 支付宝快捷方式合集
      */
     public static void cardzfball() {
-        if (DbUtils.getCardInfoByCmd(Constant.zfb_sys) != null) {
+        if (DbUtils.getCardInfoByCmd(Constant.zfb_sys_short) != null
+                || DbUtils.getCardInfoByCmd(Constant.zfb_fkm) != null
+                || DbUtils.getCardInfoByCmd(Constant.zfb_skm) != null) {
             return;
         }
         DbUtils.insertCard(new CardInfo(EnumInfo.cType.SHORT_CUT_SYS.getValue(), Constant.zfb_sys_short, "扫一扫"));
@@ -547,9 +549,6 @@ public class DbUtils {
         }
         DbUtils.insertCard(cardInfo);
     }
-
-
-
 
 
     /**
@@ -574,5 +573,19 @@ public class DbUtils {
         }
         //更新
         DbUtils.insertCard(new CardInfo(EnumInfo.cType.URL.getValue(), Constant.update_url, "更新地址"));
+    }
+
+
+    public static void addIfNotExist(CardInfo cardInfo) {
+        if (cardInfo.getType()==EnumInfo.cType.CMD.getValue()){
+            if (DbUtils.getCardInfoByCmd(cardInfo.getCmd()) != null) {
+                return;
+            }
+        }else   if (cardInfo.getType()==EnumInfo.cType.TO_ACTIVITY.getValue()){
+            if (DbUtils.getCardInfoByClassName(cardInfo.getClassName()) != null) {
+                return;
+            }
+        }
+        DbUtils.insertCard(cardInfo);
     }
 }

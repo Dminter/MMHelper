@@ -2,6 +2,7 @@ package com.zncm.dminter.mmhelper;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -63,7 +64,26 @@ public class SuggestAc extends MaterialSettings {
          *本地有才建议
          * 微信，支付宝，QQ,，网易云音乐，微博，哔哩哔哩，京东，高德地图，知乎，有道云笔记，
          */
-        items.put(cmd, "Shell");
+        sugItems(items);
+        /**
+         *新本没有什么可用的去掉了
+         */
+//        if (Xutils.hasInstalledApp(ctx, bili)) {
+//            items.put(bili, "哔哩哔哩");
+//        }
+        if (items != null && items.size() > 0) {
+            for (Map.Entry<String, String> entry : items.entrySet()
+                    ) {
+                addMyItem(entry.getKey(), entry.getValue());
+            }
+        }
+
+    }
+
+    public static void sugItems(LinkedHashMap<String, String> items) {
+        Context ctx = MyApplication.getInstance().ctx;
+
+
 
         if (Xutils.hasInstalledApp(ctx, wx)) {
             items.put(wx, "微信");
@@ -84,28 +104,20 @@ public class SuggestAc extends MaterialSettings {
         if (Xutils.hasInstalledApp(ctx, jingdong)) {
             items.put(jingdong, "京东");
         }
-        if (Xutils.hasInstalledApp(ctx, dianping)) {
-            items.put(dianping, "大众点评");
-        }
+//        if (Xutils.hasInstalledApp(ctx, dianping)) {
+//            items.put(dianping, "大众点评");
+//        }
         if (Xutils.hasInstalledApp(ctx, wc)) {
             items.put(wc, "挖财");
         }
         if (Xutils.hasInstalledApp(ctx, youdaonote)) {
             items.put(youdaonote, "有道云笔记");
         }
-        if (Xutils.hasInstalledApp(ctx, douban)) {
-            items.put(douban, "豆瓣");
-        }
-        if (Xutils.hasInstalledApp(ctx, bili)) {
-            items.put(bili, "哔哩哔哩");
-        }
-        if (items != null && items.size() > 0) {
-            for (Map.Entry<String, String> entry : items.entrySet()
-                    ) {
-                addMyItem(entry.getKey(), entry.getValue());
-            }
-        }
+//        if (Xutils.hasInstalledApp(ctx, douban)) {
+//            items.put(douban, "豆瓣");
+//        }
 
+        items.put(cmd, "Shell");
     }
 
     private void addMyItem(final String key, final String value) {

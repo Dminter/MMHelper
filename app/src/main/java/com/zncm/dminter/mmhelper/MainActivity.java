@@ -44,7 +44,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements ColorChooserDialog.ColorCallback {
     private MyPagerAdapter adapter;
@@ -56,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     private MainActivity ctx;
     public HashMap<Integer, MyFt> fragments = new HashMap();
     private LinearLayout topView;
-    private  ScreenListener screenListener;
-    private  TabLayout mTabLayout;
+    private ScreenListener screenListener;
+    private TabLayout mTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,21 +111,11 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         /**
          *使用support TabLayout 代替 PagerSlidingTabStrip
          */
-        mTabLayout = (TabLayout)findViewById(R.id.mTabLayout);
-        Xutils.initTabLayout(ctx,mTabLayout);
+        mTabLayout = (TabLayout) findViewById(R.id.mTabLayout);
+        Xutils.initTabLayout(ctx, mTabLayout);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
-        if (!Xutils.listNotNull(tmps)) {
-            DbUtils.cardUpdate();
-            List<String> list = Xutils.importTxt(this, R.raw.init_2016_08_09_13_36);
-            DbUtils.importCardFromTxt(list, true);
-        }
-        DbUtils.cardXm();
-        DbUtils.cardzfball();
-
-
-
+        initBaseCard(true);
 
 
         ArrayList<PkInfo> pkInfos = DbUtils.getPkInfos(null);
@@ -166,13 +158,51 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         EventBus.getDefault().register(this);
 
 
-
         if (SPHelper.isAcFloat(ctx)) {
             startService(new Intent(ctx, WatchingService.class));
         }
 
     }
 
+    /**
+     * 首次安装，初始化活动
+     * 不是第一次也可以强制初始化，触发在设置里面【添加建议活动】
+     */
+    public static void initBaseCard(boolean isFirst) {
+        ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
+        if (!isFirst) {
+            tmps = new ArrayList<>();
+        }
+        if (!Xutils.listNotNull(tmps)) {
+//            List<String> list = Xutils.importTxt(this, R.raw.init_2016_08_09_13_36);
+//            DbUtils.importCardFromTxt(list, true);
+            LinkedHashMap<String, String> items = new LinkedHashMap<>();
+            SuggestAc.sugItems(items);
+            if (items != null && items.size() > 0) {
+                for (Map.Entry<String, String> entry : items.entrySet()
+                        ) {
+                    String pkName = entry.getKey();
+                    if (Xutils.isNotEmptyOrNull(pkName)) {
+                        List<CardInfo> cardInfos = new ArrayList();
+                        SuggestInfoActivity.allInit(pkName, cardInfos);
+                        if (Xutils.listNotNull(cardInfos)) {
+//                            Xutils.debug("cardInfos:" + cardInfos);
+                            for (CardInfo tmp : cardInfos
+                                    ) {
+                                DbUtils.addIfNotExist(tmp);
+                            }
+                        }
+                    }
+                }
+            }
+            /**
+             *初始化建议的活动
+             */
+            DbUtils.cardXm();
+            DbUtils.cardzfball();
+            DbUtils.cardUpdate();
+        }
+    }
 
 
     public static void initBallService(Context ctx) {
@@ -280,6 +310,8 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     @Override
     protected void onResume() {
         super.onResume();
+
+
         if (SPHelper.isAcFloat(ctx)) {
             MyFt.updateServiceStatus(ctx);
         }
@@ -289,19 +321,19 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             boolean flag = false;
             boolean isNightMode = SPHelper.isNightMode(ctx);
 
-            if (hour >= 6 && hour < 18 ) {
-                if (isNightMode){
+            if (hour >= 6 && hour < 18) {
+                if (isNightMode) {
                     flag = true;
                 }
                 SPHelper.setIsNightMode(ctx, false);
             } else {
-                if (!isNightMode){
+                if (!isNightMode) {
                     flag = true;
                 }
                 SPHelper.setIsNightMode(ctx, true);
             }
 
-            if (flag){
+            if (flag) {
                 initActicity();
             }
 
@@ -394,7 +426,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                 startActivity(new Intent(ctx, SettingNew.class));
                 break;
             case 2:
-                SPHelper.setIsAutoNight(ctx,false);
+                SPHelper.setIsAutoNight(ctx, false);
                 SPHelper.setIsNightMode(ctx, !SPHelper.isNightMode(ctx));
                 //切换模式，重启界面生效
                 finish();

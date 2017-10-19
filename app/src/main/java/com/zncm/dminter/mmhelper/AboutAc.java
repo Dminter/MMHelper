@@ -49,7 +49,7 @@ public class AboutAc extends MaterialSettings {
         }));
 
         addItem(new DividerItem(this.ctx));
-        addItem(new TextItem(this.ctx, "").setTitle("by Dminter").setSubtitle("微信：" + Constant.author_wx).setOnclick(new TextItem.OnClickListener() {
+        addItem(new TextItem(this.ctx, "").setTitle("Powered by Dminter").setSubtitle("微信：" + Constant.author_wx).setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
                 Xutils.cmdWxUserExe(Constant.author_wx);
                 DbUtils.cardXm();
@@ -86,8 +86,10 @@ public class AboutAc extends MaterialSettings {
                 "    compile 'com.github.kenumir:MaterialSettings:v.1.2.2'\n" +
                 "    compile 'cn.tinkling.t9:t9search:1.1.0'\n" +
                 "    compile 'com.belerweb:pinyin4j:2.5.0'\n" +
-                "    compile 'com.github.czy1121:settingscompat:1.1.4'\n" +
-                "    compile 'com.github.shell-software:fab:1.1.2'").positiveText("知").show();
+                "    compile 'com.github.czy1121:settingscompat:1.1.4'\n"+
+                "    me.omico.currentactivity\n"
+
+        ).positiveText("知").show();
     }
 
     @Override

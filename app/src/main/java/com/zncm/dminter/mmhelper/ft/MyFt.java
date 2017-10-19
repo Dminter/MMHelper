@@ -56,6 +56,7 @@ import com.zncm.dminter.mmhelper.dragrecyclerview.CallbackWrap;
 import com.zncm.dminter.mmhelper.dragrecyclerview.OnTouchListener;
 import com.zncm.dminter.mmhelper.utils.BottomSheetDlg;
 import com.zncm.dminter.mmhelper.utils.ColorGenerator;
+import com.zncm.dminter.mmhelper.utils.DataInitHelper;
 import com.zncm.dminter.mmhelper.utils.ShellUtils;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
@@ -864,7 +865,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     case 1:
                         if (packageName.equals(EnumInfo.homeTab.SUGGEST_ACTIVITY.getValue())) {
                             Xutils.sendToDesktop(ctx, info);
-                        }else {
+                        } else {
                             if (info.getType() == EnumInfo.cType.WX.getValue() || info.getType() == EnumInfo.cType.QQ.getValue() || info.getType() == EnumInfo.cType.URL.getValue() || info.getType() == EnumInfo.cType.CMD.getValue() || info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
                                 talkUI(info, 0, "修改", "", "");
                             } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
@@ -1051,6 +1052,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         map8.put("text", "卸载");
         map8.put("key", "-8");
         list.add(map8);
+        Map<String, Object> map9 = new HashMap<>();
+        map9.put("text", "彻底冻结");
+        map9.put("key", "-9");
+        list.add(map9);
         new BottomSheetDlg(ctx, list, false) {
             @Override
             public void onGridItemClickListener(int position) {
@@ -1116,6 +1121,16 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         break;
                     case 7:
                         Xutils.unstallApp(ctx, info.getPackageName());
+                        DataInitHelper.refApps(EnumInfo.RefreshEnum.APPS.getValue());
+                        DataInitHelper.refApps(EnumInfo.RefreshEnum.BAT_STOP.getValue());
+                        break;
+
+                    case 8:
+                        Xutils.exec("pm enable " + info.getPackageName());
+                        Xutils.exec("pm disable " + info.getPackageName());
+                        info.setDisabled(true);
+                        pkInfo.setStatus(EnumInfo.appStatus.DISABLED.getValue());
+                        DbUtils.updatePkInfo(pkInfo);
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
                         break;

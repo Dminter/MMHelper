@@ -1,9 +1,9 @@
-﻿主页|com.tencent.mm|com.tencent.mm.ui.LauncherUI
+﻿微信|com.tencent.mm|com.tencent.mm.ui.LauncherUI
 朋友圈|com.tencent.mm|com.tencent.mm.plugin.sns.ui.SnsTimeLineUI
 二维码名片|com.tencent.mm|com.tencent.mm.plugin.setting.ui.setting.SelfQRCodeUI
 收藏|com.tencent.mm|com.tencent.mm.plugin.favorite.ui.FavoriteIndexUI
 扫一扫|com.tencent.mm|com.tencent.mm.plugin.scanner.ui.BaseScanUI
 付款码|com.tencent.mm|com.tencent.mm.plugin.offline.ui.WalletOfflineCoinPurseUI
-付款码|com.eg.android.AlipayGphone|com.alipay.mobile.onsitepay9.payer.OspTabHostActivity
-余额宝|com.eg.android.AlipayGphone|com.alipay.mobile.fund.ui.FundMainNewActivity_
-QQ|com.tencent.mobileqq|com.tencent.mobileqq.activity.SplashActivity
+账单|com.eg.android.AlipayGphone|com.eg.android.AlipayGphone,com.alipay.mobile.bill.list.ui.BillListActivity_
+我的二维码|com.eg.android.AlipayGphone|com.alipay.mobile.security.accountmanager.AccountInfo.ui.SecurityAccountQrCodeActivity_
+搜索|com.eg.android.AlipayGphone|com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity

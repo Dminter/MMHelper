@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/bg_color"
-        android:numColumns="4"
+        android:numColumns="3"
         android:padding="5dp"
         android:stretchMode="columnWidth" />
 

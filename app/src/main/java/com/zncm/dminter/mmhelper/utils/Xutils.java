@@ -95,7 +95,6 @@ public class Xutils {
                                         className = pkgName + className;
                                     }
                                     String pkgClass = pkgName + "\n" + className;
-                                    Xutils.debug("getCurrentActivity:" + pkgClass);
                                     return pkgClass;
                                 }
                             }
