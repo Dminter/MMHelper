@@ -141,17 +141,7 @@ public class Xutils {
         return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
     }
 
-    public static File createFolder(String name) {
-        if (isNotEmptyOrNull(name)) {
-            File file = new File(name);
-            if ((file.exists()) && (file.isDirectory())) {
-                return file;
-            }
-            file.mkdirs();
-            return file;
-        }
-        return null;
-    }
+
 
     public static void initBarTheme(Activity activity, Toolbar toolbar) {
         toolbar.setBackgroundColor(SPHelper.getThemeColor(activity));

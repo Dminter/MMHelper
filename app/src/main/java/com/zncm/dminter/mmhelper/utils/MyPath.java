@@ -1,6 +1,7 @@
 package com.zncm.dminter.mmhelper.utils;
 
 import android.os.Environment;
+import android.text.TextUtils;
 
 import com.zncm.dminter.mmhelper.Constant;
 
@@ -14,7 +15,7 @@ public class MyPath {
         if (folderName == null) {
             return null;
         }
-        File dir = Xutils.createFolder(folderName);
+        File dir = createFolder(folderName);
         if (dir != null) {
             return dir.getAbsolutePath();
         } else {
@@ -22,6 +23,18 @@ public class MyPath {
         }
     }
 
+
+    public static File createFolder(String name) {
+        if (!TextUtils.isEmpty(name)) {
+            File file = new File(name);
+            if ((file.exists()) && (file.isDirectory())) {
+                return file;
+            }
+            file.mkdirs();
+            return file;
+        }
+        return null;
+    }
 
     public static String getPathFolder(String path) {
         File rootPath = Environment.getExternalStoragePublicDirectory(Constant.PATH_ROOT);

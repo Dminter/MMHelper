@@ -27,6 +27,7 @@ public class Constant {
     public static String no_open = "打开失败~请检查应用是否已被卸载！！";
     public static String add_shortcut = "已添加快捷方式到桌面！！";
     public static String update_url = "http://www.coolapk.com/apk/com.zncm.dminter.mmhelper";
+    public static String lawnchair_qa_url = "http://www.coolapk.com/apk/ch.deletescape.lawnchair.qa";
     public static String github_url = "https://github.com/Dminter/MMHelper";
     public static String help_url = "http://note.youdao.com/noteshare?id=55ca9245213bf61f2a33fab3f4f6a4cb&sub=15A9A6FF58B94CEAB483D311BD71DBF9";
     public static final String wx_PYQ = "com.tencent.mm.plugin.sns.ui.SnsTimeLineUI";

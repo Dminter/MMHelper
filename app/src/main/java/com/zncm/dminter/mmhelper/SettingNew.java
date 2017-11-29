@@ -30,6 +30,7 @@ import com.kenumir.materialsettings.items.HeaderItem;
 import com.kenumir.materialsettings.items.TextItem;
 import com.kenumir.materialsettings.storage.StorageInterface;
 import com.malinskiy.materialicons.Iconify;
+import com.sofaking.iconpack.Constants;
 import com.sofaking.iconpack.IconPack;
 import com.sofaking.iconpack.IconPackManager;
 import com.zncm.dminter.mmhelper.data.CardInfo;
@@ -81,9 +82,9 @@ public class SettingNew extends MaterialSettings {
 
 
 
-        addItem(new TextItem(ctx, "").setTitle("搭配").setOnclick(new TextItem.OnClickListener() {
+        addItem(new TextItem(ctx, "").setTitle("搭配LawnchairQa启动器使用,效果更佳").setSubtitle("一款基于开源Lawnchair类原生启动器").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
-                shortCutAdd(ctx, Constant.SA_BATSTOP, "全部冷冻");
+            Xutils.openUrl(Constant.lawnchair_qa_url);
             }
         }));
 
@@ -633,48 +634,44 @@ public class SettingNew extends MaterialSettings {
                                     }
                                     items[i] = name;
                                 }
+                                Xutils.themeMaterialDialog(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
+
+                                    @Override
+                                    public void onSelection(MaterialDialog dialog, View itemView, final int position, CharSequence text) {
+                                        SPHelper.setIconPackName(ctx, iconPacks.get(position).getTitle());
+                                        textItem.updateSubTitle(SPHelper.getIconPackName(ctx));
+
+
+                                        mIconPackManager.loadInstalledIconPacksAsync(ctx, new IconPackManager.Listener() {
+                                            @Override
+                                            public void onIconPacksLoaded() {
+
+                                                final IconPack mIconPack = mIconPackManager.getInstalledIconPack(iconPacks.get(position).getPackageName());
+                                                mIconPack.initAppFilterAsync(true, new IconPack.AppFilterListener() {
+                                                    @Override
+                                                    public void onAppFilterLoaded() {
+                                                        progressDlg = Xutils.themeMaterialDialog(ctx).title("请稍后...").show();
+                                                        new MyTask().execute(mIconPack);
+
+                                                    }
+
+                                                    @Override
+                                                    public void onLoadingFailed(Exception e) {
+
+
+                                                    }
+                                                });
+
+
+                                            }
+                                        });
+
+
+                                    }
+                                }).show();
+                            }else {
+                                Xutils.tShort("没找到图标包~");
                             }
-
-
-                            Xutils.themeMaterialDialog(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
-
-                                @Override
-                                public void onSelection(MaterialDialog dialog, View itemView, final int position, CharSequence text) {
-                                    SPHelper.setIconPackName(ctx, iconPacks.get(position).getTitle());
-                                    textItem.updateSubTitle(SPHelper.getIconPackName(ctx));
-
-
-                                    mIconPackManager.loadInstalledIconPacksAsync(ctx, new IconPackManager.Listener() {
-                                        @Override
-                                        public void onIconPacksLoaded() {
-
-                                            final IconPack mIconPack = mIconPackManager.getInstalledIconPack(iconPacks.get(position).getPackageName());
-                                            mIconPack.initAppFilterAsync(true, new IconPack.AppFilterListener() {
-                                                @Override
-                                                public void onAppFilterLoaded() {
-                                                    progressDlg = Xutils.themeMaterialDialog(ctx).title("请稍后...").show();
-                                                    new MyTask().execute(mIconPack);
-
-                                                }
-
-                                                @Override
-                                                public void onLoadingFailed(Exception e) {
-
-
-                                                }
-                                            });
-
-
-                                        }
-                                    });
-
-
-                                }
-                            }).show();
-
-
-//                        final IconPack mIconPack = mIconPackManager.getInstalledIconPack("com.by_zen.sunmiconpack");
-
 
                         }
                     });

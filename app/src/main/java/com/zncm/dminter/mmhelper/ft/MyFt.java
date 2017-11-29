@@ -1054,7 +1054,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         map6.put("key", "-6");
         list.add(map6);
         Map<String, Object> map7 = new HashMap<>();
-        map7.put("text", "shortcut");
+        map7.put("text", "快捷启动");
         map7.put("key", "-7");
         list.add(map7);
         Map<String, Object> map8 = new HashMap<>();
