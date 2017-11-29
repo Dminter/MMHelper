@@ -231,6 +231,15 @@ public class SPHelper {
 
 
 
+    public static String getIconPackName(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString("icon_pack_name", "");
+    }
+
+    public static void setIconPackName(Context context, String icon_pack_name) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString("icon_pack_name", icon_pack_name).commit();
+    }
 
 
 

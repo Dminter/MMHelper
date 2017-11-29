@@ -34,4 +34,5 @@ dependencies {
     compile 'cn.tinkling.t9:t9search:1.1.0'
     compile 'com.belerweb:pinyin4j:2.5.0'
     compile 'com.github.czy1121:settingscompat:1.1.4'
+    compile 'com.sofakingforever.libraries:iconpack:0.0.7@aar'
 }

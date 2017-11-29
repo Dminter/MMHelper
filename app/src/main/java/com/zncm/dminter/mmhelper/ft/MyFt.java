@@ -3,6 +3,7 @@ package com.zncm.dminter.mmhelper.ft;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -32,6 +33,8 @@ import android.widget.EditText;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.sofaking.iconpack.IconPack;
+import com.sofaking.iconpack.IconPackManager;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MainActivity;
 import com.zncm.dminter.mmhelper.MyApplication;
@@ -54,6 +57,7 @@ import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.dragrecyclerview.CallbackWrap;
 import com.zncm.dminter.mmhelper.dragrecyclerview.OnTouchListener;
+import com.zncm.dminter.mmhelper.utils.ApkInfoUtils;
 import com.zncm.dminter.mmhelper.utils.BottomSheetDlg;
 import com.zncm.dminter.mmhelper.utils.ColorGenerator;
 import com.zncm.dminter.mmhelper.utils.DataInitHelper;
@@ -111,11 +115,11 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         mListView.setLayoutManager(layoutManager);
         cardAdapter = new CardAdapter(ctx) {
             @Override
-            public void setData(int position, CardViewHolder holder) {
+            public void setData(int position, final CardViewHolder holder) {
                 if (!Xutils.listNotNull(cardInfos) || position >= cardInfos.size()) {
                     return;
                 }
-                CardInfo info = cardInfos.get(position);
+                final CardInfo info = cardInfos.get(position);
                 String title = info.getTitle();
                 int titleColor = getResources().getColor(R.color.material_light_black);
                 String pkgName = info.getPackageName();
@@ -134,7 +138,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 } else {
                     titleColor = getResources().getColor(R.color.material_light_black);
                 }
-                int index = info.getExi2();
+                final int index = info.getExi2();
                 if (index > 0) {
                     titleColor = getResources().getColor(R.color.material_amber_accent_700);
                 }
@@ -167,6 +171,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 }
                 if (isAppIcon) {
                     holder.image.setVisibility(View.VISIBLE);
+
                     Bitmap bitmap = bytes2Bimap(info.getImg());
                     if (bitmap != null) {
                         holder.image.setImageBitmap(bitmap);
@@ -340,6 +345,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
 
     }
+
+
+
+
 
     public static void openAcFloat(Context ctx) {
         if (WatchingAccessibilityService.getInstance() == null) {

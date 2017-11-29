@@ -1,6 +1,7 @@
 package com.zncm.dminter.mmhelper;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -12,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -28,6 +30,8 @@ import com.kenumir.materialsettings.items.HeaderItem;
 import com.kenumir.materialsettings.items.TextItem;
 import com.kenumir.materialsettings.storage.StorageInterface;
 import com.malinskiy.materialicons.Iconify;
+import com.sofaking.iconpack.IconPack;
+import com.sofaking.iconpack.IconPackManager;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.MyPackageInfo;
@@ -37,6 +41,7 @@ import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.floatball.FloatBallService;
 import com.zncm.dminter.mmhelper.floatball.FloatWindowManager;
 import com.zncm.dminter.mmhelper.ft.MyFt;
+import com.zncm.dminter.mmhelper.utils.ApkInfoUtils;
 import com.zncm.dminter.mmhelper.utils.DataInitHelper;
 import com.zncm.dminter.mmhelper.utils.MyPath;
 import com.zncm.dminter.mmhelper.utils.Xutils;
@@ -60,6 +65,7 @@ public class SettingNew extends MaterialSettings {
     private Activity ctx;
     private String fzInfo;
     private boolean isNeedUpdate = false;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -593,6 +599,87 @@ public class SettingNew extends MaterialSettings {
         }).setDefaultValue(SPHelper.isFloatBall(ctx)));
 
 
+        addItem(new DividerItem(ctx));
+
+        ArrayList<IconPack> iconPacks = new ArrayList<>();
+        addItem(new TextItem(ctx, "").setTitle("图标包").setSubtitle(SPHelper.getIconPackName(ctx)).setOnclick(new TextItem.OnClickListener() {
+            public void onClick(final TextItem textItem) {
+                try {
+
+                    if (checkNotPro()) {
+                        return;
+                    }
+                    final IconPackManager mIconPackManager = new IconPackManager();
+                    mIconPackManager.loadInstalledIconPacksAsync(ctx, new IconPackManager.Listener() {
+                        @Override
+                        public void onIconPacksLoaded() {
+
+                            final ArrayList<IconPack> iconPacks = mIconPackManager.getInstalledIconPacksList();
+                            final String[] items = new String[iconPacks.size()];
+                            if (Xutils.listNotNull(iconPacks)) {
+                                for (int i = 0; i < iconPacks.size(); i++) {
+                                    String name = iconPacks.get(i).getTitle();
+                                    if (Xutils.isNotEmptyOrNull(SPHelper.getIconPackName(ctx)) && Xutils.isNotEmptyOrNull(name)
+                                            && SPHelper.getIconPackName(ctx).equals(name)) {
+                                        name = name + "   ✔";
+                                    }
+                                    items[i] = name;
+                                }
+                            }
+
+
+                            Xutils.themeMaterialDialog(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
+
+                                @Override
+                                public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                                    SPHelper.setIconPackName(ctx, iconPacks.get(position).getTitle());
+                                    textItem.updateSubTitle(SPHelper.getIconPackName(ctx));
+
+
+                                    mIconPackManager.loadInstalledIconPacksAsync(ctx, new IconPackManager.Listener() {
+                                        @Override
+                                        public void onIconPacksLoaded() {
+
+                                            final IconPack mIconPack = mIconPackManager.getInstalledIconPack(SPHelper.getIconPackName(ctx));
+                                            mIconPack.initAppFilterAsync(true, new IconPack.AppFilterListener() {
+                                                @Override
+                                                public void onAppFilterLoaded() {
+                                                    new MyTask().execute(mIconPack);
+
+
+
+                                                }
+
+                                                @Override
+                                                public void onLoadingFailed(Exception e) {
+
+
+                                                }
+                                            });
+
+
+                                        }
+                                    });
+
+
+                                }
+                            }).show();
+
+
+//                        final IconPack mIconPack = mIconPackManager.getInstalledIconPack("com.by_zen.sunmiconpack");
+
+
+                        }
+                    });
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
+
+
     }
 
     private void csvOutput() {
@@ -621,6 +708,70 @@ public class SettingNew extends MaterialSettings {
             e.printStackTrace();
         }
     }
+
+
+    public class MyTask extends AsyncTask<IconPack, Void, Void> {
+
+        protected Void doInBackground(IconPack... params) {
+            try {
+                ArrayList<PkInfo> tmps = DbUtils.getPkInfos(null, true);
+                if (Xutils.listNotNull(tmps)) {
+                    for (PkInfo info : tmps
+                            ) {
+                        try {
+                            if (info != null) {
+                                String pkg = info.getPackageName();
+                                String cls = ApkInfoUtils.getLauncherActivityByPackageName(ctx, info.getPackageName());
+                                if (Xutils.isNotEmptyOrNull(pkg) && Xutils.isNotEmptyOrNull(cls)) {
+                                    ComponentName component = new ComponentName(pkg, cls);
+                                    Drawable icon = params[0].getDefaultIconForPackage(ctx, component, true);
+                                    if (icon != null) {
+                                        info.setIcon(Xutils.drawable2Bytes(icon));
+                                        DbUtils.updatePkInfo(info);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                ArrayList<CardInfo> cardInfos = DbUtils.getCardInfos(EnumInfo.homeTab.LIKE.getValue());
+                if (Xutils.listNotNull(cardInfos)) {
+                    for (CardInfo info : cardInfos
+                            ) {
+                        try {
+                            if (info != null) {
+                                String pkg = info.getPackageName();
+                                String cls = ApkInfoUtils.getLauncherActivityByPackageName(MyApplication.getInstance().ctx, info.getPackageName());
+                                if (Xutils.isNotEmptyOrNull(pkg) && Xutils.isNotEmptyOrNull(cls)) {
+                                    ComponentName component = new ComponentName(pkg, cls);
+                                    Drawable icon = params[0].getDefaultIconForPackage(MyApplication.getInstance().ctx, component, true);
+                                    if (icon != null) {
+                                        info.setImg(Xutils.drawable2Bytes(icon));
+                                        DbUtils.updateCard(info);
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Xutils.tShort("图标包已应用~");
+        }
+    }
+
 
     public class MyTaskBatSendToDesk extends AsyncTask<Void, Void, Void> {
 
@@ -652,7 +803,6 @@ public class SettingNew extends MaterialSettings {
             Xutils.tShort("全部桌面快捷方式已创建完成~");
         }
     }
-
 
 
     class InitSuggestActivity extends AsyncTask<Void, Void, Void>
