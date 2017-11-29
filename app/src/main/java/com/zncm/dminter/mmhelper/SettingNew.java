@@ -65,7 +65,7 @@ public class SettingNew extends MaterialSettings {
     private Activity ctx;
     private String fzInfo;
     private boolean isNeedUpdate = false;
-
+    private MaterialDialog progressDlg;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +78,14 @@ public class SettingNew extends MaterialSettings {
 //                startActivity(new Intent(ctx, SuggestAc.class));
 //            }
 //        }));
+
+
+
+        addItem(new TextItem(ctx, "").setTitle("搭配").setOnclick(new TextItem.OnClickListener() {
+            public void onClick(TextItem textItem) {
+                shortCutAdd(ctx, Constant.SA_BATSTOP, "全部冷冻");
+            }
+        }));
 
         addItem(new HeaderItem(this).setTitle("创建快捷方式"));
         addItem(new TextItem(ctx, "").setTitle("全部冷冻").setOnclick(new TextItem.OnClickListener() {
@@ -631,7 +639,7 @@ public class SettingNew extends MaterialSettings {
                             Xutils.themeMaterialDialog(ctx).items(items).itemsCallback(new MaterialDialog.ListCallback() {
 
                                 @Override
-                                public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                                public void onSelection(MaterialDialog dialog, View itemView, final int position, CharSequence text) {
                                     SPHelper.setIconPackName(ctx, iconPacks.get(position).getTitle());
                                     textItem.updateSubTitle(SPHelper.getIconPackName(ctx));
 
@@ -640,13 +648,12 @@ public class SettingNew extends MaterialSettings {
                                         @Override
                                         public void onIconPacksLoaded() {
 
-                                            final IconPack mIconPack = mIconPackManager.getInstalledIconPack(SPHelper.getIconPackName(ctx));
+                                            final IconPack mIconPack = mIconPackManager.getInstalledIconPack(iconPacks.get(position).getPackageName());
                                             mIconPack.initAppFilterAsync(true, new IconPack.AppFilterListener() {
                                                 @Override
                                                 public void onAppFilterLoaded() {
+                                                    progressDlg = Xutils.themeMaterialDialog(ctx).title("请稍后...").show();
                                                     new MyTask().execute(mIconPack);
-
-
 
                                                 }
 
@@ -737,7 +744,7 @@ public class SettingNew extends MaterialSettings {
                     }
                 }
 
-                ArrayList<CardInfo> cardInfos = DbUtils.getCardInfos(EnumInfo.homeTab.LIKE.getValue());
+                ArrayList<CardInfo> cardInfos = DbUtils.getCardInfos(EnumInfo.homeTab.ALL.getValue());
                 if (Xutils.listNotNull(cardInfos)) {
                     for (CardInfo info : cardInfos
                             ) {
@@ -768,7 +775,11 @@ public class SettingNew extends MaterialSettings {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if (progressDlg != null && progressDlg.isShowing()) {
+                progressDlg.dismiss();
+            }
             Xutils.tShort("图标包已应用~");
+            isNeedUpdate = true;
         }
     }
 
