@@ -7,8 +7,8 @@ android {
         applicationId "com.zncm.dminter.mmhelper"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 35
-        versionName "2.2.7"
+        versionCode 36
+        versionName "2.2.8"
     }
     buildTypes {
         release {

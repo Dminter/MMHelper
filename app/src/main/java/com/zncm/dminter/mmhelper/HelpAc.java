@@ -37,7 +37,6 @@ public class HelpAc extends MaterialSettings {
         addMyItem(R.string.h11, R.string.a11);
         addMyItem(R.string.h12, R.string.a12);
         addMyItem(R.string.h13, R.string.a13);
-        addMyItem(R.string.h13, R.string.a13);
 
         addMyItem(R.string.h14, R.string.a14);
         addMyItem(R.string.h15, R.string.a15);

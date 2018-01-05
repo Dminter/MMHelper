@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -102,6 +103,8 @@
             android:name="com.zncm.dminter.mmhelper.SortActivity"
             android:label="排序" />
 
+        <activity
+                android:name="com.zncm.dminter.mmhelper.LauncherDbActivity" />
 
         <service
             android:name="com.zncm.dminter.mmhelper.WatchingService"

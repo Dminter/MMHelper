@@ -44,6 +44,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +60,86 @@ import java.util.Random;
  */
 
 public class Xutils {
+    public static boolean copyFileTo(File srcFile, File destFile)
+            throws IOException {
+        if (srcFile == null || destFile == null) {
+            return false;
+        }
+        if (srcFile.isDirectory() || destFile.isDirectory())
+            return false;
+        if (!srcFile.exists()) {
+            return false;
+        }
+        if (!destFile.exists()) {
+            createFile(destFile.getAbsolutePath());
+        }
+        FileInputStream fis = new FileInputStream(srcFile);
+        FileOutputStream fos = new FileOutputStream(destFile);
+        int readLen = 0;
+        byte[] buf = new byte[1024];
+        while ((readLen = fis.read(buf)) != -1) {
+            fos.write(buf, 0, readLen);
+        }
+        fos.flush();
+        fos.close();
+        fis.close();
+        return true;
+    }
+    public static File createFile(String path) throws IOException {
+        if (isNotEmptyOrNull(path)) {
+            File file = new File(path);
+            if (!file.exists()) {
+                int lastIndex = path.lastIndexOf(File.separator);
+                String dir = path.substring(0, lastIndex);
+                if (createFolder(dir) != null) {
+                    file.createNewFile();
+                    return file;
+                }
+            } else {
+                file.createNewFile();
+                return file;
+            }
+        }
+        return null;
+    }
 
+    public static File createFolder(String path) {
+        if (isNotEmptyOrNull(path)) {
+            File dir = new File(path);
+            if (dir.exists()) {
+                if (dir.isDirectory()) {
+                    return dir;
+                }
+            }
+            dir.mkdirs();
+            return dir;
+        } else {
+            return null;
+        }
+    }
+
+    public static boolean copyFileTo(InputStream inputStream, File destFile)
+            throws IOException {
+        if (inputStream == null || destFile == null) {
+            return false;
+        }
+        if (destFile.isDirectory())
+            return false;
+
+        if (!destFile.exists()) {
+            createFile(destFile.getAbsolutePath());
+        }
+        FileOutputStream fos = new FileOutputStream(destFile);
+        int readLen = 0;
+        byte[] buf = new byte[1024];
+        while ((readLen = inputStream.read(buf)) != -1) {
+            fos.write(buf, 0, readLen);
+        }
+        fos.flush();
+        fos.close();
+        inputStream.close();
+        return true;
+    }
     public static String getApplicationNameByPackageName(Context context, String packageName) {
         PackageManager packageManager = context.getPackageManager();
         String applicationName = null;
@@ -111,7 +191,7 @@ public class Xutils {
     }
 
     public static int cmdWxUserExe(String cmd) {
-        String str = "com.tencent.mm.ui.chatting.En_5b8fbb1e -e Chat_User ";
+        String str = "com.tencent.mm.ui.chatting.ChattingUI -e Chat_User ";
         return cmdExe("am start -n com.tencent.mm/" + str + cmd);
     }
 
@@ -140,7 +220,6 @@ public class Xutils {
     public static String getFileSaveTime() {
         return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
     }
-
 
 
     public static void initBarTheme(Activity activity, Toolbar toolbar) {
@@ -249,9 +328,9 @@ public class Xutils {
         String commands = cmdEnd;
         int ret = AndroidCommand.noRoot;
         if (Xutils.isNotEmptyOrNull(commands)) {
-            if (commands.contains("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI")) {
-                commands = commands.replace("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI", "com.tencent.mm.plugin.sns.ui.En_424b8e16");
-            }
+//            if (commands.contains("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI")) {
+//                commands = commands.replace("com.tencent.mm.plugin.sns.ui.SnsTimeLineUI", "com.tencent.mm.plugin.sns.ui.En_424b8e16");
+//            }
             ret = AndroidCommand.execRooted(commands);
             if (ret == AndroidCommand.noRoot) {
                 try {

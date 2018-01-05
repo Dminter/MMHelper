@@ -42,6 +42,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -394,6 +395,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add("red_pakeage").setIcon(getResources().getDrawable(R.mipmap.red_pakeage)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menu.add("search").setIcon(Xutils.initIconWhite(Iconify.IconValue.md_search)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         SubMenu sub = menu.addSubMenu("");
         sub.setIcon(Xutils.initIconWhite(Iconify.IconValue.md_more_vert));
@@ -417,6 +419,19 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             return false;
         }
 
+        /**
+         *领取红包
+         */
+        if (item.getTitle().equals("red_pakeage")) {
+            /**
+             *c1x086063vy7pad3iuae9b5
+             */
+            if (AlipayZeroSdk.hasInstalledAlipayClient(ctx)) {
+                AlipayZeroSdk.startAlipayClient(ctx, "c1x086063vy7pad3iuae9b5");
+            } else {
+                Xutils.tShort("请先安装支付宝~");
+            }
+        }
         if (item.getTitle().equals("search")) {
             startActivity(new Intent(ctx, T9SearchActivity.class));
         }
@@ -446,6 +461,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                         .show();
                 break;
             case 5:
+//                startActivity(new Intent(ctx, LauncherDbActivity.class));
                 startActivity(new Intent(ctx, SuggestAc.class));
                 break;
         }

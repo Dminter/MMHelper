@@ -64,7 +64,7 @@ public class SuggestInfoActivity extends BaseActivity {
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.card.ui.CardHomePageUI", "卡包"));
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.luckymoney.f2f.ui.LuckyMoneyF2FQRCodeUI", "面对面红包"));
 
-            wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.sns.ui.En_424b8e16", "朋友圈"));
+            wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.sns.ui.SnsTimeLineUI", "朋友圈"));
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.sns.ui.SnsMsgUI", "朋友圈消息"));
 
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.search.ui.FTSMainUI", "微信搜索"));
@@ -76,8 +76,6 @@ public class SuggestInfoActivity extends BaseActivity {
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.subapp.ui.pluginapp.AddMoreFriendsUI", "添加朋友"));
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.ui.contact.ChatroomContactUI", "群聊"));
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.pwdgroup.ui.FacingCreateChatRoomAllInOneUI", "面对面建群"));
-
-
 
 
             cardInfos.addAll(wxCard);
@@ -130,7 +128,7 @@ public class SuggestInfoActivity extends BaseActivity {
              com.taobao.taobao,com.taobao.takeout.TakeoutMainActivity,淘宝外卖
              com.taobao.taobao,com.taobao.search.searchdoor.SearchDoorActivity,搜索
              com.taobao.taobao,com.etao.feimagesearch.FEISCaptureActivity,拍立淘
-//             com.taobao.taobao,com.taobao.taobao.scancode.gateway.activity.ScancodeGatewayActivity,扫一扫
+             //             com.taobao.taobao,com.taobao.taobao.scancode.gateway.activity.ScancodeGatewayActivity,扫一扫
              com.taobao.taobao,com.taobao.android.trade.cart.CartActivity,购物车
              com.taobao.taobao,com.taobao.order.list.OrderListActivity,我的订单
              com.taobao.taobao,com.taobao.favorites.NewFavoriteGoodsActivity,我的收藏
@@ -271,10 +269,6 @@ public class SuggestInfoActivity extends BaseActivity {
             ArrayList<CardInfo> card = new ArrayList<>();
 
 
-
-
-
-
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc data enable", "打开数据连接"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc data disable", "关闭数据连接"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "svc wifi enable", "开启wifi连接"));
@@ -290,7 +284,6 @@ public class SuggestInfoActivity extends BaseActivity {
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "reboot", "重启手机"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "reboot recovery", "重启到 Recovery 模式"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "reboot bootloader", "重启到 Fastboot 模式"));
-
 
 
 //            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "pm list packages -3", "已安装的第三方app"));
@@ -336,6 +329,9 @@ public class SuggestInfoActivity extends BaseActivity {
             pkName = getIntent().getExtras().getString("pkName");
             String name = getIntent().getExtras().getString("name");
             if (Xutils.isNotEmptyOrNull(name)) {
+                if (name.equals("微信")) {
+                    name += "-适配微信V6.6.0";
+                }
                 toolbar.setTitle("建议活动 " + name);
             }
         }
