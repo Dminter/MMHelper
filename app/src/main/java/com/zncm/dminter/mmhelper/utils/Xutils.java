@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -38,6 +39,7 @@ import com.zncm.dminter.mmhelper.SPHelper;
 import com.zncm.dminter.mmhelper.autocommand.AndroidCommand;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
+import com.zncm.dminter.mmhelper.ft.MyFt;
 import com.zncm.dminter.mmhelper.utils.statusbar.StatusBarCompat;
 
 import java.io.BufferedReader;
@@ -60,6 +62,26 @@ import java.util.Random;
  */
 
 public class Xutils {
+
+
+    /**
+     * 获取默认launcher名
+     */
+    public static String getLauncherPackageName(Context context) {
+        final Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        final ResolveInfo res = context.getPackageManager().resolveActivity(intent, 0);
+        if (res.activityInfo == null) {
+            return "";
+        }
+        //如果是不同桌面主题，可能会出现某些问题，这部分暂未处理
+        if (res.activityInfo.packageName.equals("android")) {
+            return "";
+        } else {
+            return res.activityInfo.packageName;
+        }
+    }
+
     public static boolean copyFileTo(File srcFile, File destFile)
             throws IOException {
         if (srcFile == null || destFile == null) {
@@ -85,6 +107,7 @@ public class Xutils {
         fis.close();
         return true;
     }
+
     public static File createFile(String path) throws IOException {
         if (isNotEmptyOrNull(path)) {
             File file = new File(path);
@@ -140,6 +163,7 @@ public class Xutils {
         inputStream.close();
         return true;
     }
+
     public static String getApplicationNameByPackageName(Context context, String packageName) {
         PackageManager packageManager = context.getPackageManager();
         String applicationName = null;
@@ -357,6 +381,7 @@ public class Xutils {
 
     public static void sendToDesktop(Activity activity, CardInfo cardInfo, boolean isShotcut, boolean isTip) {
 
+        Bitmap bitmap = null;
         Drawable drawable = null;
         if (cardInfo.getType() == EnumInfo.cType.URL.getValue()) {
             drawable = activity.getResources().getDrawable(R.mipmap.ic_url);
@@ -364,6 +389,9 @@ public class Xutils {
             drawable = activity.getResources().getDrawable(R.mipmap.ic_shell);
         } else if (cardInfo.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
             drawable = activity.getResources().getDrawable(R.mipmap.ic_shortcut);
+            if (cardInfo.getImg() != null) {
+                bitmap = MyFt.bytes2Bimap(cardInfo.getImg());
+            }
         }
         Intent intent;
         BitmapDrawable bitmapDrawable;
@@ -389,7 +417,10 @@ public class Xutils {
             if (bitmapDrawable == null) {
                 bitmapDrawable = (BitmapDrawable) activity.getResources().getDrawable(R.mipmap.ic_launcher);
             }
-            intent.putExtra("android.intent.extra.shortcut.ICON", bitmapDrawable.getBitmap());
+            if (bitmap == null) {
+                bitmap = bitmapDrawable.getBitmap();
+            }
+            intent.putExtra("android.intent.extra.shortcut.ICON", bitmap);
 
         }
         intent.putExtra("duplicate", false);
@@ -537,8 +568,8 @@ public class Xutils {
 
 
     /*
-   * 获取程序 图标
-   */
+     * 获取程序 图标
+     */
     public static Drawable getAppIcon(String packname) {
         try {
             PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();

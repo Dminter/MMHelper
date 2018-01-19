@@ -8,8 +8,8 @@ import com.zncm.dminter.mmhelper.Constant;
 import java.io.File;
 
 public class MyPath {
-    public static final String PATH_CONFIG = "配置";
-    public static final String PATH_PICTURE = "截图";
+    public static final String PATH_CONFIG = "config";
+    public static final String PATH_PICTURE = "screenshot";
 
     public static String getFolder(String folderName) {
         if (folderName == null) {

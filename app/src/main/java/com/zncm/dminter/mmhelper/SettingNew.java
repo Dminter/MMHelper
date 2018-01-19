@@ -588,6 +588,18 @@ public class SettingNew extends MaterialSettings {
             }
         }));
         addItem(new DividerItem(ctx));
+        addItem(new TextItem(this, "").setTitle("从桌面获取快捷方式").setOnclick(new TextItem.OnClickListener() {
+            @Override
+            public void onClick(TextItem textItem) {
+                if (checkNotPro()) {
+                    return;
+                }
+                startActivity(new Intent(ctx, LauncherDbActivity.class));
+            }
+        }));
+
+
+        addItem(new DividerItem(ctx));
         addItem(new CheckboxItem(this, "").setTitle("悬浮球").setSubtitle("点击【返回】，上【最近任务】，左【收藏的活动】，下【桌面】，右【采集活动】，长按【拖动位置】，长下拉【隐藏到通知栏】，长上拉【截屏】").setOnCheckedChangeListener(new CheckboxItem.OnCheckedChangeListener() {
             @Override
             public void onCheckedChange(CheckboxItem checkboxItem, boolean b) {

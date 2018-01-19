@@ -470,7 +470,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
     }
 
-    private Bitmap bytes2Bimap(byte[] b) {
+    public static Bitmap bytes2Bimap(byte[] b) {
         if (b == null) {
             return null;
         }

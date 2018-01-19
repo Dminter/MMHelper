@@ -67,7 +67,6 @@ public class CardInfo {
     private byte[] img;
 
 
-
     private boolean isDisabled = false;
 
     public CardInfo() {
@@ -106,6 +105,27 @@ public class CardInfo {
         this.type = type;
         this.card_type = EnumInfo.cardType.material_basic_buttons_card.getValue();
         this.time = System.currentTimeMillis();
+    }
+
+    public CardInfo(int type, String cmd, String title, byte[] img) {
+        this.cmd = cmd;
+
+        if (EnumInfo.cType.WX.getValue() == type) {
+            this.packageName = MyPackageInfo.pk_wx;
+            this.className = MyPackageInfo.pk_wx_ChattingUI;
+        } else if (EnumInfo.cType.QQ.getValue() == type) {
+            this.packageName = MyPackageInfo.pk_qq;
+            this.className = "";
+        } else if (EnumInfo.cType.URL.getValue() == type) {
+            this.packageName = "";
+            this.className = "";
+        }
+        this.title = title;
+        this.description = cmd;
+        this.type = type;
+        this.card_type = EnumInfo.cardType.material_basic_buttons_card.getValue();
+        this.time = System.currentTimeMillis();
+        this.img = img;
     }
 
     public CardInfo(String packageName, String className, String title) {

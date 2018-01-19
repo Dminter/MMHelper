@@ -86,8 +86,8 @@ public class SuggestInfoActivity extends BaseActivity {
              com.eg.android.AlipayGphone,com.alipay.mobile.stock.ui.MainActivity,股票
              com.eg.android.AlipayGphone,com.alipay.mobile.pubsvc.ui.PPServiceActivity,生活号
              com.eg.android.AlipayGphone,com.alipay.mobile.transferapp.ui.TransferHomeActivity_,转账
-             com.eg.android.AlipayGphone,com.alipay.mobile.alipassapp.ui.list.activity.v2.OffersEntryActivity,卡包
-             com.eg.android.AlipayGphone,com.alipay.mobile.bill.list.ui.BillListActivity_,账单
+             com.eg.android.AlipayGphone,com.alipay.mobile.alipassapp.ui.intentList.activity.v2.OffersEntryActivity,卡包
+             com.eg.android.AlipayGphone,com.alipay.mobile.bill.intentList.ui.BillListActivity_,账单
              com.eg.android.AlipayGphone,com.alipay.mobile.payee.ui.PayeeQRActivity_,收钱
              com.eg.android.AlipayGphone,com.alipay.mobile.security.accountmanager.AccountInfo.ui.SecurityAccountQrCodeActivity_,我的二维码
              com.eg.android.AlipayGphone,com.alipay.mobile.contactsapp.ui.AddFriendActivity_,添加朋友
@@ -95,7 +95,7 @@ public class SuggestInfoActivity extends BaseActivity {
              com.eg.android.AlipayGphone,com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity,搜索
              com.eg.android.AlipayGphone,com.alipay.android.phone.voiceassistant.ui.VoiceAssistantActivity,语音搜索
              com.eg.android.AlipayGphone,com.alipay.android.phone.personalapp.favorite.activity.FavoriteNewHomeActivity,我的收藏
-             com.eg.android.AlipayGphone,com.alipay.mobile.bill.list.ui.BillSearchActivity_,账单搜索
+             com.eg.android.AlipayGphone,com.alipay.mobile.bill.intentList.ui.BillSearchActivity_,账单搜索
              com.eg.android.AlipayGphone,com.alipay.mobile.fund.ui.FundMainNewActivity_,余额宝
              com.eg.android.AlipayGphone,com.alipay.mobile.onsitepay9.payer.OspTabHostActivity,付款码
              com.eg.android.AlipayGphone,com.alipay.mobile.scan.as.main.MainCaptureActivity,扫一扫
@@ -103,19 +103,19 @@ public class SuggestInfoActivity extends BaseActivity {
 
 
 //            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.onsitepay9.payer.OspTabHostActivity", "付款码"));
-            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.bill.list.ui.BillListActivity_", "账单"));
+            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.bill.intentList.ui.BillListActivity_", "账单"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.security.accountmanager.AccountInfo.ui.SecurityAccountQrCodeActivity_", "我的二维码"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity", "搜索"));
 
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.wealth.tally.activitys.TallyMainActivity_", "记账本"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.pubsvc.ui.PPServiceActivity", "生活号"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.transferapp.ui.TransferHomeActivity_", "转账"));
-            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.alipassapp.ui.list.activity.v2.OffersEntryActivity", "卡包"));
+            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.alipassapp.ui.intentList.activity.v2.OffersEntryActivity", "卡包"));
 //            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.payee.ui.PayeeQRActivity_", "收钱"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.contactsapp.ui.AddFriendActivity_", "添加朋友"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.socialcontactsdk.contact.ui.ContactMainPageActivity", "通讯录"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.personalapp.favorite.activity.FavoriteNewHomeActivity", "我的收藏"));
-//            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.bill.list.ui.BillSearchActivity_", "账单搜索"));
+//            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.bill.intentList.ui.BillSearchActivity_", "账单搜索"));
 //            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.fund.ui.FundMainNewActivity_", "余额宝"));
 
 //            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.scan.as.main.MainCaptureActivity", "扫一扫"));
@@ -130,7 +130,7 @@ public class SuggestInfoActivity extends BaseActivity {
              com.taobao.taobao,com.etao.feimagesearch.FEISCaptureActivity,拍立淘
              //             com.taobao.taobao,com.taobao.taobao.scancode.gateway.activity.ScancodeGatewayActivity,扫一扫
              com.taobao.taobao,com.taobao.android.trade.cart.CartActivity,购物车
-             com.taobao.taobao,com.taobao.order.list.OrderListActivity,我的订单
+             com.taobao.taobao,com.taobao.order.intentList.OrderListActivity,我的订单
              com.taobao.taobao,com.taobao.favorites.NewFavoriteGoodsActivity,我的收藏
              com.taobao.taobao,com.taobao.tao.mytaobao.MyTaoBaoActivity,我的淘宝
              com.taobao.taobao,com.taobao.tao.homepage.MainActivity3,淘宝
@@ -139,7 +139,7 @@ public class SuggestInfoActivity extends BaseActivity {
 //            card.add(new CardInfo(SuggestAc.tb, "com.taobao.tao.homepage.MainActivity3", "淘宝"));
 //            card.add(new CardInfo(SuggestAc.tb, "com.taobao.taobao.scancode.gateway.activity.ScancodeGatewayActivity", "扫一扫"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.tao.mytaobao.MyTaoBaoActivity", "我的淘宝"));
-            card.add(new CardInfo(SuggestAc.tb, "com.taobao.order.list.OrderListActivity", "我的订单"));
+            card.add(new CardInfo(SuggestAc.tb, "com.taobao.order.intentList.OrderListActivity", "我的订单"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.favorites.NewFavoriteGoodsActivity", "我的收藏"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.android.trade.cart.CartActivity", "购物车"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.search.searchdoor.SearchDoorActivity", "搜索"));
@@ -286,7 +286,7 @@ public class SuggestInfoActivity extends BaseActivity {
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "reboot bootloader", "重启到 Fastboot 模式"));
 
 
-//            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "pm list packages -3", "已安装的第三方app"));
+//            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "pm intentList packages -3", "已安装的第三方app"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "am start -n com.tencent.mm/.ui.LauncherUI", "微信"));
 
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "cat /data/misc/wifi/*.conf", "WiFi 密码"));

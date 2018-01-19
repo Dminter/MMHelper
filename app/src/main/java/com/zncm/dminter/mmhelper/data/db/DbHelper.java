@@ -9,6 +9,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
+import com.zncm.dminter.mmhelper.data.favorites;
 
 /**
  * Created by dminter on 2016/7/23.
@@ -21,6 +22,7 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
     private static final int DATABASE_VERSION = 7;
     private RuntimeExceptionDao<CardInfo, Integer> cardInfoDao = null;
     private RuntimeExceptionDao<PkInfo, Integer> pkDao = null;
+    private RuntimeExceptionDao<favorites, Integer> favoritesDao = null;
 
 
     public DbHelper(Context context) {
@@ -64,6 +66,13 @@ public class DbHelper extends OrmLiteSqliteOpenHelper {
             pkDao = getRuntimeExceptionDao(PkInfo.class);
         }
         return pkDao;
+    }
+
+    public RuntimeExceptionDao<favorites, Integer> getfavoritesDao() {
+        if (favoritesDao == null) {
+            favoritesDao = getRuntimeExceptionDao(favorites.class);
+        }
+        return favoritesDao;
     }
 
 

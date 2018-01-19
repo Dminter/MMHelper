@@ -13,6 +13,7 @@ import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.PkInfo;
 import com.zncm.dminter.mmhelper.data.RefreshEvent;
+import com.zncm.dminter.mmhelper.data.favorites;
 import com.zncm.dminter.mmhelper.t9search.T9SearchSupport;
 import com.zncm.dminter.mmhelper.utils.Xutils;
 
@@ -36,6 +37,7 @@ public class DbUtils {
 
     static RuntimeExceptionDao<CardInfo, Integer> cardInfoDao;
     static RuntimeExceptionDao<PkInfo, Integer> pkDao;
+    static RuntimeExceptionDao<favorites, Integer> favoritesDao;
     static DbHelper databaseHelper = null;
 
     static DbHelper getHelper() {
@@ -52,6 +54,9 @@ public class DbUtils {
         if (pkDao == null) {
             pkDao = getHelper().getPkInfoDao();
         }
+//        if (favoritesDao == null) {
+//            favoritesDao = getHelper().getfavoritesDao();
+//        }
 
     }
 
@@ -472,6 +477,23 @@ public class DbUtils {
     }
 
 
+    public static ArrayList<favorites> getfavorites() {
+        init();
+        ArrayList<favorites> datas = new ArrayList<favorites>();
+        try {
+            QueryBuilder<favorites, Integer> builder = favoritesDao.queryBuilder();
+            builder.orderBy("title", true).limit(Constant.MAX_DB_QUERY);
+            List<favorites> list = favoritesDao.query(builder.prepare());
+            if (Xutils.listNotNull(list)) {
+                datas.addAll(list);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return datas;
+    }
+
+
     /**
      * 根据包名获取应用
      */
@@ -577,11 +599,11 @@ public class DbUtils {
 
 
     public static void addIfNotExist(CardInfo cardInfo) {
-        if (cardInfo.getType()==EnumInfo.cType.CMD.getValue()){
+        if (cardInfo.getType() == EnumInfo.cType.CMD.getValue()) {
             if (DbUtils.getCardInfoByCmd(cardInfo.getCmd()) != null) {
                 return;
             }
-        }else   if (cardInfo.getType()==EnumInfo.cType.TO_ACTIVITY.getValue()){
+        } else if (cardInfo.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
             if (DbUtils.getCardInfoByClassName(cardInfo.getClassName()) != null) {
                 return;
             }

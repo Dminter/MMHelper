@@ -175,8 +175,8 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             tmps = new ArrayList<>();
         }
         if (!Xutils.listNotNull(tmps)) {
-//            List<String> list = Xutils.importTxt(this, R.raw.init_2016_08_09_13_36);
-//            DbUtils.importCardFromTxt(list, true);
+//            List<String> intentList = Xutils.importTxt(this, R.raw.init_2016_08_09_13_36);
+//            DbUtils.importCardFromTxt(intentList, true);
             LinkedHashMap<String, String> items = new LinkedHashMap<>();
             SuggestAc.sugItems(items);
             if (items != null && items.size() > 0) {
@@ -461,7 +461,6 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
                         .show();
                 break;
             case 5:
-//                startActivity(new Intent(ctx, LauncherDbActivity.class));
                 startActivity(new Intent(ctx, SuggestAc.class));
                 break;
         }

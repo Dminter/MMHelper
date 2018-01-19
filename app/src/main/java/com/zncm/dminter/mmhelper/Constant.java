@@ -15,7 +15,7 @@ public class Constant {
     public static String SA_LOCK_SCREEN = "SA_LOCK_SCREEN";
     public static String OPENINENT_LIKE = "OPENINENT_LIKE";
     public static final int sort_apps = 999;
-    public static String PATH_ROOT = "快速打开活动";
+    public static String PATH_ROOT = "mmhelper";
     public static int n_id = 100000;
     public static int n_id_ac = 100001;
     public static String author_wx = "xm0ff255";
@@ -40,9 +40,9 @@ public class Constant {
     public static final String zfb_am_pre = "am start -n com.eg.android.AlipayGphone/";
     public static final String common_am_pre = "am start -n ";
     public static final String common_am_div = "/";
-    public static final String common_pm_e = "pm list packages -e ";
-    public static final String common_pm_all = "pm list packages";
-    public static final String common_pm_d = "pm list packages -d ";
+    public static final String common_pm_e = "pm intentList packages -e ";
+    public static final String common_pm_all = "pm intentList packages";
+    public static final String common_pm_d = "pm intentList packages -d ";
     public static final String common_pm_s = "-s";
     public static final String common_pm_3 = "-3";
     public static final String common_pm_e_p = "pm enable ";
@@ -54,6 +54,7 @@ public class Constant {
 //    Error: Activity class {fm.qingting.qtradio/fm.qingting.qtradio.QTRadioActivity} does not exist.
 //            Starting: Intent { cmp=fm.qingting.qtradio/.QTRadioActivity }
     public static final String app_is_disable_error = "Error type 3";
+    public static final String launcher_error = "launcher.db: No such file or directory";
     public static final String share_content = "快速打开活动  http://www.coolapk.com/apk/com.zncm.dminter.mmhelper";
 
 

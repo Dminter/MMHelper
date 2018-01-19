@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:background="@color/bg_color"
+              android:orientation="vertical">
+
+
+    <include layout="@layout/toolbar"/>
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="10dp"
+                android:text="快捷方式名称"/>
+
+        <Spinner
+                android:id="@+id/cmdSpinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="left"/>
+
+
+        <EditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="快捷方式名称"
+                android:textColor="@color/material_light_black"/>
+
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <Button
+                    android:id="@+id/btnPre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="预览"/>
+
+            <Button
+                    android:id="@+id/btnAdd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="添加"/>
+
+
+            <Button
+                    android:id="@+id/btnAddLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="添加并收藏"/>
+
+        </LinearLayout>
+
+
+        <Button
+                android:id="@+id/btnAddDesk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="添加到桌面"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:autoLink="web"
+                android:text="为了解决应用被冻结后，应用快捷方式被移除，请在未冻结前发送快捷方式到桌面，再添加到本应用，再发送到桌面即可。"/>
+
+    </LinearLayout>
+</LinearLayout>
+
