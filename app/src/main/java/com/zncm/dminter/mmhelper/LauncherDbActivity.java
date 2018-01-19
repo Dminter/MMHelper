@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 
-import com.alibaba.fastjson.JSON;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
@@ -83,7 +82,6 @@ public class LauncherDbActivity extends BaseActivity {
                 Xutils.tShort("获取默认luncher失败~");
                 return;
             }
-            Xutils.debug("luncherPkg:" + luncherPkg);
             String DATABASE_PATH = "/data/data/" + luncherPkg + "/databases/launcher.db";
             String newPath = MyPath.getPathConfig();
             Xutils.cmdExe("cp -r " + DATABASE_PATH + " " + newPath);
@@ -185,7 +183,6 @@ public class LauncherDbActivity extends BaseActivity {
         if (Xutils.listNotNull(intentList)) {
             for (favorites tmp : intentList
                     ) {
-                Xutils.debug("tmp:" + JSON.toJSONString(tmp));
                 Map<String, Object> map = new HashMap<String, Object>();
                 try {
                     String cmd = tmp.getIntent();
