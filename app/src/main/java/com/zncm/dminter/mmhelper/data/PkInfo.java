@@ -38,7 +38,7 @@ public class PkInfo {
 
 
     @DatabaseField
-    private int exi1;//应用状态 删除-1，正常1
+    private int exi1;//应用状态 删除-1，正常0，1不常用【隐藏列表到设置里面】
     @DatabaseField
     private int exi2;
     @DatabaseField

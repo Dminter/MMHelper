@@ -501,13 +501,25 @@ public class DbUtils {
         return getPkInfos(pkgName, true);
     }
 
+
     public static ArrayList<PkInfo> getPkInfos(String pkgName, boolean isNormal) {
+        int status = EnumInfo.pkStatus.NORMAL.getValue();
+        if (isNormal) {
+            status = EnumInfo.pkStatus.NORMAL.getValue();
+        } else {
+            status = EnumInfo.pkStatus.DELETE.getValue();
+        }
+        return getPkInfos(pkgName, status);
+    }
+
+    public static ArrayList<PkInfo> getPkInfos(String pkgName, int status) {
+
+
         init();
         ArrayList<PkInfo> datas = new ArrayList<PkInfo>();
         try {
-
             QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
-            if (isNormal) {
+            if (status == EnumInfo.pkStatus.NORMAL.getValue()) {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
                     builder.where().eq("packageName", pkgName).and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
                 } else {
@@ -518,7 +530,7 @@ public class DbUtils {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
                     builder.where().eq("packageName", pkgName);
                 } else {
-                    builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
+                    builder.where().eq("exi1", status);
                 }
             }
             List<PkInfo> list = pkDao.query(builder.prepare());

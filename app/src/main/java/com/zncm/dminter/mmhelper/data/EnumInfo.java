@@ -137,11 +137,11 @@ public class EnumInfo {
     }
 
     /**
-     *应用状态
+     *应用状态，删除，正常，隐藏
      */
     public enum pkStatus {
 
-        DELETE(-1, "DELETE"), NORMAL(0, "NORMAL");
+        DELETE(-1, "DELETE"), NORMAL(0, "NORMAL"), HIDDEN(1, "HIDDEN");
         private int value;
         private String strName;
 

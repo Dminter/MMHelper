@@ -13,7 +13,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -30,7 +29,6 @@ import com.kenumir.materialsettings.items.HeaderItem;
 import com.kenumir.materialsettings.items.TextItem;
 import com.kenumir.materialsettings.storage.StorageInterface;
 import com.malinskiy.materialicons.Iconify;
-import com.sofaking.iconpack.Constants;
 import com.sofaking.iconpack.IconPack;
 import com.sofaking.iconpack.IconPackManager;
 import com.zncm.dminter.mmhelper.data.CardInfo;
@@ -81,10 +79,9 @@ public class SettingNew extends MaterialSettings {
 //        }));
 
 
-
         addItem(new TextItem(ctx, "").setTitle("搭配LawnchairQa启动器使用,效果更佳").setSubtitle("一款基于开源Lawnchair类原生启动器").setOnclick(new TextItem.OnClickListener() {
             public void onClick(TextItem textItem) {
-            Xutils.openUrl(Constant.lawnchair_qa_url);
+                Xutils.openUrl(Constant.lawnchair_qa_url);
             }
         }));
 
@@ -143,6 +140,63 @@ public class SettingNew extends MaterialSettings {
                 }).show();
             }
         }));
+        addItem(new TextItem(ctx, "").setTitle("不常用应用")
+                .setSubtitle("在应用列表里面排除的不常用应用").setOnclick(new TextItem.OnClickListener() {
+                                                               public void onClick(TextItem textItem) {
+                                                                   try {
+                                                                       final ArrayList<PkInfo> tmps = DbUtils.getPkInfos(null, EnumInfo.pkStatus.HIDDEN.getValue());
+                                                                       final ArrayList<String> appNames = new ArrayList<String>();
+                                                                       for (PkInfo packageInfo : tmps) {
+                                                                           if (Xutils.isNotEmptyOrNull(packageInfo.getName())) {
+                                                                               appNames.add(packageInfo.getName());
+                                                                           }
+                                                                       }
+                                                                       Xutils.themeMaterialDialog(ctx).title("移除不常用").items(appNames).itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                                                                           @Override
+                                                                           public boolean onSelection(MaterialDialog dialog, final Integer[] which, CharSequence[] text) {
+                                                                               final StringBuffer names = new StringBuffer();
+                                                                               for (int i = 0; i < which.length; i++) {
+                                                                                   String name = appNames.get(which[i]);
+                                                                                   if (Xutils.isNotEmptyOrNull(name)) {
+                                                                                       names.append(name).append("，");
+                                                                                   }
+                                                                               }
+                                                                               Xutils.themeMaterialDialog(ctx).title("确定添加到应用列表").content(names.toString()).positiveText("确定").neutralText("运行").negativeText("取消").onAny(new MaterialDialog.SingleButtonCallback() {
+                                                                                   public void onClick(@NonNull MaterialDialog paramAnonymous3MaterialDialog, @NonNull DialogAction which2) {
+                                                                                       if (which2 == DialogAction.POSITIVE) {
+                                                                                           for (int i = 0; i < which.length; i++) {
+                                                                                               PkInfo pkInfo = tmps.get(which[i]);
+                                                                                               if (pkInfo != null) {
+                                                                                                   pkInfo.setExi1(EnumInfo.pkStatus.NORMAL.getValue());
+                                                                                                   DbUtils.updatePkInfo(pkInfo);
+                                                                                               }
+                                                                                           }
+                                                                                           isNeedUpdate = true;
+                                                                                           Xutils.tShort("已全部添加~");
+
+                                                                                       } else if (which2 == DialogAction.NEUTRAL) {
+                                                                                           PkInfo pkInfo = tmps.get(which[0]);
+                                                                                           if (pkInfo != null) {
+                                                                                               MyFt.clickCard(ctx, pkInfo);
+                                                                                           }
+                                                                                       }
+
+
+                                                                                   }
+                                                                               }).show();
+
+
+                                                                               return true;
+                                                                           }
+                                                                       }).positiveText("确定").negativeText("取消").show();
+                                                                   } catch (Exception e) {
+                                                                       e.printStackTrace();
+                                                                   }
+                                                               }
+                                                           }
+
+                ));
+        addItem(new DividerItem(ctx));
 
         addItem(new TextItem(ctx, "").setTitle("添加应用")
                 .setSubtitle("解决安装的应用未自动添加到应用列表的情形").setOnclick(new TextItem.OnClickListener() {
@@ -681,7 +735,7 @@ public class SettingNew extends MaterialSettings {
 
                                     }
                                 }).show();
-                            }else {
+                            } else {
                                 Xutils.tShort("没找到图标包~");
                             }
 

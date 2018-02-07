@@ -401,8 +401,8 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         } else {
                             CardInfo card = new CardInfo(type, cmd, wxName);
                             DbUtils.insertCard(card);
-                            fillArray();
                         }
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
                         dialog.dismiss();
                     }
                 })
@@ -489,6 +489,17 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         activity.startActivity(intent);
     }
 
+
+
+    public static void clickCard(final Context activity, PkInfo pkInfo) {
+        CardInfo info = new CardInfo();
+        info.setTitle(pkInfo.getName());
+        info.setPackageName(pkInfo.getPackageName());
+        info.setImg(pkInfo.getIcon());
+        info.setType(EnumInfo.cType.START_APP.getValue());
+        info.setDisabled(pkInfo.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
+        clickCard(activity,info);
+    }
 
     public static void clickCard(final Context activity, CardInfo info) {
         if (info == null) {
@@ -687,7 +698,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         cardInfos = new ArrayList<>();
                         ArrayList<PkInfo> tmps = new ArrayList<>();
                         if (packageName.equals(EnumInfo.homeTab.APPS.getValue())) {
-                            tmps = DbUtils.getPkInfos(null, true);
+                            tmps = DbUtils.getPkInfos(null, EnumInfo.pkStatus.NORMAL.getValue());
                         } else if (packageName.equals(EnumInfo.homeTab.BAT_STOP.getValue())) {
                             tmps = DbUtils.getPkInfosBatStop(1);
                         }
@@ -880,7 +891,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             } else if (info.getType() == EnumInfo.cType.TO_ACTIVITY.getValue()) {
                                 initActivity(info, position);
                             }
-                            fillArray();
+                            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
                         }
                         break;
                     case 2:
@@ -963,7 +974,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                                     DbUtils.updateCard(cardInfo);
                                                 }
                                             }
-                                            fillArray();
+                                            EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.LIKE.getValue()));
                                         }
                                     }
                                 }).show();
@@ -1065,6 +1076,10 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         map9.put("text", "彻底冻结");
         map9.put("key", "-9");
         list.add(map9);
+        Map<String, Object> map10 = new HashMap<>();
+        map10.put("text", "不常用");
+        map10.put("key", "-10");
+        list.add(map10);
         new BottomSheetDlg(ctx, list, false) {
             @Override
             public void onGridItemClickListener(int position) {
@@ -1139,6 +1154,12 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         Xutils.exec("pm disable " + info.getPackageName());
                         info.setDisabled(true);
                         pkInfo.setStatus(EnumInfo.appStatus.DISABLED.getValue());
+                        DbUtils.updatePkInfo(pkInfo);
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
+                        EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
+                        break;
+                    case 9:
+                        pkInfo.setExi1(EnumInfo.pkStatus.HIDDEN.getValue());
                         DbUtils.updatePkInfo(pkInfo);
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.APPS.getValue()));
                         EventBus.getDefault().post(new RefreshEvent(EnumInfo.RefreshEnum.BAT_STOP.getValue()));
