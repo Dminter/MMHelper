@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.zncm.dminter.mmhelper"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 37
-        versionName "2.2.9"
+        versionCode 39
+        versionName "2.3.1"
     }
     buildTypes {
         release {

@@ -257,6 +257,28 @@ public class DbUtils {
         return getPkOne(packageName, true);
     }
 
+
+
+    /**
+     * 根据包名+状态查询应用
+     */
+    public static PkInfo getPkOne(String packageName, int status) {
+        if (Xutils.isEmptyOrNull(packageName)) {
+            return null;
+        }
+        PkInfo ret = null;
+        init();
+        try {
+            List<PkInfo> list = getPkInfos(packageName, status);
+            if (Xutils.listNotNull(list)) {
+                ret = list.get(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
     /**
      * 根据包名查询应用
      */
@@ -533,6 +555,7 @@ public class DbUtils {
                     builder.where().eq("exi1", status);
                 }
             }
+            builder.groupBy("packageName");
             List<PkInfo> list = pkDao.query(builder.prepare());
             if (Xutils.listNotNull(list)) {
                 datas.addAll(list);

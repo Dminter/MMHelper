@@ -236,7 +236,14 @@ public class SettingNew extends MaterialSettings {
                                                                                                 for (int i = 0; i < which.length; i++) {
                                                                                                     String pkName = pkNames.get(which[i]);
                                                                                                     if (Xutils.isNotEmptyOrNull(pkName)) {
-                                                                                                        PkInfo pkInfo = DbUtils.getPkOne(pkName);
+                                                                                                        PkInfo pkInfo = DbUtils.getPkOne(pkName, EnumInfo.pkStatus.HIDDEN.getValue());
+                                                                                                        if (pkInfo != null) {
+                                                                                                            pkInfo.setExi1(EnumInfo.pkStatus.NORMAL.getValue());
+                                                                                                            DbUtils.updatePkInfo(pkInfo);
+                                                                                                            return;
+                                                                                                        } else {
+                                                                                                            pkInfo = DbUtils.getPkOne(pkName);
+                                                                                                        }
                                                                                                         if (pkInfo != null) {
                                                                                                             DbUtils.insertPkInfo(pkInfo);
                                                                                                         } else {

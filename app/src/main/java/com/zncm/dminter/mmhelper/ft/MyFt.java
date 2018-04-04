@@ -16,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -526,7 +527,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             appNewStatus(info);
             Xutils.startAppByPackageName(activity, info.getPackageName(), Constant.attempt);
         } else if (info.getType() == EnumInfo.cType.CMD.getValue()) {
-            String cmd = info.getCmd();
+            final String cmd = info.getCmd();
             if (cmd.contains(";") || cmd.startsWith("am")) {
                 try {
                     String arr[] = cmd.split(";");
@@ -563,27 +564,32 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                 }
                 return;
             }
-            final ShellUtils.CommandResult result = ShellUtils.execCommand(cmd, true);
-            if (result != null) {
-                if (Xutils.isNotEmptyOrNull(result.successMsg)) {
-                    MaterialDialog dialog = Xutils.themeMaterialDialog(activity).title(cmd).content(result.successMsg).positiveText("知").neutralText("复制").onAny(new MaterialDialog.SingleButtonCallback() {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    final ShellUtils.CommandResult result = ShellUtils.execCommand(cmd, true);
+                    if (result != null) {
+                        if (Xutils.isNotEmptyOrNull(result.successMsg)) {
+                            MaterialDialog dialog = Xutils.themeMaterialDialog(activity).title(cmd).content(result.successMsg).positiveText("知").neutralText("复制").onAny(new MaterialDialog.SingleButtonCallback() {
 
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            if (which == DialogAction.NEUTRAL) {
-                                Xutils.copyText(activity, result.successMsg);
-                                Xutils.tShort("已复制");
-                            }
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    if (which == DialogAction.NEUTRAL) {
+                                        Xutils.copyText(activity, result.successMsg);
+                                        Xutils.tShort("已复制");
+                                    }
+                                }
+                            }).build();
+                            BottomSheetDlg.checkSysDlg(activity, dialog);
+                            dialog.show();
+                        } else {
                         }
-                    }).build();
-                    BottomSheetDlg.checkSysDlg(activity, dialog);
-                    dialog.show();
-                } else {
-                }
 
-            } else {
-                Xutils.tShort("找不到该命令~");
-            }
+                    } else {
+                        Xutils.tShort("找不到该命令~");
+                    }
+                }
+            });
         } else if (info.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
             String cmd = info.getCmd();
             try {
