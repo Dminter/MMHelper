@@ -2,12 +2,15 @@ package com.zncm.dminter.mmhelper.utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,8 +18,11 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +39,7 @@ import com.malinskiy.materialicons.IconDrawable;
 import com.malinskiy.materialicons.Iconify;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MyApplication;
+import com.zncm.dminter.mmhelper.MyReceiver;
 import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
 import com.zncm.dminter.mmhelper.SPHelper;
@@ -379,7 +386,92 @@ public class Xutils {
         sendToDesktop(activity, cardInfo, isShotcut, true);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void addShortCut(Activity activity, CardInfo cardInfo, boolean isShotcut, boolean isTip) {
+        ShortcutManager shortcutManager = (ShortcutManager) activity.getSystemService(Context.SHORTCUT_SERVICE);
+        if (shortcutManager.isRequestPinShortcutSupported()) {
+            Bitmap bitmap = null;
+            Drawable drawable = null;
+            if (cardInfo.getType() == EnumInfo.cType.URL.getValue()) {
+                drawable = activity.getResources().getDrawable(R.mipmap.ic_url);
+            } else if (cardInfo.getType() == EnumInfo.cType.CMD.getValue()) {
+                drawable = activity.getResources().getDrawable(R.mipmap.ic_shell);
+            } else if (cardInfo.getType() == EnumInfo.cType.SHORT_CUT_SYS.getValue()) {
+                drawable = activity.getResources().getDrawable(R.mipmap.ic_shortcut);
+                if (cardInfo.getImg() != null) {
+                    bitmap = MyFt.bytes2Bimap(cardInfo.getImg());
+                }
+            }
+//            Intent intent;
+            BitmapDrawable bitmapDrawable;
+//            intent = new Intent();
+            Intent shortIntent = new Intent(activity, OpenInentActivity.class);
+            shortIntent.setAction("android.intent.action.VIEW");
+            shortIntent.putExtra("android.intent.extra.UID", 0);
+            shortIntent.putExtra("pkName", cardInfo.getPackageName());
+            shortIntent.putExtra("className", cardInfo.getClassName());
+            shortIntent.putExtra("cardId", cardInfo.getId());
+            shortIntent.putExtra("isShotcut", isShotcut);
+            shortIntent.putExtra("random", new Random().nextLong());
+//            intent.putExtra("android.intent.extra.shortcut.INTENT", shortIntent);
+//            intent.putExtra("android.intent.extra.shortcut.NAME", makeShortcutIconTitle(cardInfo.getTitle()));
+            bitmapDrawable = (BitmapDrawable) drawable;
+//            if (bitmapDrawable == null) {
+//                try {
+//                    intent.putExtra("android.intent.extra.shortcut.ICON_RESOURCE", Intent.ShortcutIconResource.fromContext(activity.createPackageContext(cardInfo.getPackageName(), 0), getAppIconId(cardInfo.getPackageName())));
+//                } catch (PackageManager.NameNotFoundException localNameNotFoundException) {
+//                    localNameNotFoundException.printStackTrace();
+//                }
+//            } else {
+//                if (bitmapDrawable == null) {
+//                    bitmapDrawable = (BitmapDrawable) activity.getResources().getDrawable(R.mipmap.ic_launcher);
+//                }
+//                if (bitmap == null) {
+//                    bitmap = bitmapDrawable.getBitmap();
+//                }
+//                intent.putExtra("android.intent.extra.shortcut.ICON", bitmap);
+//
+//            }
+
+            if (bitmapDrawable == null) {
+                bitmapDrawable = (BitmapDrawable) getAppIcon(cardInfo.getPackageName());
+            }
+
+            if (bitmapDrawable == null) {
+                bitmapDrawable = (BitmapDrawable) activity.getResources().getDrawable(R.mipmap.ic_launcher);
+            }
+            if (bitmap == null) {
+                bitmap = bitmapDrawable.getBitmap();
+            }
+//            intent.putExtra("duplicate", false);
+//            intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+//            activity.sendBroadcast(intent);
+
+            shortIntent.setAction(Intent.ACTION_VIEW); //action必须设置，不然报错
+            ShortcutInfo info = new ShortcutInfo.Builder(activity, cardInfo.getId() + "")
+                    .setIcon(Icon.createWithBitmap(bitmap))
+                    .setShortLabel(cardInfo.getTitle())
+                    .setIntent(shortIntent)
+                    .build();
+            //当添加快捷方式的确认弹框弹出来时，将被回调
+            PendingIntent shortcutCallbackIntent = PendingIntent.getBroadcast(activity, 0, new Intent(activity, MyReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+            shortcutManager.requestPinShortcut(info, shortcutCallbackIntent.getIntentSender());
+            if (isTip) {
+                tShort(Constant.add_shortcut);
+            }
+        } else {
+            tShort("添加失败~");
+        }
+
+    }
+
     public static void sendToDesktop(Activity activity, CardInfo cardInfo, boolean isShotcut, boolean isTip) {
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            addShortCut(activity, cardInfo, isShotcut, isTip);
+            return;
+        }
+
 
         Bitmap bitmap = null;
         Drawable drawable = null;
