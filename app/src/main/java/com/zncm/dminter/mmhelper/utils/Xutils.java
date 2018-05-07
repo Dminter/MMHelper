@@ -386,6 +386,9 @@ public class Xutils {
         sendToDesktop(activity, cardInfo, isShotcut, true);
     }
 
+    /**
+     *https://blog.csdn.net/rentee/article/details/77005547
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void addShortCut(Activity activity, CardInfo cardInfo, boolean isShotcut, boolean isTip) {
         ShortcutManager shortcutManager = (ShortcutManager) activity.getSystemService(Context.SHORTCUT_SERVICE);
