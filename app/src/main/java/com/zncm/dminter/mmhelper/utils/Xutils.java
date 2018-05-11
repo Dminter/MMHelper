@@ -29,6 +29,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TimeUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -405,9 +406,7 @@ public class Xutils {
                     bitmap = MyFt.bytes2Bimap(cardInfo.getImg());
                 }
             }
-//            Intent intent;
             BitmapDrawable bitmapDrawable;
-//            intent = new Intent();
             Intent shortIntent = new Intent(activity, OpenInentActivity.class);
             shortIntent.setAction("android.intent.action.VIEW");
             shortIntent.putExtra("android.intent.extra.UID", 0);
@@ -416,42 +415,28 @@ public class Xutils {
             shortIntent.putExtra("cardId", cardInfo.getId());
             shortIntent.putExtra("isShotcut", isShotcut);
             shortIntent.putExtra("random", new Random().nextLong());
-//            intent.putExtra("android.intent.extra.shortcut.INTENT", shortIntent);
-//            intent.putExtra("android.intent.extra.shortcut.NAME", makeShortcutIconTitle(cardInfo.getTitle()));
             bitmapDrawable = (BitmapDrawable) drawable;
-//            if (bitmapDrawable == null) {
-//                try {
-//                    intent.putExtra("android.intent.extra.shortcut.ICON_RESOURCE", Intent.ShortcutIconResource.fromContext(activity.createPackageContext(cardInfo.getPackageName(), 0), getAppIconId(cardInfo.getPackageName())));
-//                } catch (PackageManager.NameNotFoundException localNameNotFoundException) {
-//                    localNameNotFoundException.printStackTrace();
-//                }
-//            } else {
-//                if (bitmapDrawable == null) {
-//                    bitmapDrawable = (BitmapDrawable) activity.getResources().getDrawable(R.mipmap.ic_launcher);
-//                }
-//                if (bitmap == null) {
-//                    bitmap = bitmapDrawable.getBitmap();
-//                }
-//                intent.putExtra("android.intent.extra.shortcut.ICON", bitmap);
-//
-//            }
 
-            if (bitmapDrawable == null) {
-                bitmapDrawable = (BitmapDrawable) getAppIcon(cardInfo.getPackageName());
+            try {
+                if (bitmapDrawable == null) {
+                    bitmapDrawable = (BitmapDrawable) getAppIcon(cardInfo.getPackageName());
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
 
             if (bitmapDrawable == null) {
                 bitmapDrawable = (BitmapDrawable) activity.getResources().getDrawable(R.mipmap.ic_launcher);
             }
+
             if (bitmap == null) {
                 bitmap = bitmapDrawable.getBitmap();
             }
-//            intent.putExtra("duplicate", false);
-//            intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-//            activity.sendBroadcast(intent);
+
+
 
             shortIntent.setAction(Intent.ACTION_VIEW); //action必须设置，不然报错
-            ShortcutInfo info = new ShortcutInfo.Builder(activity, cardInfo.getId() + "")
+            ShortcutInfo info = new ShortcutInfo.Builder(activity, (System.currentTimeMillis()+ new Random().nextLong())+ "")
                     .setIcon(Icon.createWithBitmap(bitmap))
                     .setShortLabel(cardInfo.getTitle())
                     .setIntent(shortIntent)

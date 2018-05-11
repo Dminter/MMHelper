@@ -1,20 +1,26 @@
 package com.zncm.dminter.mmhelper;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,11 +85,11 @@ public class SettingNew extends MaterialSettings {
 //        }));
 
 
-        addItem(new TextItem(ctx, "").setTitle("搭配LawnchairQa启动器使用,效果更佳").setSubtitle("一款基于开源Lawnchair类原生启动器").setOnclick(new TextItem.OnClickListener() {
-            public void onClick(TextItem textItem) {
-                Xutils.openUrl(Constant.lawnchair_qa_url);
-            }
-        }));
+//        addItem(new TextItem(ctx, "").setTitle("搭配LawnchairQa启动器使用,效果更佳").setSubtitle("一款基于开源Lawnchair类原生启动器").setOnclick(new TextItem.OnClickListener() {
+//            public void onClick(TextItem textItem) {
+//                Xutils.openUrl(Constant.lawnchair_qa_url);
+//            }
+//        }));
 
         addItem(new HeaderItem(this).setTitle("创建快捷方式"));
         addItem(new TextItem(ctx, "").setTitle("全部冷冻").setOnclick(new TextItem.OnClickListener() {
@@ -649,7 +655,7 @@ public class SettingNew extends MaterialSettings {
             }
         }));
         addItem(new DividerItem(ctx));
-        addItem(new TextItem(this, "").setTitle("从桌面获取快捷方式").setOnclick(new TextItem.OnClickListener() {
+        addItem(new TextItem(this, "").setTitle("从桌面获取快捷方式").setSubtitle("仅支持原生系Launcher.").setOnclick(new TextItem.OnClickListener() {
             @Override
             public void onClick(TextItem textItem) {
                 if (checkNotPro()) {
@@ -913,7 +919,42 @@ public class SettingNew extends MaterialSettings {
         shortCutAdd(context, action, name, "");
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void addShortCut(Context activity, String action, String name, String pkName) {
+        ShortcutManager shortcutManager = (ShortcutManager) activity.getSystemService(Context.SHORTCUT_SERVICE);
+        if (shortcutManager.isRequestPinShortcutSupported()) {
+            Intent intent = new Intent(activity, ShortcutActionActivity.class);
+            intent.setAction("android.intent.action.VIEW");
+            intent.putExtra("android.intent.extra.UID", 0);
+            if (Xutils.isNotEmptyOrNull(pkName)) {
+                intent.putExtra("pkName", pkName);
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("action", action);
+            intent.putExtra("duplicate", false);
+            ShortcutInfo info = new ShortcutInfo.Builder(activity, (System.currentTimeMillis() + new Random().nextLong()) + "")
+                    .setIcon(Icon.createWithResource(activity, R.mipmap.ic_launcher))
+                    .setShortLabel(name)
+                    .setIntent(intent)
+                    .build();
+            //当添加快捷方式的确认弹框弹出来时，将被回调
+            PendingIntent shortcutCallbackIntent = PendingIntent.getBroadcast(activity, 0, new Intent(activity, MyReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
+            shortcutManager.requestPinShortcut(info, shortcutCallbackIntent.getIntentSender());
+            Xutils.tShort("已创建快捷方式" + name);
+        } else {
+            Xutils.tShort("添加失败~");
+        }
+
+    }
+
     public static void shortCutAdd(Context context, String action, String name, String pkName) {
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            addShortCut(context, action, name, pkName);
+            return;
+        }
+
+
         Intent intent = new Intent(context, ShortcutActionActivity.class);
         intent.setAction("android.intent.action.VIEW");
         intent.putExtra("android.intent.extra.UID", 0);
