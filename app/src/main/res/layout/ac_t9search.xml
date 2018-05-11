@@ -16,7 +16,7 @@
             android:id="@+id/editText"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/material_light_black"
+            android:textColor="@color/material_light_white"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" />
 
 
