@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="cmd_array">
-        <item>cat /data/misc/wifi/*.conf|WiFi 密码</item>
+        <item>"grep -E 'ssid|psk' /data/misc/wifi/wpa_supplicant.conf"|WiFi 密码</item>
         <item>reboot|重启手机</item>
         <item>input keyevent 3|HOME 键</item>
         <item>input keyevent 187|切换应用</item>
         <item>input keyevent 26|电源键</item>
         <item>input keyevent 223|熄灭屏幕</item>
-        <item>pm list packages -3|已安装的第三方app</item>
-        <item>am start -n com.tencent.mm/.ui.LauncherUI|微信</item>
-        <item>ifconfig|IP 地址</item>
+        <!--<item>pm list packages -3|已安装的第三方app</item>-->
+        <!--<item>am start -n com.tencent.mm/.ui.LauncherUI|微信</item>-->
+        <item>"ifconfig wlan0 | grep 'inet '"|IP 地址</item>
         <item>getprop ro.product.model|型号</item>
         <item>dumpsys battery|电池状况</item>
         <item>wm size|屏幕分辨率</item>

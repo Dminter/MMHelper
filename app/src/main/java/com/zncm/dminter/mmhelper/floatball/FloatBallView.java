@@ -308,20 +308,24 @@ public class FloatBallView extends LinearLayout {
                 break;
             case MODE_RIGHT:
 //                AccessibilityUtil.doGetActivity(mService);
-                String text = Xutils.getCurrentActivity();
-                if (Xutils.isNotEmptyOrNull(text)){
-                    final String pName = text.split("\\n")[0];
-                    final String cName = text.split("\\n")[1];
-                    if (Xutils.isEmptyOrNull(pName) || Xutils.isEmptyOrNull(cName)) {
-                        return;
+                try {
+                    String text = Xutils.getCurrentActivity();
+                    if (Xutils.isNotEmptyOrNull(text)){
+                        final String pName = text.split("\\n")[0];
+                        final String cName = text.split("\\n")[1];
+                        if (Xutils.isEmptyOrNull(pName) || Xutils.isEmptyOrNull(cName)) {
+                            return;
+                        }
+                        String title = cName;
+                        if (Xutils.isNotEmptyOrNull(cName) && cName.contains(".")) {
+                            title = cName.substring(cName.lastIndexOf(".") + 1);
+                        }
+                        CardInfo card = new CardInfo(pName, cName, title);
+                        DbUtils.insertCard(card);
+                        Xutils.tShort("已添加 " + title);
                     }
-                    String title = cName;
-                    if (Xutils.isNotEmptyOrNull(cName) && cName.contains(".")) {
-                        title = cName.substring(cName.lastIndexOf(".") + 1);
-                    }
-                    CardInfo card = new CardInfo(pName, cName, title);
-                    DbUtils.insertCard(card);
-                    Xutils.tShort("已添加 " + title);
+                }catch (Exception e){
+                 e.printStackTrace();
                 }
                 break;
             case MODE_DOWN:

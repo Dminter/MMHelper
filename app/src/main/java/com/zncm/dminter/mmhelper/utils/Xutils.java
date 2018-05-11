@@ -29,7 +29,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TimeUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -186,10 +185,29 @@ public class Xutils {
 
     public static String getCurrentActivity() {
         try {
+            String pkgName = "";
+            String className = "";
             String request = exec("dumpsys activity | grep \"mFocusedActivity\"");
+            if (Build.VERSION.SDK_INT >= 26) {
+                request = exec("dumpsys activity activities | sed -En -e '/Running activities/,/Run #0/p'");
+                if (request.contains("TaskRecord") && request.contains(" u0 ") && request.contains(" t")) {
+                    request = request.substring(request.indexOf(" u0 ") + 4, request.indexOf(" t"));
+                    String mFocusedActivity = request;
+                    if (mFocusedActivity.contains("/")) {
+                        String arr[] = mFocusedActivity.split("/");
+                        if (arr != null && arr.length > 0 && arr.length == 2) {
+                            pkgName = arr[0];
+                            className = arr[1];
+                            if (className.startsWith(".")) {
+                                className = pkgName + className;
+                            }
+                            String pkgClass = pkgName + "\n" + className;
+                            return pkgClass;
+                        }
+                    }
+                }
+            }
             if (!TextUtils.isEmpty(request)) {
-                String pkgName = "";
-                String className = "";
                 String mFocusedActivity = request;
                 if (mFocusedActivity.contains("mFocusedActivity")) {
                     mFocusedActivity = mFocusedActivity.substring(mFocusedActivity.indexOf("{") + 1, mFocusedActivity.indexOf("}"));
@@ -388,7 +406,7 @@ public class Xutils {
     }
 
     /**
-     *https://blog.csdn.net/rentee/article/details/77005547
+     * https://blog.csdn.net/rentee/article/details/77005547
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void addShortCut(Activity activity, CardInfo cardInfo, boolean isShotcut, boolean isTip) {
@@ -421,7 +439,7 @@ public class Xutils {
                 if (bitmapDrawable == null) {
                     bitmapDrawable = (BitmapDrawable) getAppIcon(cardInfo.getPackageName());
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -434,9 +452,8 @@ public class Xutils {
             }
 
 
-
             shortIntent.setAction(Intent.ACTION_VIEW); //action必须设置，不然报错
-            ShortcutInfo info = new ShortcutInfo.Builder(activity, (System.currentTimeMillis()+ new Random().nextLong())+ "")
+            ShortcutInfo info = new ShortcutInfo.Builder(activity, (System.currentTimeMillis() + new Random().nextLong()) + "")
                     .setIcon(Icon.createWithBitmap(bitmap))
                     .setShortLabel(cardInfo.getTitle())
                     .setIntent(shortIntent)
