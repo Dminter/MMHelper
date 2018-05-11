@@ -17,6 +17,7 @@ import android.widget.SimpleAdapter;
 
 import com.zncm.dminter.mmhelper.OpenInentActivity;
 import com.zncm.dminter.mmhelper.R;
+import com.zncm.dminter.mmhelper.ShortcutActionActivity;
 
 import java.util.List;
 import java.util.Map;
@@ -89,12 +90,15 @@ public abstract class BottomSheetDlg {
     }
 
     public static void checkSysDlg(Context activity, Dialog dialog) {
-        if ((activity instanceof OpenInentActivity)) {
+        /**
+         *修复桌面弹出层异常的bug
+         */
+        if ((activity instanceof OpenInentActivity) || (activity instanceof ShortcutActionActivity)) {
             try {
                 if (!SettingsCompat.canDrawOverlays(activity)) {
                     activity.startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION));
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);

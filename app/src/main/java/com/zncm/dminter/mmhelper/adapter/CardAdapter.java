@@ -1,6 +1,7 @@
 package com.zncm.dminter.mmhelper.adapter;
 
 import android.app.Activity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,11 +63,14 @@ public abstract class CardAdapter extends RecyclerView.Adapter<RecyclerView.View
         public ImageView image;
         public TextView title;
         public LinearLayout llBg;
+        public CardView cardView;
         private View view;
 
         public CardViewHolder(View convertView) {
             super(convertView);
             view = convertView;
+            cardView = (CardView) convertView
+                    .findViewById(R.id.card_view);
             llBg = (LinearLayout) convertView
                     .findViewById(R.id.llBg);
             image = (ImageView) convertView

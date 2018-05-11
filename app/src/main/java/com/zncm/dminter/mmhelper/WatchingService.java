@@ -1,17 +1,11 @@
 package com.zncm.dminter.mmhelper;
 
-import android.annotation.TargetApi;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
-import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,41 +27,47 @@ public class WatchingService extends Service {
 
     public static void show(final Context context, final String text) {
         try {
-            textView.setText(text);
-            textView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final String pName = text.split("\\n")[0];
-                    final String cName = text.split("\\n")[1];
-                    if (Xutils.isEmptyOrNull(pName) || Xutils.isEmptyOrNull(cName)) {
-                        return;
+            if (mFloatWindow != null) {
+                textView.setText(text);
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final String pName = text.split("\\n")[0];
+                        final String cName = text.split("\\n")[1];
+                        if (Xutils.isEmptyOrNull(pName) || Xutils.isEmptyOrNull(cName)) {
+                            return;
+                        }
+                        String title = cName;
+                        if (Xutils.isNotEmptyOrNull(cName) && cName.contains(".")) {
+                            title = cName.substring(cName.lastIndexOf(".") + 1);
+                        }
+                        CardInfo card = new CardInfo(pName, cName, title);
+                        DbUtils.insertCard(card);
+                        Xutils.tShort("已添加 " + title);
                     }
-                    String title = cName;
-                    if (Xutils.isNotEmptyOrNull(cName) && cName.contains(".")) {
-                        title = cName.substring(cName.lastIndexOf(".") + 1);
+                });
+                textView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        Xutils.copyText(context, text);
+                        Xutils.tShort("已复制~");
+                        return true;
                     }
-                    CardInfo card = new CardInfo(pName, cName, title);
-                    DbUtils.insertCard(card);
-                    Xutils.tShort("已添加 " + title);
-                }
-            });
-            textView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    Xutils.copyText(context,text);
-                    Xutils.tShort("已复制~");
-                    return true;
-                }
-            });
+                });
+            }
+
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
 
     public static void dismiss(Context context) {
-        SPHelper.setIsAcFloat(context, false);
-        mFloatWindow.hide();
-        NotiHelper.clearNoti(context, Constant.n_id_ac);
+        if (mFloatWindow != null) {
+            SPHelper.setIsAcFloat(context, false);
+            mFloatWindow.hide();
+            NotiHelper.clearNoti(context, Constant.n_id_ac);
+        }
     }
 
 

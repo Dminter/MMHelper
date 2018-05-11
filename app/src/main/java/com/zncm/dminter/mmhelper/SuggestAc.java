@@ -107,9 +107,9 @@ public class SuggestAc extends MaterialSettings {
 //        if (Xutils.hasInstalledApp(ctx, dianping)) {
 //            items.put(dianping, "大众点评");
 //        }
-        if (Xutils.hasInstalledApp(ctx, wc)) {
-            items.put(wc, "挖财");
-        }
+//        if (Xutils.hasInstalledApp(ctx, wc)) {
+//            items.put(wc, "挖财");
+//        }
         if (Xutils.hasInstalledApp(ctx, youdaonote)) {
             items.put(youdaonote, "有道云笔记");
         }

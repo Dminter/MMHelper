@@ -3,7 +3,6 @@ package com.zncm.dminter.mmhelper.ft;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -31,11 +30,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.sofaking.iconpack.IconPack;
-import com.sofaking.iconpack.IconPackManager;
 import com.zncm.dminter.mmhelper.Constant;
 import com.zncm.dminter.mmhelper.MainActivity;
 import com.zncm.dminter.mmhelper.MyApplication;
@@ -58,9 +57,7 @@ import com.zncm.dminter.mmhelper.data.RefreshEvent;
 import com.zncm.dminter.mmhelper.data.db.DbUtils;
 import com.zncm.dminter.mmhelper.dragrecyclerview.CallbackWrap;
 import com.zncm.dminter.mmhelper.dragrecyclerview.OnTouchListener;
-import com.zncm.dminter.mmhelper.utils.ApkInfoUtils;
 import com.zncm.dminter.mmhelper.utils.BottomSheetDlg;
-import com.zncm.dminter.mmhelper.utils.ColorGenerator;
 import com.zncm.dminter.mmhelper.utils.DataInitHelper;
 import com.zncm.dminter.mmhelper.utils.ShellUtils;
 import com.zncm.dminter.mmhelper.utils.Xutils;
@@ -179,11 +176,21 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     }
                 } else {
                     holder.image.setVisibility(View.GONE);
-                    int bgColor = ColorGenerator.MATERIAL.getColor(!Xutils.isEmptyOrNull(info.getPackageName()) ? info.getPackageName() : "");
-                    if (bgColor != 0) {
-                        holder.llBg.setBackgroundColor(bgColor);
-                        titleColor = getResources().getColor(R.color.material_light_white);
-                    }
+//                    int bgColor = ColorGenerator.MATERIAL.getColor(!Xutils.isEmptyOrNull(info.getId()+"") ? info.getId()+"" : "");
+//                    if (bgColor != 0) {
+//                        holder.llBg.setBackgroundColor(bgColor);
+//                        titleColor = getResources().getColor(R.color.material_light_white);
+//                    }
+                    int bgColor = getResources().getColor(R.color.material_light_white);
+//                    holder.llBg.setBackgroundColor(bgColor);
+//                    holder.llBg.setBackgroundResource(R.drawable.card);
+                    holder.cardView.setRadius(Xutils.dip2px(8));
+                    holder.cardView.setCardElevation(Xutils.dip2px(2));
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(holder.cardView.getLayoutParams());
+                    lp.setMargins(Xutils.dip2px(5), Xutils.dip2px(5), Xutils.dip2px(5), Xutils.dip2px(5));
+                    holder.cardView.setLayoutParams(lp);
+//                    holder.cardView.setPadding(Xutils.dip2px(5), Xutils.dip2px(5), Xutils.dip2px(5), Xutils.dip2px(5));
+                    titleColor = getResources().getColor(R.color.material_light_black);
                 }
                 if (titleColor != 0) {
                     holder.title.setTextColor(titleColor);
@@ -348,9 +355,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     }
 
 
-
-
-
     public static void openAcFloat(Context ctx) {
         if (WatchingAccessibilityService.getInstance() == null) {
             MyFt.getActivityDlg(ctx);
@@ -491,7 +495,6 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
     }
 
 
-
     public static void clickCard(final Context activity, PkInfo pkInfo) {
         CardInfo info = new CardInfo();
         info.setTitle(pkInfo.getName());
@@ -499,7 +502,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         info.setImg(pkInfo.getIcon());
         info.setType(EnumInfo.cType.START_APP.getValue());
         info.setDisabled(pkInfo.getStatus() == EnumInfo.appStatus.DISABLED.getValue());
-        clickCard(activity,info);
+        clickCard(activity, info);
     }
 
     public static void clickCard(final Context activity, CardInfo info) {
@@ -635,6 +638,17 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         if (ret == AndroidCommand.noRoot) {
             Xutils.tShort(Constant.no_root);
         }
+
+
+        /**
+         *若是半屏模式，点击即隐藏界面
+         */
+//        if (SPHelper.isHS(activity)) {
+//            if (activity instanceof MainActivity) {
+//                MainActivity ctx = (MainActivity) activity;
+//                ctx.finish();
+//            }
+//        }
     }
 
     public static void appNewStatus(CardInfo info) {

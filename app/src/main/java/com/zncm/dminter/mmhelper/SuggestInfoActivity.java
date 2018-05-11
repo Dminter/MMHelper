@@ -67,8 +67,8 @@ public class SuggestInfoActivity extends BaseActivity {
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.sns.ui.SnsTimeLineUI", "朋友圈"));
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.sns.ui.SnsMsgUI", "朋友圈消息"));
 
-            wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.search.ui.FTSMainUI", "微信搜索"));
-            wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.favorite.ui.FavoriteIndexUI", "我的收藏"));
+            wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.fts.ui.FTSMainUI", "微信搜索"));
+            wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.fav.ui.FavoriteIndexUI", "我的收藏"));
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.appbrand.ui.AppBrandLauncherUI", "小程序"));
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.shake.ui.ShakeReportUI", "摇一摇"));
             wxCard.add(new CardInfo(SuggestAc.wx, "com.tencent.mm.plugin.brandservice.ui.BrandServiceIndexUI", "公众号"));
@@ -103,14 +103,14 @@ public class SuggestInfoActivity extends BaseActivity {
 
 
 //            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.onsitepay9.payer.OspTabHostActivity", "付款码"));
-            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.bill.intentList.ui.BillListActivity_", "账单"));
+            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.bill.list.ui.BillListActivity_", "账单"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.security.accountmanager.AccountInfo.ui.SecurityAccountQrCodeActivity_", "我的二维码"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.businesscommon.globalsearch.ui.MainSearchActivity", "搜索"));
 
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.android.phone.wealth.tally.activitys.TallyMainActivity_", "记账本"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.pubsvc.ui.PPServiceActivity", "生活号"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.transferapp.ui.TransferHomeActivity_", "转账"));
-            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.alipassapp.ui.intentList.activity.v2.OffersEntryActivity", "卡包"));
+            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.alipassapp.ui.list.activity.v2.OffersEntryActivity", "卡包"));
 //            zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.payee.ui.PayeeQRActivity_", "收钱"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.contactsapp.ui.AddFriendActivity_", "添加朋友"));
             zfbCard.add(new CardInfo(SuggestAc.zfb, "com.alipay.mobile.socialcontactsdk.contact.ui.ContactMainPageActivity", "通讯录"));
@@ -139,13 +139,13 @@ public class SuggestInfoActivity extends BaseActivity {
 //            card.add(new CardInfo(SuggestAc.tb, "com.taobao.tao.homepage.MainActivity3", "淘宝"));
 //            card.add(new CardInfo(SuggestAc.tb, "com.taobao.taobao.scancode.gateway.activity.ScancodeGatewayActivity", "扫一扫"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.tao.mytaobao.MyTaoBaoActivity", "我的淘宝"));
-            card.add(new CardInfo(SuggestAc.tb, "com.taobao.order.intentList.OrderListActivity", "我的订单"));
+//            card.add(new CardInfo(SuggestAc.tb, "com.taobao.order.intentList.OrderListActivity", "我的订单"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.favorites.NewFavoriteGoodsActivity", "我的收藏"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.android.trade.cart.CartActivity", "购物车"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.search.searchdoor.SearchDoorActivity", "搜索"));
             card.add(new CardInfo(SuggestAc.tb, "com.etao.feimagesearch.FEISCaptureActivity", "拍立淘"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.tao.rate.ui.myrate.MyRateActivity", "我的评价"));
-            card.add(new CardInfo(SuggestAc.tb, "com.tmall.market.plugin.main.MainTabActivity", "天猫超市"));
+//            card.add(new CardInfo(SuggestAc.tb, "com.tmall.market.plugin.main.MainTabActivity", "天猫超市"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.ju.android.ui.main.TabMainActivity", "聚划算"));
             card.add(new CardInfo(SuggestAc.tb, "com.taobao.takeout.TakeoutMainActivity", "淘宝外卖"));
             cardInfos.addAll(card);
@@ -289,8 +289,8 @@ public class SuggestInfoActivity extends BaseActivity {
 //            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "pm intentList packages -3", "已安装的第三方app"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "am start -n com.tencent.mm/.ui.LauncherUI", "微信"));
 
-            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "cat /data/misc/wifi/*.conf", "WiFi 密码"));
-            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "ifconfig", "IP 地址"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "grep -E 'ssid|psk' /data/misc/wifi/wpa_supplicant.conf", "WiFi 密码"));
+            card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "ifconfig wlan0 | grep 'inet '", "IP 地址"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "cat /sys/class/net/wlan0/address", "Mac 地址"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "getprop ro.product.model", "手机型号"));
             card.add(new CardInfo(EnumInfo.cType.CMD.getValue(), "dumpsys battery", "电池状况"));
@@ -329,9 +329,6 @@ public class SuggestInfoActivity extends BaseActivity {
             pkName = getIntent().getExtras().getString("pkName");
             String name = getIntent().getExtras().getString("name");
             if (Xutils.isNotEmptyOrNull(name)) {
-                if (name.equals("微信")) {
-                    name += "-适配微信V6.6.0";
-                }
                 toolbar.setTitle("建议活动 " + name);
             }
         }

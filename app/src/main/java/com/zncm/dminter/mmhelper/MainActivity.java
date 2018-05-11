@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         return super.dispatchKeyEvent(event);
     }
 
-    public void backToDesk(Activity activity) {
+    public  void backToDesk(Activity activity) {
 
         SPHelper.setCurTab(ctx, mViewPager.getCurrentItem());
         if (SPHelper.isHS(ctx)) {
