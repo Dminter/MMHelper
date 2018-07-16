@@ -184,8 +184,8 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     int bgColor = getResources().getColor(R.color.material_light_white);
 //                    holder.llBg.setBackgroundColor(bgColor);
 //                    holder.llBg.setBackgroundResource(R.drawable.card);
-                    holder.cardView.setRadius(Xutils.dip2px(8));
-                    holder.cardView.setCardElevation(Xutils.dip2px(2));
+//                    holder.cardView.setRadius(Xutils.dip2px(8));
+//                    holder.cardView.setCardElevation(Xutils.dip2px(2));
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(holder.cardView.getLayoutParams());
                     lp.setMargins(Xutils.dip2px(5), Xutils.dip2px(5), Xutils.dip2px(5), Xutils.dip2px(5));
                     holder.cardView.setLayoutParams(lp);

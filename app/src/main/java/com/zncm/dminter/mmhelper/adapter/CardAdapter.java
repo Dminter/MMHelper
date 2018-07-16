@@ -63,13 +63,13 @@ public abstract class CardAdapter extends RecyclerView.Adapter<RecyclerView.View
         public ImageView image;
         public TextView title;
         public LinearLayout llBg;
-        public CardView cardView;
+        public LinearLayout cardView;
         private View view;
 
         public CardViewHolder(View convertView) {
             super(convertView);
             view = convertView;
-            cardView = (CardView) convertView
+            cardView = (LinearLayout) convertView
                     .findViewById(R.id.card_view);
             llBg = (LinearLayout) convertView
                     .findViewById(R.id.llBg);

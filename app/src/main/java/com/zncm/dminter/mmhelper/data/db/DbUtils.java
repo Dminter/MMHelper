@@ -482,7 +482,14 @@ public class DbUtils {
         try {
             QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
             if (type != -1) {
-                builder.where().eq("exb2", type).and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
+                if (type==1) {
+                    /**
+                     *不常用的也需要冻结
+                     */
+                    builder.where().eq("exb2", type).and().in("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()),Integer.valueOf(EnumInfo.pkStatus.HIDDEN.getValue()));
+                } else {
+                    builder.where().eq("exb2", type).and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
+                }
             } else {
                 builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
             }
@@ -543,7 +550,7 @@ public class DbUtils {
             QueryBuilder<PkInfo, Integer> builder = pkDao.queryBuilder();
             if (status == EnumInfo.pkStatus.NORMAL.getValue()) {
                 if (Xutils.isNotEmptyOrNull(pkgName)) {
-                    builder.where().eq("packageName", pkgName).and().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
+                    builder.where().eq("packageName", pkgName).and().in("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()),Integer.valueOf(EnumInfo.pkStatus.HIDDEN.getValue()));
                 } else {
                     builder.where().eq("exi1", Integer.valueOf(EnumInfo.pkStatus.NORMAL.getValue()));
                 }
