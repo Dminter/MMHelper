@@ -20,7 +20,7 @@ import java.util.List;
  * Created by jiaomx on 2017/4/12.
  */
 public class ActivityArrayAdapter extends CustomizableArrayAdapter<MyAppInfo> {
-  private   PackageManager packageManager;
+    private PackageManager packageManager;
 
     public ActivityArrayAdapter(Context context, List<MyAppInfo> list) {
         super(context, new ArrayList<MyAppInfo>());
@@ -51,9 +51,13 @@ public class ActivityArrayAdapter extends CustomizableArrayAdapter<MyAppInfo> {
         TextView desc = (TextView) view.findViewById(R.id.app_desc);
         String packageName = item.getPackageName();
         String className = item.getClassName();
+        String appName = item.getAppName();
         String show = className;
         if ((Xutils.isNotEmptyOrNull(className)) && (Xutils.isNotEmptyOrNull(packageName)) && (className.contains(packageName))) {
             show = className.replace(packageName, "");
+        }
+        if (Xutils.isNotEmptyOrNull(appName)) {
+            show = show + "|" + appName;
         }
         name.setText(show);
         desc.setVisibility(View.GONE);

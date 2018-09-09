@@ -42,7 +42,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -101,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             e.printStackTrace();
         }
         count = fzInfos.size() + baseTab;
+        if (SPHelper.isHS(ctx)) {
+            count = 2;
+        }
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         topView = (LinearLayout) findViewById(R.id.topView);
         adapter = new MyPagerAdapter(getSupportFragmentManager());
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
 
         if (SPHelper.isHS(ctx)) {
             toolbar.setVisibility(View.GONE);
-            mTabLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Xutils.dip2px(2)));
+            mTabLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Xutils.dip2px(0)));
             mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, Xutils.dip2px(300)));
         }
 
@@ -166,8 +168,7 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
     }
 
     /**
-     * 首次安装，初始化活动
-     * 不是第一次也可以强制初始化，触发在设置里面【添加建议活动】
+     * 首次安装，初始化活动 不是第一次也可以强制初始化，触发在设置里面【添加建议活动】
      */
     public static void initBaseCard(boolean isFirst) {
         ArrayList<CardInfo> tmps = DbUtils.getCardInfos(null);
@@ -180,16 +181,16 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             LinkedHashMap<String, String> items = new LinkedHashMap<>();
             SuggestAc.sugItems(items);
             if (items != null && items.size() > 0) {
-                for (Map.Entry<String, String> entry : items.entrySet()
-                        ) {
+                for (Map.Entry<String, String> entry: items.entrySet()
+                ) {
                     String pkName = entry.getKey();
                     if (Xutils.isNotEmptyOrNull(pkName)) {
                         List<CardInfo> cardInfos = new ArrayList();
                         SuggestInfoActivity.allInit(pkName, cardInfos);
                         if (Xutils.listNotNull(cardInfos)) {
 //                            Xutils.debug("cardInfos:" + cardInfos);
-                            for (CardInfo tmp : cardInfos
-                                    ) {
+                            for (CardInfo tmp: cardInfos
+                            ) {
                                 DbUtils.addIfNotExist(tmp);
                             }
                         }
@@ -253,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
             } else {
                 title = fzInfos.get(position - baseTab).getName();
             }
-
             return title;
         }
 
@@ -267,11 +267,16 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         public Fragment getItem(int position) {
             fragment = new MyFt();
             bundle = new Bundle();
-            if (position < baseTab) {
-                bundle.putString("packageName", EnumInfo.homeTab.getHomeTab(position).getValue());
+            if (SPHelper.isHS(ctx)) {
+                bundle.putString("packageName", EnumInfo.homeTab.getHomeTab(position + 1).getValue());
             } else {
-                bundle.putString("packageName", fzInfos.get(position - baseTab).getId() + "");
+                if (position < baseTab) {
+                    bundle.putString("packageName", EnumInfo.homeTab.getHomeTab(position).getValue());
+                } else {
+                    bundle.putString("packageName", fzInfos.get(position - baseTab).getId() + "");
+                }
             }
+
             fragment.setArguments(bundle);
             fragments.put(position, fragment);
             return fragment;
@@ -294,13 +299,13 @@ public class MainActivity extends AppCompatActivity implements ColorChooserDialo
         return super.dispatchKeyEvent(event);
     }
 
-    public  void backToDesk(Activity activity) {
+    public void backToDesk(Activity activity) {
 
         SPHelper.setCurTab(ctx, mViewPager.getCurrentItem());
-        if (SPHelper.isHS(ctx)) {
-            finish();
-            return;
-        }
+//        if (SPHelper.isHS(ctx)) {
+//            finish();
+//            return;
+//        }
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addCategory(Intent.CATEGORY_HOME);

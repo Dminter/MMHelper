@@ -53,11 +53,11 @@
 
         <activity android:name=".MainActivity"
                   android:launchMode="singleInstance"
+                  android:excludeFromRecents="true"
         >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
@@ -75,6 +75,7 @@
             android:launchMode="singleInstance"></activity>
         <activity
             android:name="com.zncm.dminter.mmhelper.SettingNew"
+            android:excludeFromRecents="true"
             android:label="设置"
             android:theme="@style/MyMaterialSettings" />
         <activity

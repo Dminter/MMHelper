@@ -17,6 +17,7 @@ import android.widget.Spinner;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.malinskiy.materialicons.Iconify;
+import com.zncm.dminter.mmhelper.data.AppIntentInfo;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.MyAppInfo;
@@ -43,6 +44,7 @@ public class BatActivitys extends BaseActivity {
     private Button btnAddLike;
     private Button btnPre;
     private String className;
+    private String intentName;
     private Activity ctx;
     private PackageManager packageManager;
     private String packageName;
@@ -138,9 +140,7 @@ public class BatActivitys extends BaseActivity {
     /**
      * 初始化数据
      */
-    class MyGetAppsTask extends AsyncTask<Void, Void, Void>
-
-    {
+    class MyGetAppsTask extends AsyncTask<Void, Void, Void> {
 
         protected Void doInBackground(Void... params) {
             try {
@@ -151,7 +151,7 @@ public class BatActivitys extends BaseActivity {
                 /**
                  *是否系统应用
                  */
-                for (PackageInfo packageInfo : packages) {
+                for (PackageInfo packageInfo: packages) {
                     if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) // 非系统应用
                     {
                         tmpApp.add(packageInfo);
@@ -161,7 +161,7 @@ public class BatActivitys extends BaseActivity {
                 }
 
 
-                if (type == EnumInfo.typeShortcut.THREE_MORE.getValue() ) {
+                if (type == EnumInfo.typeShortcut.THREE_MORE.getValue()) {
                     apps = tmpApp;
 
                 } else if (type == EnumInfo.typeShortcut.ALL_MORE.getValue()) {
@@ -196,7 +196,7 @@ public class BatActivitys extends BaseActivity {
 //                THREE_MORE(1, "THREE_MORE"), THREE_LESS(2, "THREE_LESS"), ALL_MORE(3, "ALL_MORE"), ALL_LESS(4, "ALL_LESS");
                 activitys = new ArrayList<>();
                 ActivityInfo[] infos;
-                ArrayList<String> acList = new ArrayList<String>();
+                ArrayList<AppIntentInfo> acList = new ArrayList<AppIntentInfo>();
 //                if ((type == EnumInfo.typeShortcut.ALL_LESS.getValue()) || (type == EnumInfo.typeShortcut.THREE_LESS.getValue())) {
 //                    try {
 //                        List<PackageInfo> apps = packageManager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
@@ -220,13 +220,13 @@ public class BatActivitys extends BaseActivity {
 //                    }
 //
 //                } else
-                 if ((type == EnumInfo.typeShortcut.ALL_MORE.getValue()) || (type == EnumInfo.typeShortcut.THREE_MORE.getValue())) {
-                    acList = (ArrayList<String>) ApkInfoUtils.getActivitiesByPackageName(ctx, appInfo.packageName);
+                if ((type == EnumInfo.typeShortcut.ALL_MORE.getValue()) || (type == EnumInfo.typeShortcut.THREE_MORE.getValue())) {
+                    acList = (ArrayList<AppIntentInfo>) ApkInfoUtils.getActivitiesByPackageName(ctx, appInfo.packageName);
                 }
                 if (Xutils.listNotNull(acList)) {
-                    for (String className : acList
-                            ) {
-                        activitys.add(new MyAppInfo(appInfo.packageName, className));
+                    for (AppIntentInfo appIntentInfo: acList
+                    ) {
+                        activitys.add(new MyAppInfo(appIntentInfo.getPackageName(), appIntentInfo.getClassName(), appIntentInfo.getIntentName()));
                     }
                     activityArrayAdapter = new ActivityArrayAdapter(ctx, activitys);
                     activitySpinner.setAdapter(activityArrayAdapter);
@@ -236,6 +236,7 @@ public class BatActivitys extends BaseActivity {
                             MyAppInfo myAppInfo = activityArrayAdapter.getItem(position);
                             packageName = myAppInfo.getPackageName();
                             className = myAppInfo.getClassName();
+                            intentName = myAppInfo.getAppName();
                             showClassName();
                         }
 
@@ -265,6 +266,9 @@ public class BatActivitys extends BaseActivity {
             preClassName = className;
             if (Xutils.isNotEmptyOrNull(packageName) && className.contains(packageName)) {
                 preClassName = className.replace(packageName, "");
+            }
+            if (Xutils.isNotEmptyOrNull(intentName)) {
+                preClassName = intentName;
             }
             activityName.setText(preClassName);
         }

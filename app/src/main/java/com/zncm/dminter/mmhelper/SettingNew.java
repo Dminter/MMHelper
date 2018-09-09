@@ -37,6 +37,7 @@ import com.kenumir.materialsettings.storage.StorageInterface;
 import com.malinskiy.materialicons.Iconify;
 import com.sofaking.iconpack.IconPack;
 import com.sofaking.iconpack.IconPackManager;
+import com.zncm.dminter.mmhelper.data.AppIntentInfo;
 import com.zncm.dminter.mmhelper.data.CardInfo;
 import com.zncm.dminter.mmhelper.data.EnumInfo;
 import com.zncm.dminter.mmhelper.data.MyPackageInfo;
@@ -62,8 +63,7 @@ import java.util.Random;
 import ezy.assist.compat.SettingsCompat;
 
 /**
- * Created by jiaomx on 2017/4/10.
- * 设置
+ * Created by jiaomx on 2017/4/10. 设置
  */
 public class SettingNew extends MaterialSettings {
 
@@ -152,7 +152,7 @@ public class SettingNew extends MaterialSettings {
                                                                    try {
                                                                        final ArrayList<PkInfo> tmps = DbUtils.getPkInfos(null, EnumInfo.pkStatus.HIDDEN.getValue());
                                                                        final ArrayList<String> appNames = new ArrayList<String>();
-                                                                       for (PkInfo packageInfo : tmps) {
+                                                                       for (PkInfo packageInfo: tmps) {
                                                                            if (Xutils.isNotEmptyOrNull(packageInfo.getName())) {
                                                                                appNames.add(packageInfo.getName());
                                                                            }
@@ -212,7 +212,7 @@ public class SettingNew extends MaterialSettings {
                                                                             final ArrayList<String> pkNames = new ArrayList<String>();
                                                                             PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
                                                                             List<PackageInfo> packages = pm.getInstalledPackages(0);
-                                                                            for (PackageInfo packageInfo : packages) {
+                                                                            for (PackageInfo packageInfo: packages) {
                                                                                 if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                                                                                     String name = packageInfo.applicationInfo.loadLabel(pm)
                                                                                             .toString();
@@ -321,7 +321,7 @@ public class SettingNew extends MaterialSettings {
                                                                                                                                                        final ArrayList<String> pkNames = new ArrayList<String>();
                                                                                                                                                        PackageManager pm = MyApplication.getInstance().ctx.getPackageManager();
                                                                                                                                                        List<PackageInfo> packages = pm.getInstalledPackages(0);
-                                                                                                                                                       for (PackageInfo packageInfo : packages) {
+                                                                                                                                                       for (PackageInfo packageInfo: packages) {
                                                                                                                                                            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
 
                                                                                                                                                            } else {
@@ -799,14 +799,15 @@ public class SettingNew extends MaterialSettings {
             try {
                 ArrayList<PkInfo> tmps = DbUtils.getPkInfos(null, true);
                 if (Xutils.listNotNull(tmps)) {
-                    for (PkInfo info : tmps
-                            ) {
+                    for (PkInfo info: tmps
+                    ) {
                         try {
                             if (info != null) {
                                 String pkg = info.getPackageName();
-                                String cls = ApkInfoUtils.getLauncherActivityByPackageName(ctx, info.getPackageName());
-                                if (Xutils.isNotEmptyOrNull(pkg) && Xutils.isNotEmptyOrNull(cls)) {
-                                    ComponentName component = new ComponentName(pkg, cls);
+                                AppIntentInfo intentInfo = ApkInfoUtils.getLauncherActivityByPackageName(ctx, info.getPackageName());
+                                if (Xutils.isNotEmptyOrNull(pkg) && intentInfo != null) {
+                                    info.setName(intentInfo.getIntentName());
+                                    ComponentName component = new ComponentName(pkg, intentInfo.getClassName());
                                     Drawable icon = params[0].getDefaultIconForPackage(ctx, component, true);
                                     if (icon != null) {
                                         info.setIcon(Xutils.drawable2Bytes(icon));
@@ -822,15 +823,25 @@ public class SettingNew extends MaterialSettings {
 
                 ArrayList<CardInfo> cardInfos = DbUtils.getCardInfos(EnumInfo.homeTab.ALL.getValue());
                 if (Xutils.listNotNull(cardInfos)) {
-                    for (CardInfo info : cardInfos
-                            ) {
+                    for (CardInfo info: cardInfos
+                    ) {
                         try {
                             if (info != null) {
                                 String pkg = info.getPackageName();
-                                String cls = ApkInfoUtils.getLauncherActivityByPackageName(MyApplication.getInstance().ctx, info.getPackageName());
-                                if (Xutils.isNotEmptyOrNull(pkg) && Xutils.isNotEmptyOrNull(cls)) {
-                                    ComponentName component = new ComponentName(pkg, cls);
-                                    Drawable icon = params[0].getDefaultIconForPackage(MyApplication.getInstance().ctx, component, true);
+//                                String cls = ApkInfoUtils.getLauncherActivityByPackageName(MyApplication.getInstance().ctx, info.getPackageName());
+//                                if (Xutils.isNotEmptyOrNull(pkg) && Xutils.isNotEmptyOrNull(cls)) {
+//                                    ComponentName component = new ComponentName(pkg, cls);
+//                                    Drawable icon = params[0].getDefaultIconForPackage(MyApplication.getInstance().ctx, component, true);
+//                                    if (icon != null) {
+//                                        info.setImg(Xutils.drawable2Bytes(icon));
+//                                        DbUtils.updateCard(info);
+//                                    }
+//                                }
+                                AppIntentInfo intentInfo = ApkInfoUtils.getLauncherActivityByPackageName(MyApplication.getInstance().ctx, info.getPackageName());
+                                if (Xutils.isNotEmptyOrNull(pkg) && intentInfo != null) {
+                                    info.setTitle(intentInfo.getIntentName());
+                                    ComponentName component = new ComponentName(pkg, intentInfo.getClassName());
+                                    Drawable icon = params[0].getDefaultIconForPackage(ctx, component, true);
                                     if (icon != null) {
                                         info.setImg(Xutils.drawable2Bytes(icon));
                                         DbUtils.updateCard(info);
@@ -866,8 +877,8 @@ public class SettingNew extends MaterialSettings {
             try {
                 ArrayList<PkInfo> pkInfos = DbUtils.getPkInfos(null);
                 if (Xutils.listNotNull(pkInfos)) {
-                    for (PkInfo tmp : pkInfos
-                            ) {
+                    for (PkInfo tmp: pkInfos
+                    ) {
                         CardInfo info = new CardInfo();
                         info.setTitle(tmp.getName());
                         info.setPackageName(tmp.getPackageName());
@@ -892,9 +903,7 @@ public class SettingNew extends MaterialSettings {
     }
 
 
-    class InitSuggestActivity extends AsyncTask<Void, Void, Void>
-
-    {
+    class InitSuggestActivity extends AsyncTask<Void, Void, Void> {
 
         protected Void doInBackground(Void... params) {
             try {

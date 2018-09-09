@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -282,7 +281,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     final ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(0);
                     if (Xutils.listNotNull(pkInfos)) {
                         for (PkInfo tmp : pkInfos
-                                ) {
+                        ) {
                             items.add(tmp.getName());
                         }
                     }
@@ -308,7 +307,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                                 ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(1);
                                 if (Xutils.listNotNull(pkInfos)) {
                                     for (PkInfo tmp : pkInfos
-                                            ) {
+                                    ) {
                                         if (!tmp.getPackageName().equals(Constant.app_pkg)) {
                                             tmp.setStatus(EnumInfo.appStatus.ENABLE.getValue());
                                             DbUtils.updatePkInfo(tmp);
@@ -326,16 +325,16 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         });
 
 
-        if (SPHelper.isHS(ctx)) {
-            actionButton.setVisibility(View.VISIBLE);
-            actionButton.setImageResource(R.mipmap.ic_setting);
-            actionButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View paramAnonymousView) {
-                    startActivity(new Intent(ctx, SettingNew.class));
-                }
-            });
-            actionButton.setOnLongClickListener(null);
-        }
+//        if (SPHelper.isHS(ctx)) {
+//            actionButton.setVisibility(View.GONE);
+//            actionButton.setImageResource(R.mipmap.ic_setting);
+//            actionButton.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View paramAnonymousView) {
+//                    startActivity(new Intent(ctx, SettingNew.class));
+//                }
+//            });
+//            actionButton.setOnLongClickListener(null);
+//        }
         if (ctx instanceof SortActivity) {
             isSort = true;
             final ItemTouchHelper helper = new ItemTouchHelper(new CallbackWrap(cardAdapter));
@@ -536,7 +535,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                     String arr[] = cmd.split(";");
                     if (arr != null && arr.length > 0) {
                         for (String tmp : arr
-                                ) {
+                        ) {
                             try {
                                 ret = Xutils.cmdExe(tmp);
                                 if (ret == AndroidCommand.appDisable) {
@@ -723,7 +722,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             tmps = DbUtils.getPkInfosBatStop(1);
                         }
                         for (PkInfo tmp : tmps
-                                ) {
+                        ) {
                             CardInfo info = new CardInfo();
                             info.setTitle(tmp.getName());
                             info.setPackageName(tmp.getPackageName());
@@ -734,6 +733,17 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         }
                     } else {
                         cardInfos = DbUtils.getCardInfos(packageName);
+                        /**
+                         *半屏设置按钮
+                         */
+                        if (SPHelper.isHS(ctx)) {
+                            CardInfo cardInfo = new CardInfo();
+                            cardInfo.setTitle("App设置");
+                            cardInfo.setPackageName(Constant.app_pkg);
+                            cardInfo.setClassName(Constant.app_setting_class);
+                            cardInfo.setType(EnumInfo.cType.TO_ACTIVITY.getValue());
+                            cardInfos.add(cardInfo);
+                        }
                         if (packageName.equals(EnumInfo.homeTab.LIKE.getValue())) {
 
                         }
@@ -941,7 +951,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                             return;
                         }
                         for (FzInfo tmp : pkInfos
-                                ) {
+                        ) {
                             if (Xutils.isNotEmptyOrNull(tmp.getName())) {
                                 fzStr.add(tmp.getName());
                             }
@@ -969,7 +979,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
                         if (Xutils.listNotNull(cardInfos)) {
 
                             for (CardInfo tmp : cardInfos
-                                    ) {
+                            ) {
                                 items.add(tmp.getTitle());
                             }
                         }
@@ -1039,7 +1049,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
         final ArrayList<CardInfo> like = DbUtils.getCardInfosByPackageName(info.getPackageName());
         if (Xutils.listNotNull(like)) {
             for (CardInfo tmp : like
-                    ) {
+            ) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("text", tmp.getTitle());
                 map.put("key", tmp.getId());
@@ -1213,7 +1223,7 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
             type = flag[0];
             ArrayList<PkInfo> pkInfos = DbUtils.getPkInfosBatStop(1);
             for (PkInfo info : pkInfos
-                    ) {
+            ) {
                 if (info.getPackageName().equals(Constant.app_pkg)) {
                     continue;
                 }
@@ -1252,8 +1262,11 @@ public class MyFt extends Fragment implements SwipeRefreshLayout.OnRefreshListen
 
     @Override
     public void onRefresh() {
-
         fillArray();
         swipeLayout.setRefreshing(false);
+    }
+
+    public void toSettingAc() {
+        startActivity(new Intent(ctx, SettingNew.class));
     }
 }

@@ -5,6 +5,8 @@ import android.content.res.AssetManager;
 import android.content.res.XmlResourceParser;
 import android.util.Log;
 
+import com.zncm.dminter.mmhelper.data.AppIntentInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +24,10 @@ public class ApkInfoUtils {
 
     }
 
-    public static String getLauncherActivityByPackageName(Context context, String packageName) {
+    public static AppIntentInfo getLauncherActivityByPackageName(Context context, String packageName) {
+
         String className = "";
+        String label = "";
         try {
             Context packageContext = context.createPackageContext(packageName, 0);
             AssetManager localAssetManager = packageContext.getAssets();
@@ -39,9 +43,11 @@ public class ApkInfoUtils {
                     }
                     if (tagName.equals("activity")) {
                         className = xrp.getAttributeValue("http://schemas.android.com/apk/res/android", "name");
-                        if (Xutils.isNotEmptyOrNull(className)&&className.startsWith(".")) {
+                        label = xrp.getAttributeValue("http://schemas.android.com/apk/res/android", "label");
+                        if (Xutils.isNotEmptyOrNull(className) && className.startsWith(".")) {
                             className = packageName + className;
                         }
+
                     }
                 }
                 xrp.next();
@@ -49,10 +55,11 @@ public class ApkInfoUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return className;
+        return new AppIntentInfo(packageName, className, label);
 
     }
-    public static List getActivitiesByPackageName(Context context, String packageName) {
+
+    public static List<AppIntentInfo> getActivitiesByPackageName(Context context, String packageName) {
         ArrayList activities = new ArrayList();
         try {
             Context packageContext = context.createPackageContext(packageName, 0);
@@ -61,12 +68,14 @@ public class ApkInfoUtils {
             while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT) {
                 if (xrp.getEventType() == XmlResourceParser.START_TAG) {
                     String tagName = xrp.getName();
+                    AppIntentInfo info = null;
                     if (tagName.endsWith("activity")) {
                         String className = xrp.getAttributeValue("http://schemas.android.com/apk/res/android", "name");
-                        if (Xutils.isNotEmptyOrNull(className)&&className.startsWith(".")) {
+                        String label = xrp.getAttributeValue("http://schemas.android.com/apk/res/android", "label");
+                        if (Xutils.isNotEmptyOrNull(className) && className.startsWith(".")) {
                             className = packageName + className;
                         }
-                        activities.add(className);
+                        activities.add(new AppIntentInfo(packageName, className, label));
                     }
                 } else if (xrp.getEventType() == XmlResourceParser.END_TAG) {
                 } else if (xrp.getEventType() == XmlResourceParser.TEXT) {
