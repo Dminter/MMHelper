@@ -210,7 +210,7 @@ public class SuggestInfoActivity extends BaseActivity {
             ArrayList<CardInfo> card = new ArrayList<>();
 //            card.add(new CardInfo(SuggestAc.youdaonote, "com.youdao.note.activity2.MainActivity", "有道云笔记"));
             card.add(new CardInfo(SuggestAc.youdaonote, "com.youdao.note.activity2.TextNoteActivity", "记笔记"));
-            card.add(new CardInfo(SuggestAc.youdaonote, "com.youdao.note.activity2.YDocGlobalSearchAcitivity", "搜索"));
+//            card.add(new CardInfo(SuggestAc.youdaonote, "com.youdao.note.activity2.YDocGlobalSearchAcitivity", "搜索"));
             card.add(new CardInfo(SuggestAc.youdaonote, "com.youdao.note.activity2.YDocShorthandActivity", "语音笔记"));
             cardInfos.addAll(card);
         } else if (SuggestAc.cloudmusic.equals(pkName)) {
@@ -245,7 +245,7 @@ public class SuggestInfoActivity extends BaseActivity {
             ArrayList<CardInfo> card = new ArrayList<>();
 //            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.main.MainActivity", "酷安"));
             card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.appmanager.AppManagerActivity", "应用管理"));
-            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.search.SearchExtendActivity", "搜索"));
+//            card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.search.SearchExtendActivity", "搜索"));
             card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.notification.NotificationActivity", "通知"));
             card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.user.UserFollowAppActivity", "我的关注"));
             card.add(new CardInfo(SuggestAc.coolapk, "com.coolapk.market.view.collection.FavoriteActivity", "我的收藏"));
