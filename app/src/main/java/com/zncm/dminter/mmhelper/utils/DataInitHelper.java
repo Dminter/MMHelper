@@ -64,12 +64,17 @@ public class DataInitHelper {
                     pkInfo.setExi1(EnumInfo.pkStatus.NORMAL.getValue());
                     DbUtils.updatePkInfo(pkInfo);
                 } else {
-                    String description = packageInfo.applicationInfo.loadLabel(pm)
-                            .toString();
-                    Drawable drawable = packageInfo.applicationInfo.loadIcon(pm);
-                    Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-                    PkInfo tmp = new PkInfo(pkgName, description, Xutils.bitmap2Bytes(bitmap), EnumInfo.appStatus.ENABLE.getValue(), EnumInfo.appType.THREE.getValue());
-                    DbUtils.insertPkInfo(tmp);
+                    try {
+                        String description = packageInfo.applicationInfo.loadLabel(pm)
+                                .toString();
+                        Drawable drawable = packageInfo.applicationInfo.loadIcon(pm);
+                        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                        PkInfo tmp = new PkInfo(pkgName, description, Xutils.bitmap2Bytes(bitmap), EnumInfo.appStatus.ENABLE.getValue(), EnumInfo.appType.THREE.getValue());
+                        DbUtils.insertPkInfo(tmp);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                 }
             }
 

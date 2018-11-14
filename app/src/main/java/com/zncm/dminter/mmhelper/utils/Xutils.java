@@ -22,6 +22,7 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -450,12 +451,13 @@ public class Xutils {
             if (bitmap == null) {
                 bitmap = bitmapDrawable.getBitmap();
             }
-
-
+            PersistableBundle bundle =       new PersistableBundle();
+            bundle.putString("pkName", cardInfo.getPackageName());
             shortIntent.setAction(Intent.ACTION_VIEW); //action必须设置，不然报错
             ShortcutInfo info = new ShortcutInfo.Builder(activity, (System.currentTimeMillis() + new Random().nextLong()) + "")
                     .setIcon(Icon.createWithBitmap(bitmap))
                     .setShortLabel(cardInfo.getTitle())
+                    .setExtras(bundle)
                     .setIntent(shortIntent)
                     .build();
             //当添加快捷方式的确认弹框弹出来时，将被回调
